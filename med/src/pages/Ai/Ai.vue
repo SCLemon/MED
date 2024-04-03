@@ -5,17 +5,17 @@
     </div>
     <div class="chat">
       <div class="list" ref="list">
-        <div v-for="(obj,id) in totalMsg" :key="id" :class="obj.role=='assistant'?'list-content left':'list-content right'">
-          <div v-if="obj.role!='assistant'" class="chat-text" v-text="obj.content"></div>
-          <img v-if="obj.role!='assistant'" :src="userImg" alt="" class="img">
-          <img v-if="obj.role=='assistant'" src="/images/robot.jpeg" alt="" class="img">
-          <div v-if="obj.role=='assistant'" class="chat-text" v-text="obj.content"></div>
+        <div v-for="(obj,id) in totalMsg" :key="id" :class="(obj.role=='assistant' || obj.role=='system')?'list-content left':'list-content right'">
+          <div v-if="obj.role!='assistant' && obj.role!='system'" class="chat-text" v-text="obj.content"></div>
+          <img v-if="obj.role!='assistant' && obj.role!='system'" :src="userImg" alt="" class="img">
+          <img v-if="obj.role=='assistant' || obj.role=='system'" src="/images/robot.jpeg" alt="" class="img">
+          <div v-if="obj.role=='assistant' || obj.role=='system'" class="chat-text" v-text="obj.content"></div>
         </div>
       </div>
       <div class="search">
         <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
         <input type="text" class="input" v-model="input" :placeholder="placeholder">
-        <i class="fa-solid fa-paper-plane icon" @click="recordData()"></i>
+        <i class="fa-solid fa-paper-plane icon" @click="sendChatGPT()"></i>
       </div>
       
     </div>
@@ -26,7 +26,7 @@
 import axios from 'axios';
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
-const apiKey = 'Open AI Key';
+const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
 export default {
@@ -48,7 +48,7 @@ export default {
     this.recognition.onresult = (event) => {
       var result = event.results[this.outputIndex][0].transcript;
       this.outputIndex++;
-      if(result == '發送' || result == '傳送') this.recordData();
+      if(result == '發送' || result == '傳送') this.sendChatGPT();
       else if(result =='停止錄音' || result == '結束錄音' || result == '終止錄音' || result == '中止錄音') this.voiceRecognition();
       else if(result =='清除聊天記錄'||result =='刪除聊天記錄') this.deleteData();
       else if(result =='清空輸入' || result =='清除輸入') this.input ='';
@@ -67,7 +67,7 @@ export default {
       startVoice:false,
       recognition:{},
       placeholder:'Send Your Questions',
-      totalMsg:[{role:'assistant',content:'hello! how can I help you?'}],
+      totalMsg:[{role:'system',content:'hello! how can I help you?'}],
       userImg:localStorage.getItem('userImg')
     }
   },
@@ -97,7 +97,7 @@ export default {
     getData(){
       axios.get(`/chat/get/${jsCookie.get('token')}`)
       .then(res=>{
-        if(res.data == 'new') this.totalMsg = [{role:'assistant',content:'hello! how can I help you?'}];
+        if(res.data == 'new') this.totalMsg = [{role:'system',content:'hello! how can I help you?'}];
         else this.totalMsg =res.data;
       })
     },
@@ -113,12 +113,6 @@ export default {
       })
     },
     recordData(){
-      // 生成 API 後要刪除這段
-      this.totalMsg.push({
-        role:'user',
-        content:this.input
-      })
-      //
       axios.post('/chat/record',{
         record: this.totalMsg
       },{
@@ -136,17 +130,23 @@ export default {
       })
     },
     sendChatGPT(){
-      // 等待生成 API
       this.totalMsg.push({
         role:'user',
         content:this.input
+      },{
+        role:'system',
+        content:'生成回答中...'
       })
+      this.input=''
+      this.placeholder='生成回答中...'
       openai.chat.completions.create({
         messages: this.totalMsg,
         model: "gpt-3.5-turbo",
         }).then(res=>{
+            this.totalMsg.pop();
             this.totalMsg.push(res.choices[0].message);
             this.recordData();
+            this.placeholder='Send Your Questions';
         });
     },
     setWindowScroll(){
