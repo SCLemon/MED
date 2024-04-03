@@ -1,6 +1,5 @@
 <template>
     <div class="main">
-      <el-alert v-if="alertMsg.show" :title="alertMsg.msg" :type="alertMsg.type" class="alert"></el-alert>
       <div class="box">
         <div class="title">Create Your Account</div>
         <div class="userIcon">
@@ -40,22 +39,9 @@
         user:'',
         password:'',
         mail:'',
-        alertMsg:{
-          msg:'',
-          type:'',
-          show:true,
-        }
       }
     },
     methods:{
-      handleAlert(msg,type){
-        this.alertMsg.show=true;
-        this.alertMsg.msg=msg;
-        this.alertMsg.type=type;
-        setTimeout(() => {
-          this.alertMsg.show=false;
-        }, 500);
-      },
       sendData(){
         if(this.user.trim()!=='' && this.password.trim()!='' && this.mail.trim()!=''){
           axios.post('/verify/register',{
@@ -64,18 +50,16 @@
             mail:this.mail
           }).then(res=>{
             if(res.data=='success'){
-              this.handleAlert('Success To Register！！','success');
+              this.$bus.$emit('handleAlert','Success To Register！！','success')
               this.user='';
               this.password='';
               this.mail='';
-              setTimeout(()=>{
-                this.$router.replace('/verify/login');
-              },500)
+              this.$router.replace('/verify/login');
             }
-            else this.handleAlert('Failed To Register！！','error')
+            else this.$bus.$emit('handleAlert','Failed To Register！！','error')
           })
         }
-        else this.handleAlert('Blanks are not allowed！！','warning')
+        else this.$bus.$emit('handleAlert','Blanks are not allowed！！','warning')
       }
     }
   }

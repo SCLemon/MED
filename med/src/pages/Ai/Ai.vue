@@ -1,25 +1,256 @@
 <template>
-  <div>ai</div>
+  <div>
+    <div class="top">
+      <i class="fa-solid fa-hand-holding-medical"></i> 智能小神醫 <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
+    </div>
+    <div class="chat">
+      <div class="list" ref="list">
+        <div v-for="(obj,id) in totalMsg" :key="id" :class="obj.role=='assistant'?'list-content left':'list-content right'">
+          <div v-if="obj.role!='assistant'" class="chat-text" v-text="obj.content"></div>
+          <img src="../../assets/userImg.jpeg" alt="" class="img">
+          <div v-if="obj.role=='assistant'" class="chat-text" v-text="obj.content"></div>
+        </div>
+      </div>
+      <div class="search">
+        <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
+        <input type="text" class="input" v-model="input">
+        <i class="fa-solid fa-paper-plane icon" @click="recordData()"></i>
+      </div>
+      
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import OpenAI from "openai";
+import jsCookie from 'js-cookie';
+const apiKey = 'Open AI Key';
+const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
+
 export default {
   name:'Ai',
   mounted(){
-   
+    this.setWindowScroll();
+    this.getData();
+    
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    this.recognition = new SpeechRecognition();
+    this.recognition.continuous = true;
+
+    this.recognition.onstart = (event)=>{
+      this.startVoice =true;
+    }
+
+    this.recognition.onresult = (event) => {
+      var result = event.results[this.outputIndex][0].transcript;
+      this.outputIndex++;
+      if(result == '發送' || result == '傳送') this.recordData();
+      else if(result =='停止錄音' || result == '結束錄音' || result == '終止錄音' || result == '中止錄音') this.voiceRecognition();
+      else if(result =='清除聊天記錄'||result =='刪除聊天記錄') this.deleteData();
+      else if(result =='清空輸入') this.input ='';
+      else this.input += result;
+    };
+    this.recognition.onend = (event)=>{
+      this.outputIndex=0;
+      this.startVoice=false;
+    }
+  },
+  data(){
+    return{
+      input:'',
+      outputIndex:0,
+      startVoice:false,
+      recognition:{},
+      totalMsg:[{role:'assistant',content:'hello! how can I help you?'}],
+    }
+  },
+  watch:{
+        totalMsg:{
+            deep:true,
+            handler(value){
+                this.setWindowScroll();
+            }
+        }
+  },
+  beforeDestroy(){
+    this.voiceRecognition();
+    this.recognition={};
   },
   methods:{
-    sendData(){
-      axios.post('/chat/record',{
-        user: 'John',
-        password: '123'
+    confirmForm(msg,func) {
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        func();
+      }).catch(() => {
+        this.$bus.$emit('handleAlert','Delete Message Canceled','error');
+      });          
+    },
+    getData(){
+      axios.get(`/chat/get/${jsCookie.get('token')}`)
+      .then(res=>{
+        if(res.data == 'new') this.totalMsg = [{role:'assistant',content:'hello! how can I help you?'}];
+        else this.totalMsg =res.data;
       })
+    },
+    deleteData(){
+      this.input='';
+      axios.delete(`/chat/delete/${jsCookie.get('token')}`)
+      .then(res=>{
+        if(res.data == 'success') {
+          this.$bus.$emit('handleAlert','Delete Message Success','success');
+          this.getData();
+        }
+        else this.$bus.$emit('handleAlert','Delete Message Error','error')
+      })
+    },
+    recordData(){
+      // 生成 API 後要刪除這段
+      this.totalMsg.push({
+        role:'user',
+        content:this.input
+      })
+      //
+      axios.post('/chat/record',{
+        record: this.totalMsg
+      },{
+        headers: {
+          'user-token': jsCookie.get('token'),
+        }
+      }).then(res=>{
+        if(res.data=='success'){
+          this.input=''
+          this.getData();
+        }
+        else{
+          this.$bus.$emit('handleAlert','Record Message Error','error')
+        }
+      })
+    },
+    sendChatGPT(){
+      // 等待生成 API
+      this.totalMsg.push({
+        role:'user',
+        content:this.input
+      })
+      openai.chat.completions.create({
+        messages: this.totalMsg,
+        model: "gpt-3.5-turbo",
+        }).then(res=>{
+            this.totalMsg.push(res.choices[0].message);
+            this.recordData();
+        });
+    },
+    setWindowScroll(){
+      var el = this.$refs.list;
+      this.$nextTick(function(){
+        el.scrollTop = el.scrollHeight;
+      })
+    },
+    voiceRecognition(){
+      if(this.startVoice){
+        this.recognition.stop();
+      }
+      else this.recognition.start();
+      this.startVoice = !this.startVoice; // 開始錄音轉為 true
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  .top{
+    top:0;
+    width:100%;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    border-bottom:0.1px solid rgb(210, 210, 210);
+  }
+  .chat{
+    position: relative;
+    width:100%;
+    height: calc(100vh - 110px);
+  }
+  .eraser{
+    position: absolute;
+    right: 20px;
+    top:20px;
+  }
+  .search{
+    bottom:0;
+    width:100%;
+    height: 60px;
+  }
+  .list{
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+  }
+  .list-content{
+    display: flex;
+    height: auto;
+    margin-top: 15px;
+  }
+  .img{
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+  }
+  .chat-text{
+    max-width:70%;
+    word-wrap: break-word;
+    background-color: skyblue;
+    border-radius: 15px;
+    padding: 10px;
+    text-align: justify;
+    color: rgba(255,255,255,0.9);
+  }
+  .left{
+    justify-content: left;
+  }
+  .on{
+    color: red;
+  }
+  .left > .chat-text{
+    margin-left: 10px;
+  }
+  .right{
+    justify-content: right;
+  }
+  .right>.chat-text{
+    margin-right: 10px;
+  }
+  .search{
+    width:100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 17px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .icon{
+    width: 15%;
+    text-align: center;
+  }
+  .input{
+    width: 80%;
+    border: 0;
+    border-bottom: 1px solid rgb(205,205,205);
+    padding:3px;
+    padding-left: 6px;
+  }
 </style>

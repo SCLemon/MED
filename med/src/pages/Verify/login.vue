@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <el-alert v-if="alertMsg.show" :title="alertMsg.msg" :type="alertMsg.type" class="alert"></el-alert>
     <div class="box">
       <div class="title">Welcome To Use</div>
       <div class="userIcon">
@@ -35,22 +34,9 @@ export default {
     return {
       user:'',
       password:'',
-      alertMsg:{
-        msg:'',
-        type:'',
-        show:true,
-      }
     }
   },
   methods:{
-    handleAlert(msg,type){
-      this.alertMsg.show=true;
-      this.alertMsg.msg=msg;
-      this.alertMsg.type=type;
-      setTimeout(() => {
-        this.alertMsg.show=false;
-      }, 500);
-    },
     sendData(){
       if(this.user.trim()!=='' && this.password.trim()!=''){
         axios.post('/verify/login',{
@@ -58,18 +44,16 @@ export default {
           password: this.password,
         }).then(res=>{
           if(Array.isArray(res.data)){
-            document.cookie=`token=${res.data[0].token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`
-            this.handleAlert('Success To Login！！','success');
+            document.cookie=`token=${res.data[0].token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`;
+            this.$bus.$emit('handleAlert','Success To Login！！','success')
             this.user='';
             this.password='';
-            setTimeout(()=>{
-              this.$router.replace('/');
-            },500)
+            this.$router.replace('/');
           }
-          else this.handleAlert('Failed To Login！！','error')
+          else this.$bus.$emit('handleAlert','Failed To Login！！','error')
         })
       }
-      else this.handleAlert('Blanks are not allowed！！','warning')
+      else this.$bus.$emit('handleAlert','Blanks are not allowed！！','warning')
     }
   }
 }
@@ -84,12 +68,6 @@ export default {
     align-items: center;
     position: relative;
   }
-  .alert{
-      position: absolute;
-      margin: 0 auto;
-      top:15px;
-      width: 250px;
-    }
   .otherForm{
     position: absolute;
     bottom:15px;

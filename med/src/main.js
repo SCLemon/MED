@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import jsCookie from 'js-cookie'
+
 //組建庫
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

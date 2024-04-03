@@ -21,7 +21,10 @@ router.post('/verify/register',(req, res) => {
         if(!data.length){
           userModel.create(req.body)
           .then((data, err) => {
-            if (err) res.status(200).send('error when creating')
+            if (err) {
+              console.log(err)
+              res.status(200).send('error when creating')
+            }
             else {
               console.log('完成')
               res.status(200).send('success')
@@ -29,11 +32,15 @@ router.post('/verify/register',(req, res) => {
             mongoose.disconnect();
           })
         }
-        else res.status(200).send('User Existed');
+        else {
+          res.status(200).send('User Existed');
+          mongoose.disconnect();
+        }
       })
     },()=>{
         console.log('連接失敗');
-        res.status(500).send('error when connecting');
+        res.status(200).send('error when connecting');
+        mongoose.disconnect();
     })
   }
 });
@@ -56,6 +63,7 @@ router.post('/verify/login',(req, res) => {
     },()=>{
         console.log('連接失敗');
         res.status(500).send('error when connecting');
+        mongoose.disconnect();
     })
   }
 });

@@ -12,6 +12,6 @@ app.use(verifyRouter);
 const chatRouter = require('./routes/chatRouter');
 app.use(chatRouter);
 
-app.listen(3001, () => {
-    console.log('服务已经启动, 端口 3001 正在监听中....')
+app.listen(3005, () => {
+    console.log('服务已经启动, 端口 3005 正在监听中....')
 })
