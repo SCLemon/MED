@@ -45,15 +45,15 @@ export default {
         }).then(res=>{
           if(Array.isArray(res.data)){
             document.cookie=`token=${res.data[0].token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`;
-            this.$bus.$emit('handleAlert','Success To Login！！','success')
+            this.$bus.$emit('handleAlert','Success To Login','success')
             this.user='';
             this.password='';
             this.$router.replace('/');
           }
-          else this.$bus.$emit('handleAlert','Failed To Login！！','error')
+          else this.$bus.$emit('handleAlert','Failed To Login','error')
         })
       }
-      else this.$bus.$emit('handleAlert','Blanks are not allowed！！','warning')
+      else this.$bus.$emit('handleAlert','Blanks are not allowed','warning')
     }
   }
 }

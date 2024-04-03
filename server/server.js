@@ -12,6 +12,10 @@ app.use(verifyRouter);
 const chatRouter = require('./routes/chatRouter');
 app.use(chatRouter);
 
+// 個人資訊
+const userInfoRouter = require('./routes/userInfoRouter');
+app.use(userInfoRouter);
+
 app.listen(3005, () => {
     console.log('服务已经启动, 端口 3005 正在监听中....')
 })

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    userImg:{
+        type:String,
+        default:'/images/1.jpeg'
+    },
 });
 
 //创建模型对象

@@ -7,13 +7,14 @@
       <div class="list" ref="list">
         <div v-for="(obj,id) in totalMsg" :key="id" :class="obj.role=='assistant'?'list-content left':'list-content right'">
           <div v-if="obj.role!='assistant'" class="chat-text" v-text="obj.content"></div>
-          <img src="../../assets/userImg.jpeg" alt="" class="img">
+          <img v-if="obj.role!='assistant'" :src="userImg" alt="" class="img">
+          <img v-if="obj.role=='assistant'" src="/images/robot.jpeg" alt="" class="img">
           <div v-if="obj.role=='assistant'" class="chat-text" v-text="obj.content"></div>
         </div>
       </div>
       <div class="search">
         <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
-        <input type="text" class="input" v-model="input">
+        <input type="text" class="input" v-model="input" :placeholder="placeholder">
         <i class="fa-solid fa-paper-plane icon" @click="recordData()"></i>
       </div>
       
@@ -41,6 +42,7 @@ export default {
 
     this.recognition.onstart = (event)=>{
       this.startVoice =true;
+      this.$bus.$emit('handleAlert','Sound Recognition On','success');
     }
 
     this.recognition.onresult = (event) => {
@@ -49,12 +51,13 @@ export default {
       if(result == '發送' || result == '傳送') this.recordData();
       else if(result =='停止錄音' || result == '結束錄音' || result == '終止錄音' || result == '中止錄音') this.voiceRecognition();
       else if(result =='清除聊天記錄'||result =='刪除聊天記錄') this.deleteData();
-      else if(result =='清空輸入') this.input ='';
+      else if(result =='清空輸入' || result =='清除輸入') this.input ='';
       else this.input += result;
     };
     this.recognition.onend = (event)=>{
       this.outputIndex=0;
       this.startVoice=false;
+      this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
   },
   data(){
@@ -63,7 +66,9 @@ export default {
       outputIndex:0,
       startVoice:false,
       recognition:{},
+      placeholder:'Send Your Questions',
       totalMsg:[{role:'assistant',content:'hello! how can I help you?'}],
+      userImg:localStorage.getItem('userImg')
     }
   },
   watch:{
@@ -75,7 +80,6 @@ export default {
         }
   },
   beforeDestroy(){
-    this.voiceRecognition();
     this.recognition={};
   },
   methods:{

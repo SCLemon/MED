@@ -50,16 +50,16 @@
             mail:this.mail
           }).then(res=>{
             if(res.data=='success'){
-              this.$bus.$emit('handleAlert','Success To Register！！','success')
+              this.$bus.$emit('handleAlert','Success To Register','success')
               this.user='';
               this.password='';
               this.mail='';
               this.$router.replace('/verify/login');
             }
-            else this.$bus.$emit('handleAlert','Failed To Register！！','error')
+            else this.$bus.$emit('handleAlert','Failed To Register','error')
           })
         }
-        else this.$bus.$emit('handleAlert','Blanks are not allowed！！','warning')
+        else this.$bus.$emit('handleAlert','Blanks are not allowed','warning')
       }
     }
   }

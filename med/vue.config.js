@@ -10,6 +10,9 @@ module.exports = defineConfig({
       '/verify': {
         target: 'http://127.0.0.1:3005',
       },
+      '/userInfo': {
+        target: 'http://127.0.0.1:3005',
+      },
     }
   }
 })
