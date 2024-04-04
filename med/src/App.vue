@@ -36,6 +36,9 @@ export default {
     input:focus{
       outline: 0;
     }
+    ::placeholder{
+      font-size: 14px;
+    }
     ::-webkit-scrollbar{
       display: none;
     }

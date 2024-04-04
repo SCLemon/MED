@@ -42,7 +42,8 @@ export default {
 
     this.recognition.onstart = (event)=>{
       this.startVoice =true;
-      this.$bus.$emit('handleAlert','Sound Recognition On','success');
+      this.placeholder='Sound Recognition Start ...'
+      this.$bus.$emit('handleAlert','Sound Recognition Start','success');
     }
 
     this.recognition.onresult = (event) => {
@@ -57,6 +58,7 @@ export default {
     this.recognition.onend = (event)=>{
       this.outputIndex=0;
       this.startVoice=false;
+      this.placeholder='Send Your Questions';
       this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
   },
@@ -99,6 +101,8 @@ export default {
       .then(res=>{
         if(res.data == 'new') this.totalMsg = [{role:'system',content:'hello! how can I help you?'}];
         else this.totalMsg =res.data;
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Getting Message Error','error');
       })
     },
     deleteData(){
@@ -110,6 +114,8 @@ export default {
           this.getData();
         }
         else this.$bus.$emit('handleAlert','Delete Message Error','error')
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Delete Message Error','error');
       })
     },
     recordData(){
@@ -127,6 +133,8 @@ export default {
         else{
           this.$bus.$emit('handleAlert','Record Message Error','error')
         }
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Recording Message Error','error');
       })
     },
     sendChatGPT(){

@@ -80,21 +80,21 @@
           },(error)=>{
             switch(error.code) {
               case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.");
+                this.$bus.$emit('handleAlert','User denied the request for Geolocation.','error');
                 break;
               case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.");
+                this.$bus.$emit('handleAlert','Location information is unavailable.','error');
                 break;
               case error.TIMEOUT:
-                alert("The request to get user location timed out.");
+                this.$bus.$emit('handleAlert','The request to get user location timed out.','error');
                 break;
               case error.UNKNOWN_ERROR:
-                alert("An unknown error occurred.");
+                this.$bus.$emit('handleAlert','An unknown error occurred.','error');
                 break;
-              }
+            }
           })
         } else {
-          alert("Geolocation is not supported by this browser.")
+          this.$bus.$emit('handleAlert','Geolocation is not supported by this browser.','error');
         }
       },
       waitForMap() {

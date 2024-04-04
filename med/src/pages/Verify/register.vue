@@ -57,6 +57,8 @@
               this.$router.replace('/verify/login');
             }
             else this.$bus.$emit('handleAlert','Failed To Register','error')
+          }).catch(e=>{
+            this.$bus.$emit('handleAlert','Register Error By Server Connection','error')
           })
         }
         else this.$bus.$emit('handleAlert','Blanks are not allowed','warning')

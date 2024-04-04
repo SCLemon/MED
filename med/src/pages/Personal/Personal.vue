@@ -67,7 +67,6 @@ export default {
       axios.get(`/userInfo/get/${jsCookie.get('token')}`)
       .then(res=>{
         if(Array.isArray(res.data)){
-          this.$bus.$emit('handleAlert','Getting UserInfo Success','success');
           this.update.user = res.data[0].user;
           this.update.password = res.data[0].password;
           this.update.mail = res.data[0].mail;
@@ -76,6 +75,8 @@ export default {
           localStorage.setItem('userImg',this.update.userImg.src)
         }
         else this.$bus.$emit('handleAlert','Failed To Getting UserInfo','error');
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Getting UserInfo Error','error');
       })
     },
     logout(){
@@ -110,7 +111,8 @@ export default {
             this.getUserInfo();
           }
           else this.$bus.$emit('handleAlert','Failed To Update UserInfo','error');
-          
+        }).catch(e=>{
+          this.$bus.$emit('handleAlert','Updating UserInfo Error','error');
         })
       }
     }

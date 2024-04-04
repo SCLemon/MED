@@ -51,6 +51,8 @@ export default {
             this.$router.replace('/');
           }
           else this.$bus.$emit('handleAlert','Failed To Login','error')
+        }).catch(e=>{
+          this.$bus.$emit('handleAlert','Login Error By Server Connection','error')
         })
       }
       else this.$bus.$emit('handleAlert','Blanks are not allowed','warning')
