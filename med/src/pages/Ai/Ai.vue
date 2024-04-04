@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top">
-      <i class="fa-solid fa-hand-holding-medical"></i> 智能小神醫 <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
+      <i class="fa-solid fa-hand-holding-medical"></i> Smart Physician <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
     </div>
     <div class="chat">
       <div class="list" ref="list">

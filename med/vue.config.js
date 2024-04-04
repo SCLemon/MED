@@ -5,13 +5,16 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/chat': {
-        target: 'http://127.0.0.1:3005',
+        target: 'http://127.0.0.1:3006',
       },
       '/verify': {
-        target: 'http://127.0.0.1:3005',
+        target: 'http://127.0.0.1:3006',
       },
       '/userInfo': {
-        target: 'http://127.0.0.1:3005',
+        target: 'http://127.0.0.1:3006',
+      },
+      '/reminder': {
+        target: 'http://127.0.0.1:3006',
       },
     }
   }

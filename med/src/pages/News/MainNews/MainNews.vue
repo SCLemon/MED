@@ -64,7 +64,7 @@
     .main{
       width: 85%;
       margin: 0 auto;
-      height: calc(100vh - 107.5px);
+      height: calc(100vh - 105px);
     }
     .title{
       font-size: 18px;

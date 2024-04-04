@@ -13,12 +13,28 @@ import NavDetail from '../pages/Navigator/NavDetail/NavDetail.vue'
 import NavMain from '../pages/Navigator/NavMain/NavMain.vue'
 import Register from '../pages/Verify/register.vue'
 import Login from '../pages/Verify/login.vue'
+import Add from '../pages/Main/Add/Add.vue'
+import List from '../pages/Main/List/List.vue'
+import Revise from '../pages/Main/Revise/Revise.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
         {
             path:'/main',
-            component:Main
+            component:Main,
+            children:[
+            {
+                path:'',
+                component:List
+            },
+            {
+                path:'add',
+                component:Add
+            },
+            {
+                path:'revise',
+                component:Revise
+            }]
         },
         {
             path:'/navigator',

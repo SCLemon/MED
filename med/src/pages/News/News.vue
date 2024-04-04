@@ -17,11 +17,10 @@ export default {
 <style scoped>
     .header{
       width:100%;
-      height: 57.5px;
-      line-height: 57.5px;
+      height: 60px;
+      line-height: 60px;
       text-align: center;
       font-weight: bolder;
-      font-style: italic;
       border-bottom:0.1px solid rgb(210, 210, 210);
       font-size: 20px;
       position: sticky;
@@ -31,6 +30,9 @@ export default {
     .back{
       position: absolute;
       left:16px;
-      top:19px;
+      top:20px;
+    }
+    .back:hover{
+      cursor: pointer;
     }
 </style>

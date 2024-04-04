@@ -48,6 +48,10 @@ export default {
     .el-message{
       top:0 !important;
       height: 60px !important;
+      width:100% !important;
+    }
+    .el-select{
+        width:100% !important;
     }
     .app {
       width:100%;
