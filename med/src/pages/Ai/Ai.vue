@@ -189,7 +189,7 @@ export default {
   .chat{
     position: relative;
     width:100%;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 130px);
   }
   .eraser{
     position: absolute;

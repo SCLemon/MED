@@ -156,7 +156,7 @@ export default {
   }
   .box{
     width: 85%;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 95px);
   }
   .userIcon{
     width: 100%;

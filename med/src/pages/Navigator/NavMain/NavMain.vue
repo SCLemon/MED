@@ -153,7 +153,7 @@
     }
     .listBox{
       width: 100%;
-      height: calc(100vh - 440px);
+      height: calc(100vh - 460px);
       overflow: scroll;
     }
     .loader{

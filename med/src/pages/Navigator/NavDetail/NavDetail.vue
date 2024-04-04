@@ -101,7 +101,7 @@ export default {
     }
     .detail{
         width:100%;
-        height: calc(100vh - 397px);
+        height: calc(100vh - 417px);
         overflow-y: scroll;
     }
     .title{

@@ -24,7 +24,7 @@
     <div class="title">Content</div>
     <el-input
         type="textarea"
-        :autosize="{ minRows: 5, maxRows: 12}"
+        :autosize="{ minRows: 5, maxRows: 11}"
         placeholder="请输入内容"
         v-model="content">
     </el-input>

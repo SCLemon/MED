@@ -76,7 +76,6 @@ export default {
         })
         return acc;
       }, []);
-      console.log(this.list)
     },
     handleSort(period){
       switch(period) {
@@ -131,7 +130,7 @@ export default {
 }
 .box {
   width: 100%;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 130px);
 }
 .add {
   width: 100%;
@@ -156,7 +155,7 @@ export default {
 .list {
   overflow: scroll;
   width: 100%;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 200px);
 }
 .list-content {
   width: calc(100vw - 40px);

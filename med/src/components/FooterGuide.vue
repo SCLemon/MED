@@ -26,13 +26,13 @@ export default {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
-      height: 50px;
-      font-size: 18px;
+      height: 70px;
+      font-size: 20px;
       background-color: white;
     }
     .list{
       width:20%;
-      line-height: 50px;
+      line-height: 70px;
       text-align: center;
     }
     .on{

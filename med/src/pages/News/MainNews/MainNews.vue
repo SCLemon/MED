@@ -64,7 +64,7 @@
     .main{
       width: 85%;
       margin: 0 auto;
-      height: calc(100vh - 105px);
+      height: calc(100vh - 125px);
     }
     .title{
       font-size: 18px;
@@ -89,7 +89,7 @@
       width:100%;
       height: 475px;
       overflow-y: scroll;
-      height: calc(100vh - 208.5px);
+      height: calc(100vh - 228.5px);
     }
     .box{
       width:100%;
