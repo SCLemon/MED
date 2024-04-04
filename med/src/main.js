@@ -9,6 +9,8 @@ Vue.use(ElementUI);
 
 // Google Map
 import * as VueGoogleMaps from 'vue2-google-maps'
+
+import './registerServiceWorker'
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyDzUXKKyo-Cs3FNNRONt75fUrQEvUTraTE',

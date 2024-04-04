@@ -264,5 +264,6 @@ export default {
     border-bottom: 1px solid rgb(205,205,205);
     padding:3px;
     padding-left: 6px;
+    border-radius: 0;
   }
 </style>

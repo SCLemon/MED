@@ -229,8 +229,12 @@ export default {
 }
 .marks{
   position: absolute;
-  top:7px;
-  right:10px;
+  top:0px;
+  right: 0px;
+  width: 40px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
 }
 .marks:hover{
   cursor: pointer;
