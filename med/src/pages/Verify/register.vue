@@ -87,7 +87,7 @@
     }
     .otherForm{
       position: absolute;
-      bottom:15px;
+      bottom:25px;
       right:15px;
       font-size: 20px;
     }
