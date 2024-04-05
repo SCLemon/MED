@@ -3,6 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   devServer: {
+    https: true,
     proxy: {
       '/chat': {
         target: 'http://127.0.0.1:3006',
@@ -19,6 +20,3 @@ module.exports = defineConfig({
     }
   }
 })
-//pathRewrite:{'^/atguigu':''},
-// ws: true, //用于支持websocket
-// changeOrigin: true //用于控制请求头中的host值

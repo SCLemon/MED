@@ -70,14 +70,14 @@
               lat: position.coords.latitude,
               lng: position.coords.longitude
             }
-            
             this.waitForMap().then(map => {
               this.map=map;
               this.findNearBy();
             }).catch(error => {
-              console.error("地圖尚未加載完畢：", error);
+              this.$bus.$emit('handleAlert','Map Loading Error','error');
             });
           },(error)=>{
+            
             switch(error.code) {
               case error.PERMISSION_DENIED:
                 this.$bus.$emit('handleAlert','User denied the request for Geolocation.','error');
