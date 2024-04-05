@@ -34,7 +34,6 @@ export default {
   mounted(){
     this.setWindowScroll();
     this.getData();
-    
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     this.recognition = new SpeechRecognition();
@@ -70,7 +69,7 @@ export default {
       recognition:{},
       placeholder:'Send Your Questions',
       totalMsg:[{role:'system',content:'hello! how can I help you?'}],
-      userImg:localStorage.getItem('userImg')
+      userImg:(localStorage.getItem('userImg')==''||localStorage.getItem('userImg')==undefined)?'/images/1.jpeg':localStorage.getItem('userImg')
     }
   },
   watch:{
