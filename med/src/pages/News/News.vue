@@ -29,8 +29,14 @@ export default {
     }
     .back{
       position: absolute;
-      left:16px;
-      top:20px;
+      left: 0px;
+      text-align: center;
+      line-height: 60px;
+      top: 0px;
+      font-size: 20px;
+      height: 60px;
+      z-index:999;
+      width: 60px;
     }
     .back:hover{
       cursor: pointer;
