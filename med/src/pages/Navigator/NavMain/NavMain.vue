@@ -169,7 +169,8 @@
       height: 90px;
       border-bottom: 0.1px solid rgb(204, 204, 204);
       padding:15px;
-      padding-top: 5px;
+      padding-top: 10px;
+      padding-bottom: 10px;
       display: flex;
       align-content: center;
       justify-content: space-evenly;

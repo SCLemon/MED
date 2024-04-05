@@ -19,9 +19,11 @@ export default {
 
 <style scoped>
     .main{
+        height: calc(100vh - 130px);
         text-align: justify;
         padding: 17.5px;
         padding-bottom: 30px;
+        overflow: scroll;
     }
     .title{
         font-size: 22px;
