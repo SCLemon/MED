@@ -137,24 +137,27 @@ export default {
       })
     },
     sendChatGPT(){
-      this.totalMsg.push({
-        role:'user',
-        content:this.input
-      },{
-        role:'system',
-        content:'生成回答中...'
-      })
-      this.input=''
-      this.placeholder='生成回答中...'
-      openai.chat.completions.create({
-        messages: this.totalMsg,
-        model: "gpt-3.5-turbo",
-        }).then(res=>{
-            this.totalMsg.pop();
-            this.totalMsg.push(res.choices[0].message);
-            this.recordData();
-            this.placeholder='Send Your Questions';
+      if(this.input.trim()!=''){
+        this.totalMsg.push({
+          role:'user',
+          content:this.input
+        },{
+          role:'system',
+          content:'生成回答中...'
+        })
+        this.input=''
+        this.placeholder='生成回答中...'
+        openai.chat.completions.create({
+          messages: this.totalMsg,
+          model: "gpt-3.5-turbo",
+          }).then(res=>{
+              this.totalMsg.pop();
+              this.totalMsg.push(res.choices[0].message);
+              this.recordData();
+              this.placeholder='Send Your Questions';
         });
+      }
+      else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
     },
     setWindowScroll(){
       var el = this.$refs.list;
