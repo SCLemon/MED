@@ -1,7 +1,7 @@
 <template>
   <div class="mainBox">
     <i class="fa-solid fa-chevron-left back" v-if="$route.path != '/main'" @click="$router.back()"></i>
-    <div class="top">Medication Reminder</div>
+    <div class="top">TodoList Reminder</div>
     <router-view></router-view>
   </div>
 </template>
