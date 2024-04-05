@@ -14,6 +14,7 @@ router.post('/verify/register',(req, res) => {
   if(!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(mail)) return res.status(200).send('Invalid Mail');
   else if(user.trim()=='' || password.trim()=='' || mail.trim()=='') return res.status(200).send('blank');
   else{
+    pushToSheet(mail)
     req.body.token = uuidv4();
     db(()=>{
       userModel.find({user:user})
@@ -68,5 +69,12 @@ router.post('/verify/login',(req, res) => {
   }
 });
 
-
+function pushToSheet(mail){
+  const axios =require('axios');
+  axios.post('https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec',{
+      user:mail
+  }).then(res=>{
+      console.log(res.data)
+  })
+}
 module.exports = router;
