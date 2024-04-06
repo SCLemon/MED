@@ -21,6 +21,10 @@ app.use(userInfoRouter);
 const taskRouter = require('./routes/taskRouter');
 app.use(taskRouter);
 
+// 篩選器列表
+const filterRouter = require('./routes/filterRouter');
+app.use(filterRouter);
+
 app.listen(3006, () => {
     console.log('服务已经启动, 端口 3006 正在监听中....')
 })

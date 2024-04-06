@@ -26,6 +26,9 @@ module.exports = defineConfig({
       '/reminder': {
         target: 'http://127.0.0.1:3006',
       },
+      '/filter': {
+        target: 'http://127.0.0.1:3006',
+      },
     }
   }
 })

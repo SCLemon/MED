@@ -75,4 +75,5 @@ export default {
       bottom: 0;
       border-top: 0.1px solid rgb(210, 210, 210);
     }
+
 </style>

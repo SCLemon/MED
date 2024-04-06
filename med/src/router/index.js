@@ -11,6 +11,7 @@ import EachNews from '../pages/News/EachNews/EachNews.vue'
 import MainNews from '../pages/News/MainNews/MainNews.vue'
 import NavDetail from '../pages/Navigator/NavDetail/NavDetail.vue'
 import NavMain from '../pages/Navigator/NavMain/NavMain.vue'
+import NavFilter from '../pages/Navigator/NavFilter/NavFilter.vue'
 import Register from '../pages/Verify/register.vue'
 import Login from '../pages/Verify/login.vue'
 import Add from '../pages/Main/Add/Add.vue'
@@ -46,6 +47,10 @@ const router = new VueRouter({
             {
                 path:'detail',
                 component:NavDetail,
+            },
+            {
+                path:'filter',
+                component:NavFilter,
             }]
         },
         {

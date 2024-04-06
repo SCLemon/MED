@@ -18,12 +18,13 @@
           <input type="text" v-model="keyword" placeholder="Search nearby places" @change="findNearBy()">
           <i class="fa-solid fa-magnifying-glass glass"></i>
         </div>
+        <router-link class="slider" :to="{path:'/navigator/filter'}"><i class="fa-solid fa-sliders"></i></router-link>
       </div>
         <div class="listBox">
           <div v-if="!loadingFinish" class="loader"></div>
           <div v-else>
             <div v-for="place in nearbyPlaces" :key="place.id">
-              <router-link class="link list" :to="{
+              <router-link v-if="Number.parseFloat(place.rating).toFixed(1) >= filter.score" class="link list" :to="{
                     path:'/navigator/detail',
                     query:{'placeId':place.place_id}}"
               >
@@ -43,20 +44,32 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  import jsCookie from 'js-cookie';
   export default {
     name:'Navigator',
     data() {
       return {
+        filter:{
+          distance:7000,
+          score:3,
+          option:'hospital',
+          hospitalSelectTypes:[]
+        },
         center: { lat: 0, lng: 0 },
         zoom: 15,
         nearbyPlaces:[],
         keyword:'',
         map:{},
         loadingFinish:false,
+        filterGet:false,
       }
     },
     mounted() {
       this.getCurrentLocation();
+      setTimeout(() => {
+        this.getFilter();
+      }, 500);
       this.$bus.$on('findDetail',async (id)=>{
         var result = await this.findDetail(id);
         this.$bus.$emit('setNavContent',result);
@@ -77,7 +90,6 @@
               this.$bus.$emit('handleAlert','Map Loading Error','error');
             });
           },(error)=>{
-            
             switch(error.code) {
               case error.PERMISSION_DENIED:
                 this.$bus.$emit('handleAlert','User denied the request for Geolocation.','error');
@@ -101,7 +113,7 @@
         return new Promise((resolve, reject) => {
           const interval = setInterval(() => {
             try{
-              if (this.$refs.mapRef.$mapObject) {
+              if (this.$refs.mapRef.$mapObject && this.filterGet) {
                 clearInterval(interval);
                 resolve(this.$refs.mapRef.$mapObject);
               }
@@ -115,13 +127,14 @@
         const service = new window.google.maps.places.PlacesService(this.map);
         const request = { 
           location: this.center,
-          radius: 7000, 
-          types: ['hospital', 'pharmacy', 'doctor', 'dentist', 'drugstore'],
+          radius: this.filter.distance, 
+          types: [`${this.filter.option}`],
           keyword:this.keyword
         };
         service.nearbySearch(request, (results, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            this.nearbyPlaces = results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
+            if(this.filter.option == 'hospital') results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
+            this.nearbyPlaces =results;
             this.loadingFinish=true;
           }
         });
@@ -142,7 +155,29 @@
           });
         })
         return result;
-      }
+      },
+      getFilter(){
+            axios.get(`/filter/get/${jsCookie.get('token')}`)
+            .then(res=>{
+                if(res.data!='new'){
+                  if(res.data.option== '醫院') res.data.option = 'hospital'
+                  else if(res.data.option == '餐廳') res.data.option = 'restaurant'
+                  else if(res.data.option == '超商') res.data.option = 'convenience_store'
+                  else res.data.option=''
+                  this.filter = res.data
+                }
+                else if(res.data=='new'){}
+                else this.$bus.$emit('handleAlert','Failed To Getting Adjust Filter','error');
+                this.filter.hospitalSelectTypes.forEach(obj=>{
+                  if(obj.includes('動物') && this.filter.option == 'hospital') this.keyword = '動物寵物'
+                })
+                this.filterGet=true;
+            })
+            .catch(e=>{
+                this.filterGet=true;
+                this.$bus.$emit('handleAlert','Getting Filter Error When Connecting Server','error');
+            })
+        }
     },
   }
   </script>
@@ -209,10 +244,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-left: 15px;
+      padding-right: 5px;
     }
     .inputBox{
       border: 0.1px solid rgb(190,190,190);
-      width: 95%;
+      width: 85%;
       border-radius: 5px;
       display: flex;
       justify-content: space-evenly;
@@ -220,10 +257,17 @@
     }
     .inputBox>input{
       height: 35px;
-      width: 91%;
+      width: 100%;
       border: 0;
       padding-left: 10px;
       border-radius: 5px;
+    }
+    .slider{
+      width:15%;
+      text-align: center;
+      font-size: 18px;
+      color: black;
+      text-decoration: none;
     }
     .glass{
       width:7.5%;
