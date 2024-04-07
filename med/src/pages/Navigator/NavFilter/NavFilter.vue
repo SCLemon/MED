@@ -15,7 +15,7 @@
         </div>
         <div class="block">
             <div class="title">類別</div>
-            <el-radio-group v-model="filter.option">
+            <el-radio-group v-model="filter.option" class="group">
                 <el-radio-button class="checkbox" label="醫院"></el-radio-button>
                 <el-radio-button class="checkbox" label="餐廳"></el-radio-button>
                 <el-radio-button class="checkbox" label="超商"></el-radio-button>
@@ -24,7 +24,7 @@
         </div>
         <div class="block" v-if="filter.option=='醫院'">
             <div class="title2">動物專屬</div>
-            <el-radio-group v-model="filter.hospitalSelectTypes" class="group2">
+            <el-radio-group v-model="filter.hospitalSelectTypes" class="group">
                 <el-radio-button class="checkbox2" label="關閉"></el-radio-button>
                 <el-radio-button class="checkbox2" label="開啟"></el-radio-button>
             </el-radio-group>
@@ -120,6 +120,7 @@ export default {
     .main{
         width: 100%;
         height: calc(100vh - 130px);
+        overflow: scroll;
     }
     .block{
         width: 100%;
@@ -145,7 +146,7 @@ export default {
     .checkbox{
         width: 25%;
     }
-    .group2{
+    .group{
         width: 100% !important;
     }
 </style>
