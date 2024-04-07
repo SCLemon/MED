@@ -4,8 +4,9 @@ const chatModel = require('../models/chatModel');
 
 const express = require('express');
 const router = express.Router();
+// 完成優化
 
-//紀錄
+//紀錄 
 router.post('/chat/record',(req, res) => {
   console.log(req.body.record)
   var obj ={
@@ -50,7 +51,7 @@ router.delete('/chat/delete/:token', (req, res) => {
 // 獲取
 router.get('/chat/get/:token', (req, res) => {
     db(()=>{
-      chatModel.find({token:req.params.token})
+      chatModel.findOne({token:req.params.token})
       .then((data,err)=>{
         if (err) {
           console.log(err)

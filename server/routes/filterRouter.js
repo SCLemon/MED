@@ -12,56 +12,23 @@ router.post('/filter/record',(req, res) => {
     record:req.body.record
   }
   db(()=>{
-    filterModel.findOne({token:obj.token})
+    filterModel.findOneAndUpdate({token:obj.token},{$set:{record:obj.record}},{upsert: true})
     .then((data,err)=>{
-      if(err) res.status(200).send('error when finding in filterModel')
-      if(data){
-        updateRecord(obj,res)
-      }
-      else{
-        createNewRecord(obj,res);
-      }
+        if(err) res.status(200).send('error when creating new record in filterModel');
+        else res.status(200).send('success')
+        mongoose.disconnect();
     })
-  },()=>{
-      console.log('連接失敗');
-      res.status(200).send('error when connecting in filterModel');
-      mongoose.disconnect();
-  })
+    },()=>{
+        console.log('連接失敗');
+        res.status(200).send('error when connecting in filterModel');
+        mongoose.disconnect();
+    })
 });
-
-function createNewRecord(obj,res){
-  filterModel.create(obj)
-  .then((data,err)=>{
-      if (err) {
-        console.log(err)
-        res.status(200).send('error when creating new record in filterModel')
-      }
-      else {
-        console.log('完成')
-        res.status(200).send('success')
-      }
-      mongoose.disconnect();
-  })
-}
-function updateRecord(obj,res){
-  filterModel.updateOne({token:obj.token},{record:obj.record})
-  .then((data,err)=>{
-      if (err) {
-        console.log(err)
-        res.status(200).send('error when updating new record in filterModel')
-      }
-      else {
-        console.log('完成')
-        res.status(200).send('success')
-      }
-      mongoose.disconnect();
-  })
-}
 
 // 獲取
 router.get('/filter/get/:token', (req, res) => {
     db(()=>{
-      filterModel.find({token:req.params.token})
+      filterModel.findOne({token:req.params.token})
       .then((data,err)=>{
         if (err) {
           console.log(err)
