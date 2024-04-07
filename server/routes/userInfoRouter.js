@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/userInfo/get/:token',(req,res)=>{
   var token = req.params.token
   db(()=>{
-    userModel.find({token:token})
+    userModel.findOne({token:token})
     .then((data,err)=>{
       if(data){
         res.status(200).send(data);

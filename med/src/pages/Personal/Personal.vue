@@ -66,12 +66,12 @@ export default {
     getUserInfo(){
       axios.get(`/userInfo/get/${jsCookie.get('token')}`)
       .then(res=>{
-        if(Array.isArray(res.data)){
-          this.update.user = res.data[0].user;
-          this.update.password = res.data[0].password;
-          this.update.mail = res.data[0].mail;
-          this.update.userImg.src = res.data[0].userImg;
-          this.update.userImg.checkIndex = (res.data[0].userImg).match(/\d+/g)[0];
+        if(res.data){
+          this.update.user = res.data.user;
+          this.update.password = res.data.password;
+          this.update.mail = res.data.mail;
+          this.update.userImg.src = res.data.userImg;
+          this.update.userImg.checkIndex = (res.data.userImg).match(/\d+/g)[0];
           localStorage.setItem('userImg',this.update.userImg.src)
         }
         else this.$bus.$emit('handleAlert','Failed To Getting UserInfo','error');

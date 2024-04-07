@@ -4,7 +4,7 @@ const filterModel = require('../models/filterModel');
 
 const express = require('express');
 const router = express.Router();
-
+// 完成優化
 //紀錄
 router.post('/filter/record',(req, res) => {
   var obj ={
@@ -34,12 +34,8 @@ router.get('/filter/get/:token', (req, res) => {
           console.log(err)
           res.status(200).send('error when finding record in filterModel')
         }
-        else {
-          if(data[0])
-            res.status(200).send(data[0].record);
-          else
-            res.status(200).send('new')
-        }
+        else if (data==null) res.status(200).send('new');
+        else res.status(200).send(data.record);
         mongoose.disconnect();
       })
     },()=>{

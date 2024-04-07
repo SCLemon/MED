@@ -57,12 +57,8 @@ router.get('/chat/get/:token', (req, res) => {
           console.log(err)
           res.status(200).send('error when finding record in chatModel')
         }
-        else {
-          if(data.length)
-            res.status(200).send(data[0].record);
-          else
-            res.status(200).send('new')
-        }
+        else if (data==null) res.status(200).send('new');
+        else res.status(200).send(data.record);
         mongoose.disconnect();
       })
     },()=>{
