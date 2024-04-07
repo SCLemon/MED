@@ -7,7 +7,7 @@ const router = express.Router();
 
 const { v4: uuidv4 } = require('uuid');
 
-// 獲取 -> 完成
+//獲取 -> 完成
 router.get('/reminder/get/:token', (req, res) => {
   db(()=>{
     taskModel.findOne({token:req.params.token})
@@ -65,7 +65,7 @@ router.put('/reminder/update',(req, res) => {
   }
   db(()=>{
     taskModel.updateOne(
-      { "token": req.headers['user-token'], "data.todo.taskId": taskId }, // 匹配条件
+      { "token": req.headers['user-token'], "data.todo.taskId": taskId },
       { $set: { "data.$.todo": obj.data.todo } }
     )
     .then((result)=>{
@@ -83,7 +83,7 @@ router.put('/reminder/update',(req, res) => {
   })
 });
 
-//刪除 -> debug
+//刪除 ->完成
 router.delete('/reminder/delete/:taskId', (req, res) => {
   db(()=>{
     taskModel.updateOne(

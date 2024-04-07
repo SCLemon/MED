@@ -145,6 +145,6 @@ export default {
     }
     .group{
         width: 100% !important;
-        
+        margin-left: 6px;
     }
 </style>
