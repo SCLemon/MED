@@ -143,10 +143,8 @@ export default {
     .slider{
         width: 85%;
     }
-    .checkbox{
-        width: 25%;
-    }
     .group{
         width: 100% !important;
+        
     }
 </style>
