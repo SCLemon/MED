@@ -15,19 +15,19 @@ module.exports = defineConfig({
     https: true,
     proxy: {
       '/chat': {
-        target: 'http://127.0.0.1:3006',
+        target: 'http://127.0.0.1:3007',
       },
       '/verify': {
-        target: 'http://127.0.0.1:3006',
+        target: 'http://127.0.0.1:3007',
       },
       '/userInfo': {
-        target: 'http://127.0.0.1:3006',
+        target: 'http://127.0.0.1:3007',
       },
       '/reminder': {
-        target: 'http://127.0.0.1:3006',
+        target: 'http://127.0.0.1:3007',
       },
       '/filter': {
-        target: 'http://127.0.0.1:3006',
+        target: 'http://127.0.0.1:3007',
       },
     }
   }

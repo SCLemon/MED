@@ -49,9 +49,10 @@ export default {
     getData(){
       axios.get(`/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
-        if(Array.isArray(res.data)){
-          this.handleData(res.data)
+        if(res.data!='new'){
+          this.handleData(res.data.data)
         }
+        else if(res.data=='new'){}
         else this.$bus.$emit('handleAlert','Failed To Getting TodoList','error');
       })
       .catch(e=>{
@@ -61,15 +62,15 @@ export default {
     handleData(obj){
       for(var i=0;i<obj.length;i++){
         obj.sort((a,b)=>{
-          return this.handleSort(a.data.todo.period)-this.handleSort(b.data.todo.period)
+          return this.handleSort(a.todo.period)-this.handleSort(b.todo.period)
         })
       }
       this.list = obj.reduce((acc, curr) => {
-        const foundIndex = acc.findIndex(item => item.date === curr.data.date);
+        const foundIndex = acc.findIndex(item => item.date === curr.date);
         if (foundIndex !== -1) {
-          acc[foundIndex].todo.push(curr.data.todo);
+          acc[foundIndex].todo.push(curr.todo);
         } else {
-          acc.push({ date: curr.data.date, todo: [curr.data.todo] });
+          acc.push({ date: curr.date, todo: [curr.todo] });
         }
         acc.sort((a,b)=>{
           return new Date(a.date).getTime()- new Date(b.date).getTime()
