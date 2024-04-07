@@ -43,8 +43,8 @@ export default {
           user: this.user,
           password: this.password,
         }).then(res=>{
-          if(Array.isArray(res.data)){
-            document.cookie=`token=${res.data[0].token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`;
+          if(res.data!='User Not Exists'){
+            document.cookie=`token=${res.data.token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`;
             this.$bus.$emit('handleAlert','Success To Login','success')
             this.user='';
             this.password='';

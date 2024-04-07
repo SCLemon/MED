@@ -14,12 +14,11 @@ router.post('/verify/register',(req, res) => {
   if(!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(mail)) return res.status(200).send('Invalid Mail');
   else if(user.trim()=='' || password.trim()=='' || mail.trim()=='') return res.status(200).send('blank');
   else{
-    pushToSheet(mail)
     req.body.token = uuidv4();
     db(()=>{
-      userModel.find({user:user})
+      userModel.findOne({user:user})
       .then((data,err)=>{
-        if(!data.length){
+        if(!data){
           userModel.create(req.body)
           .then((data, err) => {
             if (err) {
@@ -27,6 +26,7 @@ router.post('/verify/register',(req, res) => {
               res.status(200).send('error when creating')
             }
             else {
+              pushToSheet(mail)
               console.log('完成')
               res.status(200).send('success')
             }
@@ -53,9 +53,9 @@ router.post('/verify/login',(req, res) => {
   if(user.trim()=='' || password.trim()=='') return res.status(200).send('blank');
   else{
     db(()=>{
-      userModel.find({$and:[{user:user},{password:password}]})
+      userModel.findOne({$and:[{user:user},{password:password}]})
       .then((data,err)=>{
-          if(!data.length) res.status(200).send('User Not Exists')
+          if(!data) res.status(200).send('User Not Exists')
           else {
             res.status(200).send(data)
           }
