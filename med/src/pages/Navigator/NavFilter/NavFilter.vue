@@ -7,7 +7,7 @@
     <div class="main">
         <div class="block">
             <div class="title">距離</div>
-            <el-slider v-model="filter.distance" class="slider" :min="500" :step="500" :max="20000"></el-slider>
+            <el-slider v-model="filter.distance" class="slider" :min="500" :step="500" :max="15000"></el-slider>
         </div>
         <div class="block">
             <div class="title">評分</div>
@@ -23,10 +23,11 @@
             </el-radio-group>
         </div>
         <div class="block" v-if="filter.option=='醫院'">
-            <div class="title">進階</div>
-            <el-checkbox-group v-model="filter.hospitalSelectTypes">
-                <el-checkbox-button  v-for="(t,id) in hospitalTypes" width=50% :label="t" :key="id">{{t}}</el-checkbox-button>
-            </el-checkbox-group>
+            <div class="title2">動物專屬</div>
+            <el-radio-group v-model="filter.hospitalSelectTypes" class="group2">
+                <el-radio-button class="checkbox2" label="關閉"></el-radio-button>
+                <el-radio-button class="checkbox2" label="開啟"></el-radio-button>
+            </el-radio-group>
         </div>
     </div>
   </div>
@@ -43,9 +44,8 @@ export default {
                 distance:7000,
                 score:3,
                 option:'醫院',
-                hospitalSelectTypes:['一般','動物']
+                hospitalSelectTypes:'關閉'
             },
-            hospitalTypes:['一般','動物'],
         }
     },
     mounted(){
@@ -135,13 +135,17 @@ export default {
         width: 15%;
         font-weight: bold;
     }
+    .title2{
+        width: 30%;
+        font-weight: bold;
+    }
     .slider{
         width: 85%;
     }
     .checkbox{
         width: 25%;
     }
-    .el-checkbox-group{
-        width: 85%;
+    .group2{
+        width: 100% !important;
     }
 </style>

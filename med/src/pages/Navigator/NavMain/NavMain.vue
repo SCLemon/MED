@@ -54,7 +54,7 @@
           distance:7000,
           score:3,
           option:'hospital',
-          hospitalSelectTypes:[]
+          hospitalSelectTypes:'關閉'
         },
         center: { lat: 0, lng: 0 },
         zoom: 15,
@@ -133,8 +133,9 @@
         };
         service.nearbySearch(request, (results, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            if(this.filter.option == 'hospital') results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
-            this.nearbyPlaces =results;
+            if(this.filter.option == 'hospital') this.nearbyPlaces = results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
+            else this.nearbyPlaces =results;
+            this.nearbyPlaces.sort((a,b)=>b.rating-a.rating)
             this.loadingFinish=true;
           }
         });
@@ -160,7 +161,11 @@
             axios.get(`/filter/get/${jsCookie.get('token')}`)
             .then(res=>{
                 if(res.data!='new'){
-                  if(res.data.option== '醫院') res.data.option = 'hospital'
+                  // option
+                  if(res.data.option== '醫院'){
+                    if(res.data.hospitalSelectTypes=='開啟') res.data.option='veterinary_care'
+                    else res.data.option ='hospital'
+                  }
                   else if(res.data.option == '餐廳') res.data.option = 'restaurant'
                   else if(res.data.option == '超商') res.data.option = 'convenience_store'
                   else res.data.option=''
@@ -168,9 +173,6 @@
                 }
                 else if(res.data=='new'){}
                 else this.$bus.$emit('handleAlert','Failed To Getting Adjust Filter','error');
-                this.filter.hospitalSelectTypes.forEach(obj=>{
-                  if(obj.includes('動物') && this.filter.option == 'hospital') this.keyword = '動物寵物'
-                })
                 this.filterGet=true;
             })
             .catch(e=>{

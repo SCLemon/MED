@@ -16,7 +16,6 @@ router.post('/filter/record',(req, res) => {
     .then((data,err)=>{
       if(err) res.status(200).send('error when finding in filterModel')
       if(data){
-        console.log(data)
         updateRecord(obj,res)
       }
       else{
