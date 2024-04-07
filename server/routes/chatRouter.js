@@ -7,56 +7,24 @@ const router = express.Router();
 
 //紀錄
 router.post('/chat/record',(req, res) => {
+  console.log(req.body.record)
   var obj ={
     token: req.headers['user-token'],
     record:req.body.record
   }
   db(()=>{
-    chatModel.find({token:obj.token})
+    chatModel.findOneAndUpdate({token:obj.token},{$set:{record:obj.record}},{upsert: true})
     .then((data,err)=>{
-      if(err) res.status(200).send('error when finding in chatModel')
-      if(data.length){
-        updateRecord(obj,res)
-      }
-      else{
-        createNewRecord(obj,res);
-      }
+        if(err) res.status(200).send('error when creating new record in chatModel');
+        else res.status(200).send('success')
+        mongoose.disconnect();
     })
-  },()=>{
-      console.log('連接失敗');
-      res.status(200).send('error when connecting in chatModel');
-      mongoose.disconnect();
-  })
+    },()=>{
+          console.log('連接失敗');
+          res.status(200).send('error when connecting in chatModel');
+          mongoose.disconnect();
+    })
 });
-
-function createNewRecord(obj,res){
-  chatModel.create(obj)
-  .then((data,err)=>{
-      if (err) {
-        console.log(err)
-        res.status(200).send('error when creating new record in chatModel')
-      }
-      else {
-        console.log('完成')
-        res.status(200).send('success')
-      }
-      mongoose.disconnect();
-  })
-}
-function updateRecord(obj,res){
-  chatModel.updateOne({token:obj.token},{record:obj.record})
-  .then((data,err)=>{
-      if (err) {
-        console.log(err)
-        res.status(200).send('error when updating new record in chatModel')
-      }
-      else {
-        console.log('完成')
-        res.status(200).send('success')
-      }
-      mongoose.disconnect();
-  })
-}
 
 //刪除
 router.delete('/chat/delete/:token', (req, res) => {
