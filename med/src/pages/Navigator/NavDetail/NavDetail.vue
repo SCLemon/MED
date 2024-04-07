@@ -103,6 +103,7 @@ export default {
         width:100%;
         height: calc(100vh - 417px);
         overflow-y: scroll;
+        overflow-x: hidden;
     }
     .title{
         width:100%;
@@ -148,6 +149,7 @@ export default {
         padding-top: 5px;
         width: 100%;
         padding-left: 20px;
+        padding-right: 20px;
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
@@ -169,6 +171,7 @@ export default {
     }
     .subText{
         font-size: 16px;
+        word-break: break-all;
     }
     .hour{
         font-size: 12px;
