@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top">
-      <i class="fa-solid fa-hand-holding-medical"></i> Smart Physician <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
+      <i class="fa-solid fa-hand-holding-medical"></i> Smart Assistant <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
     </div>
     <div class="chat">
       <div class="list" ref="list">
@@ -13,11 +13,12 @@
         </div>
       </div>
       <div class="search">
+        <input type="file" @change="handlImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
+        <i class="fa-solid fa-image icon" @click="openOrigin()"></i>
         <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
         <input type="text" class="input" v-model="input" :placeholder="placeholder">
         <i class="fa-solid fa-paper-plane icon" @click="sendChatGPT()"></i>
       </div>
-      
     </div>
   </div>
 </template>
@@ -26,6 +27,7 @@
 import axios from 'axios';
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
+import Tesseract from 'tesseract.js'
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
@@ -171,6 +173,27 @@ export default {
       }
       else this.recognition.start();
       this.startVoice = !this.startVoice; // 開始錄音轉為 true
+    },
+    handlImg(){
+      this.$bus.$emit('handleAlert','Image Recognize Start','success');
+      try{
+        const languages = ['eng', 'chi_tra', 'chi_sim'];
+        const file = event.target.files[0];
+        if (!file) return;
+        this.placeholder='Image Recognizing ...'
+        const imageURL = URL.createObjectURL(file);
+        Tesseract.recognize(imageURL,languages.join('+'))
+        .then((d) => {
+          this.$bus.$emit('handleAlert','Success To Recognize Image','success');
+          this.placeholder = 'Send Your Questions',
+          this.input += d.data.text;
+        })
+      }catch(e){
+        this.$bus.$emit('handleAlert','Failed To Start Image Recognizer','error');
+      }
+    },
+    openOrigin(){
+      this.$refs.imgOrigin.click();
     }
   }
 }
@@ -253,19 +276,22 @@ export default {
     justify-content: space-evenly;
     align-items: center;
     font-size: 17px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .icon{
     width: 15%;
     text-align: center;
   }
   .input{
-    width: 80%;
+    width: 75%;
     border: 0;
     border-bottom: 1px solid rgb(205,205,205);
     padding:3px;
     padding-left: 6px;
     border-radius: 0;
+  }
+  .img_original{
+    display: none;
   }
 </style>
