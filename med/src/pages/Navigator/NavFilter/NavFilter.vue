@@ -7,7 +7,7 @@
     <div class="main">
         <div class="block">
             <div class="title">距離</div>
-            <el-slider v-model="filter.distance" class="slider" :min="500" :step="500" :max="15000"></el-slider>
+            <el-slider v-model="filter.distance" class="slider" :min="500" :step="500" :max="50000"></el-slider>
         </div>
         <div class="block">
             <div class="title">評分</div>
@@ -29,6 +29,14 @@
                 <el-radio-button class="checkbox2" label="開啟"></el-radio-button>
             </el-radio-group>
         </div>
+        <div class="block">
+            <div class="title2">營業時間</div>
+            <el-radio-group v-model="filter.isOpen" class="group">
+                <el-radio-button class="checkbox2" label="關閉"></el-radio-button>
+                <el-radio-button class="checkbox2" label="一般"></el-radio-button>
+                <el-radio-button class="checkbox2" label="嚴格"></el-radio-button>
+            </el-radio-group>
+        </div>
     </div>
   </div>
 </template>
@@ -44,7 +52,8 @@ export default {
                 distance:7000,
                 score:3,
                 option:'醫院',
-                hospitalSelectTypes:'關閉'
+                hospitalSelectTypes:'關閉',
+                isOpen:'關閉'
             },
         }
     },
@@ -53,7 +62,6 @@ export default {
     },
     methods: {
         sendData(){
-            console.log(this.filter)
             axios.post('/filter/record',{
                 record:this.filter
             },

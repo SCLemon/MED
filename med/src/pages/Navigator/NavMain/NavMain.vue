@@ -54,7 +54,8 @@
           distance:7000,
           score:3,
           option:'hospital',
-          hospitalSelectTypes:'關閉'
+          hospitalSelectTypes:'關閉',
+          isOpen:'關閉'
         },
         center: { lat: 0, lng: 0 },
         zoom: 15,
@@ -136,6 +137,15 @@
             if(this.filter.option == 'hospital') this.nearbyPlaces = results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
             else this.nearbyPlaces =results;
             this.nearbyPlaces = this.nearbyPlaces.filter(obj=>obj.business_status=='OPERATIONAL').sort((a,b)=>b.rating-a.rating)
+            try{
+              if(this.filter.isOpen!='關閉') this.nearbyPlaces = this.nearbyPlaces.filter(obj=>{
+                if(obj.opening_hours) return obj.opening_hours.open_now
+                else if(this.filter.isOpen=='嚴格') return false;
+                else return true;
+              })
+            }catch(e){
+              this.$bus.$emit('handleAlert','Some stores do not support filtering by operating hours.','warning');
+            }
             this.loadingFinish=true;
           }
         });
