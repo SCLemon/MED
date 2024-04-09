@@ -3,12 +3,17 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   pwa: {
+    name: 'MED 智能小助手',
+    themeColor: '#ffffff',
+    msTileColor: '#ffffff',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'white',
     iconPaths: {
-      favicon32: 'favicon.ico',
-      favicon316: 'favicon.ico',
-      appleTouchIcon: 'favicon.ico',
-      maskIcon: 'favicon.ico',
-      msTileImage: 'favicon.ico',
+      favicon32: 'img/icons/favicon-96x96.png',
+      favicon316: 'img/icons/favicon-96x96.png',
+      appleTouchIcon: 'logo.png',
+      maskIcon: 'logo.png',
+      msTileImage: 'img/icons/favicon-96x96.png',
     }
   },
   devServer: {
