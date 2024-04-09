@@ -135,7 +135,7 @@
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             if(this.filter.option == 'hospital') this.nearbyPlaces = results.filter(obj=>obj.name.includes('醫') || obj.name.includes('牙')||obj.name.includes('藥'));
             else this.nearbyPlaces =results;
-            this.nearbyPlaces.sort((a,b)=>b.rating-a.rating)
+            this.nearbyPlaces = this.nearbyPlaces.filter(obj=>obj.business_status=='OPERATIONAL').sort((a,b)=>b.rating-a.rating)
             this.loadingFinish=true;
           }
         });
