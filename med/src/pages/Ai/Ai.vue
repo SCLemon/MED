@@ -13,12 +13,29 @@
           </div>
         </div>
       </div>
-      <div class="search">
-        <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
-        <i class="fa-solid fa-image icon" @click="openOrigin()"></i>
-        <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
-        <input type="text" class="input" v-model="input" :placeholder="placeholder">
-        <i class="fa-solid fa-paper-plane icon" @click="sendChatGPT()"></i>
+      <div class="searchBox">
+        <div class="search">
+          <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
+          <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
+          <input type="text" class="input" v-model="input" :placeholder="placeholder">
+          <i class="fa-solid fa-paper-plane icon-out" @click="sendChatGPT()"></i>
+        </div>
+        <div class="more" ref="more">
+          <div class="func">
+            <div class="func-icon">
+              <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
+              <div class="icon-title">語音辨識</div>
+            </div>
+          </div>
+          <div class="func" @click="openOrigin()">
+            <div class="func-icon">
+              <i class="fa-solid fa-image icon"></i>
+              <div class="icon-title">圖片辨識</div>
+            </div>
+          </div>
+          <div class="func"></div>
+          <div class="func"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -51,7 +68,10 @@ export default {
     this.recognition.onresult = (event) => {
       var result = event.results[this.outputIndex][0].transcript;
       this.outputIndex++;
-      if(result == '發送' || result == '傳送') this.sendChatGPT();
+      if(result == '發送' || result == '傳送') {
+        this.sendChatGPT();
+        this.voiceRecognition();
+      }
       else if(result =='停止錄音' || result == '結束錄音' || result == '終止錄音' || result == '中止錄音') this.voiceRecognition();
       else if(result =='清除聊天記錄'||result =='刪除聊天記錄') this.deleteData();
       else if(result =='清空輸入' || result =='清除輸入') this.input ='';
@@ -98,6 +118,10 @@ export default {
         this.$bus.$emit('handleAlert','Delete Message Canceled','error');
       });          
     },
+    toggleMore(){
+      this.$refs.more.classList.toggle('showMore');
+      this.$refs.moreIcon.classList.toggle('showMark');
+    },
     getData(){
       axios.get(`/chat/get/${jsCookie.get('token')}`)
       .then(res=>{
@@ -141,6 +165,8 @@ export default {
     },
     async sendChatGPT(){
       if(this.input.trim()!=''){
+        this.$refs.moreIcon.classList.remove('showMark');
+        this.$refs.more.classList.remove('showMore');
         this.totalMsg.push({
           role:'user',
           content:this.input
@@ -222,10 +248,62 @@ export default {
     right: 20px;
     top:20px;
   }
-  .search{
+  .searchBox{
+    position: absolute;
     bottom:0;
     width:100%;
+    background: white;
+  }
+  .search{
+    width:100%;
     height: 60px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 17px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .icon-out{
+    width: 10%;
+    font-size: 20px;
+    line-height: 60px;
+    text-align: center;
+  }
+  .more{
+    width: 100%;
+    height: auto;
+    display: none;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+  .moreIcon{
+    transform: rotate(0deg);
+    transition: 0.25s;
+  }
+  .showMore{
+    display: flex;
+  }
+  .showMark{
+    transform: rotate(225deg);
+    transition: 0.25s;
+  }
+  .func{
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .icon{
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+  }
+  .icon-title{
+    margin-top: 8px;
+    font-size: 14px;
+    color: gray;
   }
   .list{
     width: 100%;
@@ -256,28 +334,16 @@ export default {
     margin-bottom: 3px;
     font-weight: bolder;
   }
-  .search{
-    width:100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    font-size: 17px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  .icon{
-    width: 15%;
-    text-align: center;
-  }
   .on{
     color: red;
   }
   .input{
-    width: 75%;
+    width: 70%;
     border: 0;
     border-bottom: 1px solid rgb(205,205,205);
     padding:3px;
-    padding-left: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
     border-radius: 0;
   }
   .img_original{
