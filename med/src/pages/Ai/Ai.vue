@@ -5,19 +5,20 @@
     </div>
     <div class="chat">
       <div class="list" ref="list">
-        <div v-for="(obj,id) in totalMsg" :key="id" :class="(obj.role=='assistant' || obj.role=='system')?'list-content left':'list-content right'">
-          <div v-if="obj.role!='assistant' && obj.role!='system'" class="chat-text" v-text="obj.content"></div>
-          <img v-if="obj.role!='assistant' && obj.role!='system'" :src="userImg" alt="" class="img">
-          <img v-if="obj.role=='assistant' || obj.role=='system'" src="/images/robot.jpeg" alt="" class="img">
-          <div v-if="obj.role=='assistant' || obj.role=='system'" class="chat-text" v-text="obj.content"></div>
+        <div class="conversation" v-for="(obj,id) in totalMsg" :key="id">
+          <img :src="(obj.role!='user')?'/images/robot.jpeg':userImg" alt="" class="user-icon">
+          <div class="conversation-content">
+            <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
+            <div class="text" v-html="obj.content"></div>
+          </div>
         </div>
       </div>
       <div class="search">
-        <input type="file" @change="handlImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
+        <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
         <i class="fa-solid fa-image icon" @click="openOrigin()"></i>
         <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
         <input type="text" class="input" v-model="input" :placeholder="placeholder">
-        <i class="fa-solid fa-paper-plane icon" @click="test()"></i>
+        <i class="fa-solid fa-paper-plane icon" @click="sendChatGPT()"></i>
       </div>
     </div>
   </div>
@@ -174,7 +175,7 @@ export default {
       else this.recognition.start();
       this.startVoice = !this.startVoice; // 開始錄音轉為 true
     },
-    handlImg(){
+    handleImg(){
       this.$bus.$emit('handleAlert','Image Recognize Start','success');
       try{
         const languages = ['eng', 'chi_tra', 'chi_sim'];
@@ -232,43 +233,28 @@ export default {
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    padding-left: 15px;
-    padding-right: 15px;
     padding-bottom: 10px;
   }
-  .list-content{
+  .conversation{
     display: flex;
-    height: auto;
-    margin-top: 15px;
+    justify-content: space-evenly;
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 12px;
+    width: 100%;
   }
-  .img{
+  .user-icon{
     width: 40px;
     height: 40px;
     border-radius: 40px;
   }
-  .chat-text{
-    max-width:70%;
-    word-wrap: break-word;
-    background-color: skyblue;
-    border-radius: 15px;
-    padding: 10px;
+  .conversation-content{
+    width:80%;
     text-align: justify;
-    color: rgba(255,255,255,0.9);
   }
-  .left{
-    justify-content: left;
-  }
-  .on{
-    color: red;
-  }
-  .left > .chat-text{
-    margin-left: 10px;
-  }
-  .right{
-    justify-content: right;
-  }
-  .right>.chat-text{
-    margin-right: 10px;
+  .name{
+    margin-bottom: 3px;
+    font-weight: bolder;
   }
   .search{
     width:100%;
