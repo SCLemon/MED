@@ -269,6 +269,9 @@ export default {
     width: 15%;
     text-align: center;
   }
+  .on{
+    color: red;
+  }
   .input{
     width: 75%;
     border: 0;

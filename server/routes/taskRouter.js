@@ -55,6 +55,7 @@ router.post('/reminder/add',(req, res) => {
 //修改 ->完成
 router.put('/reminder/update',(req, res) => {
   var taskId= req.body.taskId;
+  console.log(req.body)
   req.body.todo.taskId=taskId;
   var obj ={
     token: req.headers['user-token'],
@@ -66,7 +67,7 @@ router.put('/reminder/update',(req, res) => {
   db(()=>{
     taskModel.updateOne(
       { "token": req.headers['user-token'], "data.todo.taskId": taskId },
-      { $set: { "data.$.todo": obj.data.todo } }
+      { $set: { "data.$.date": obj.data.date,"data.$.todo": obj.data.todo } }
     )
     .then((result)=>{
       console.log(result)
