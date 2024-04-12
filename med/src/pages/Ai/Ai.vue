@@ -17,7 +17,7 @@
         <i class="fa-solid fa-image icon" @click="openOrigin()"></i>
         <i :class="`fa-solid fa-microphone icon ${startVoice?'fa-fade on':''}`" @click="voiceRecognition()"></i>
         <input type="text" class="input" v-model="input" :placeholder="placeholder">
-        <i class="fa-solid fa-paper-plane icon" @click="sendChatGPT()"></i>
+        <i class="fa-solid fa-paper-plane icon" @click="test()"></i>
       </div>
     </div>
   </div>
@@ -138,26 +138,26 @@ export default {
         this.$bus.$emit('handleAlert','Recording Message Error','error');
       })
     },
-    sendChatGPT(){
+    async sendChatGPT(){
       if(this.input.trim()!=''){
         this.totalMsg.push({
           role:'user',
           content:this.input
         },{
-          role:'system',
-          content:'生成回答中...'
-        })
+          role:'assistant',
+          content:''
+        });
         this.input=''
-        this.placeholder='生成回答中...'
-        openai.chat.completions.create({
+        const response = await openai.chat.completions.create({
           messages: this.totalMsg,
           model: "gpt-3.5-turbo",
-          }).then(res=>{
-              this.totalMsg.pop();
-              this.totalMsg.push(res.choices[0].message);
-              this.recordData();
-              this.placeholder='Send Your Questions';
-        });
+          stream:true
+        })
+        for await (const chunk of response) {
+          const data = chunk.choices[0].delta.content;
+          if(data==undefined) this.recordData();
+          else this.totalMsg[this.totalMsg.length-1].content+=data;
+        }
       }
       else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
     },
