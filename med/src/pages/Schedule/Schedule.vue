@@ -54,6 +54,16 @@
           <div class="rows"><input type="text" v-model="list.c4.v7"></div>
         </div>
         <div class="col">
+          <div class="rows ">n</div>
+          <div class="rows"><input type="text" v-model="list.cn.v1"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v2"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v3"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v4"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v5"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v6"></div>
+          <div class="rows"><input type="text" v-model="list.cn.v7"></div>
+        </div>
+        <div class="col">
           <div class="rows ">5</div>
           <div class="rows"><input type="text" v-model="list.c5.v1"></div>
           <div class="rows"><input type="text" v-model="list.c5.v2"></div>
@@ -150,6 +160,7 @@ export default {
           'c2':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
           'c3':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
           'c4':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
+          'cn':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
           'c5':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
           'c6':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
           'c7':{'v1':'','v2':'','v3':'','v4':'','v5':'','v6':'','v7':''},
@@ -199,7 +210,8 @@ export default {
 
 <style scoped>
 .title {
-  color: rgb(166, 89, 89);
+  color: white;
+  text-shadow: 2px 2px 3px gray;
   height: 60px;
   line-height: 60px;
   font-size: 24px;
@@ -218,7 +230,8 @@ export default {
 .table{
   width:95%;
   margin: 0 auto;
-  color: rgb(166, 89, 89);
+  color: white;
+  background-color: rgba(0,0,0,0.1);
 }
 .col{
   width: 100%;
@@ -230,13 +243,13 @@ export default {
   line-height: 35px;
   width: 12vw;
   text-align: center;
-  border-bottom: 0.1px solid white;
+  border: 0.1px solid white;
   border-collapse:collapse;
 }
 .rows{
   width: 50px;
-  height: calc((100vh - 250px) / 12);
-  line-height: calc((100vh - 250px) / 12);
+  height: calc((100vh - 240px) / 13);
+  line-height: calc((100vh - 240px) / 13);
   text-align: center;
   border-bottom: 0.1px solid white;
   border-right: 0.1px solid white;
@@ -245,8 +258,8 @@ export default {
 }
 .rows>input{
   width: 100%;
-  height: calc((100vh - 250px) / 12);
-  line-height: calc((100vh - 250px) / 12);
+  height: calc((100vh - 240px) / 13);
+  line-height: calc((100vh - 240px) / 13);
   text-align: center;
   border-radius: 0;
   border: 0;
