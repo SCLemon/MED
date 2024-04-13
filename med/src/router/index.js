@@ -17,6 +17,7 @@ import Login from '../pages/Verify/login.vue'
 import Add from '../pages/Main/Add/Add.vue'
 import List from '../pages/Main/List/List.vue'
 import Revise from '../pages/Main/Revise/Revise.vue'
+import Schedule from '../pages/Schedule/Schedule.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -36,6 +37,10 @@ const router = new VueRouter({
                 path:'revise',
                 component:Revise
             }]
+        },
+        {
+            path:'/schedule',
+            component:Schedule
         },
         {
             path:'/navigator',

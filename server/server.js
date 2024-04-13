@@ -25,6 +25,10 @@ app.use(taskRouter);
 const filterRouter = require('./routes/filterRouter');
 app.use(filterRouter);
 
+// 課程列表
+const scheduleRouter = require('./routes/scheduleRouter');
+app.use(scheduleRouter);
+
 app.listen(3007, () => {
     console.log('服务已经启动, 端口 3007 正在监听中....')
 })

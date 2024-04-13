@@ -1,14 +1,10 @@
 <template>
   <div class="box">
     <div class="add">
-    <router-link
-        class="title-add"
-            :to="'/main/add'"
-        >
-        <div class="btn">
-            <i class="fa-solid fa-address-book add-icon"></i>Add
-        </div>
-    </router-link>
+      <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link>
+      <router-link class="title-add" :to="'/main/add'">
+          <div class="btn"><i class="fa-solid fa-address-book add-icon"></i>Add</div>
+      </router-link>
     </div>
     <div class="list">
       <div class="list-content" v-for="(obj, id) in list" :key="id">
@@ -49,7 +45,7 @@ export default {
     getData(){
       axios.get(`/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
-        if(res.data!='new'){
+        if(Array.isArray(res.data.data)){
           this.handleData(res.data.data)
         }
         else if(res.data=='new'){}
@@ -134,12 +130,19 @@ export default {
   height: calc(100vh - 130px);
 }
 .add {
+  position: relative;
   width: 100%;
   height: 70px;
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
   align-items: center;
   padding-right: 20px;
+  padding-left: 25px;
+}
+.school{
+  text-decoration: none;
+  font-size:16px;
+
 }
 .btn {
   padding: 8px;
