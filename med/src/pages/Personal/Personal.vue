@@ -108,7 +108,6 @@ export default {
         .then(res=>{
           if(res.data=='success') {
             this.$bus.$emit('handleAlert','Success Updating UserInfo','success');
-            this.getUserInfo();
           }
           else this.$bus.$emit('handleAlert','Failed To Update UserInfo','error');
         }).catch(e=>{

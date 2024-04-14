@@ -13,8 +13,12 @@ module.exports = function (success, error) {
     const {DBHOST, DBPORT, DBNAME} = require('../config/config');
 
     mongoose.set('strictQuery', true);
-  
-    mongoose.connect(`mongodb://${DBHOST}:${DBPORT}/${DBNAME}`);
+    
+    mongoose.connection.removeAllListeners(); // 清除先前的監聽器
+
+    mongoose.connect(`mongodb://${DBHOST}:${DBPORT}/${DBNAME}`,{
+      connectTimeoutMS: 30000,
+    });
     mongoose.connection.once('open', () => {
       success();
     });

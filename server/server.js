@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,3 +31,8 @@ app.use(scheduleRouter);
 app.listen(3007, () => {
     console.log('服务已经启动, 端口 3007 正在监听中....')
 })
+
+// 避免系統中斷
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+});
