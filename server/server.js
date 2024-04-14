@@ -4,6 +4,31 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const requestCounts = new Map();
+const blacklist = [];
+
+// 防止惡意攻擊
+const limitRequests = (req, res, next) => {
+    const clientIP = req.ip;
+    const currentTime = Date.now();
+    if (blacklist.includes(clientIP)) return res.status(403).send('Forbidden'); 
+    if (requestCounts.has(clientIP)) {
+        const { count, timestamp } = requestCounts.get(clientIP);
+        if (currentTime - timestamp > 1000) {
+            requestCounts.set(clientIP, { count: 1, timestamp: currentTime });
+        } 
+        else {
+            if (count >= 5) {
+                blacklist.push(clientIP);
+                return res.status(403).send('Forbidden');
+            }
+            else requestCounts.set(clientIP, { count: count + 1, timestamp: timestamp });
+        }
+    } else requestCounts.set(clientIP, { count: 1, timestamp: currentTime });
+    next();
+};
+app.use(limitRequests);
+
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
 app.use(verifyRouter);
