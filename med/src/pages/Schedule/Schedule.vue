@@ -16,7 +16,7 @@
         <div v-for="(column, columnName) in list" :key="columnName" class="col">
           <div class="rows">{{ columnName.split('c')[1] }}</div>
           <div v-for="(value, key) in column" :key="key" class="rows">
-            <input type="text" :value="value" @input="updateValue(columnName, key, $event.target.value)">
+            <input type="text" v-model="list[columnName][key]">
           </div>
         </div>
       </div>
