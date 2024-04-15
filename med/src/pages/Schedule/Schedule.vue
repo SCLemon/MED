@@ -55,9 +55,6 @@ export default {
       this.record();
     },
     methods:{
-      updateValue(columnName, key, value){
-        this.list[columnName][key] = value;
-      },
       getData(){
         axios.get(`/schedule/get/${jsCookie.get('token')}`)
         .then(res=>{
