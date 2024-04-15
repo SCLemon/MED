@@ -13,135 +13,11 @@
           <div class="t">Sat</div>
           <div class="t">Sun</div>
         </div>
-        <div class="col">
-          <div class="rows">1</div>
-          <div class="rows"><input type="text" v-model="list.c1.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c1.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">2</div>
-          <div class="rows"><input type="text" v-model="list.c2.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c2.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">3</div>
-          <div class="rows"><input type="text" v-model="list.c3.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c3.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">4</div>
-          <div class="rows"><input type="text" v-model="list.c4.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c4.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">n</div>
-          <div class="rows"><input type="text" v-model="list.cn.v1"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v2"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v3"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v4"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v5"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v6"></div>
-          <div class="rows"><input type="text" v-model="list.cn.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">5</div>
-          <div class="rows"><input type="text" v-model="list.c5.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c5.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">6</div>
-          <div class="rows"><input type="text" v-model="list.c6.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c6.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">7</div>
-          <div class="rows"><input type="text" v-model="list.c7.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c7.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">8</div>
-          <div class="rows"><input type="text" v-model="list.c8.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c8.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">9</div>
-          <div class="rows"><input type="text" v-model="list.c9.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c9.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">a</div>
-          <div class="rows"><input type="text" v-model="list.c10.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c10.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">b</div>
-          <div class="rows"><input type="text" v-model="list.c11.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c11.v7"></div>
-        </div>
-        <div class="col">
-          <div class="rows ">c</div>
-          <div class="rows"><input type="text" v-model="list.c12.v1"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v2"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v3"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v4"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v5"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v6"></div>
-          <div class="rows"><input type="text" v-model="list.c12.v7"></div>
+        <div v-for="(column, columnName) in list" :key="columnName" class="col">
+          <div class="rows">{{ columnName.split('c')[1] }}</div>
+          <div v-for="(value, key) in column" :key="key" class="rows">
+            <input type="text" :value="value" @input="updateValue(columnName, key, $event.target.value)">
+          </div>
         </div>
       </div>
     </div>
@@ -179,6 +55,9 @@ export default {
       this.record();
     },
     methods:{
+      updateValue(columnName, key, value){
+        this.list[columnName][key] = value;
+      },
       getData(){
         axios.get(`/schedule/get/${jsCookie.get('token')}`)
         .then(res=>{

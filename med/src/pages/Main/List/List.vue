@@ -1,7 +1,8 @@
 <template>
   <div class="box">
     <div class="add">
-      <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link>
+      <!-- Schedule 組件需要解決溢出問題 -->
+      <!-- <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link>  -->
       <router-link class="title-add" :to="'/main/add'">
           <div class="btn"><i class="fa-solid fa-address-book add-icon"></i>Add</div>
       </router-link>
@@ -134,7 +135,8 @@ export default {
   width: 100%;
   height: 70px;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between;   schedule*/ 
+  justify-content: right;
   align-items: center;
   padding-right: 20px;
   padding-left: 25px;

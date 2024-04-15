@@ -4,10 +4,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 防止惡意攻擊
 const requestCounts = new Map();
 const blacklist = [];
-
-// 防止惡意攻擊
 const limitRequests = (req, res, next) => {
     const clientIP = req.ip;
     const currentTime = Date.now();

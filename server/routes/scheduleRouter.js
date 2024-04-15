@@ -16,9 +16,9 @@ router.post('/schedule/record',(req, res) => {
         mongoose.disconnect();
     })
     },()=>{
-          console.log('連接失敗');
-          res.status(200).send('error when connecting in scheduleModel');
-          mongoose.disconnect();
+        console.log('連接失敗');
+        res.status(200).send('error when connecting in scheduleModel');
+        mongoose.disconnect();
     })
 });
 
