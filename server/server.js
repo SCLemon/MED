@@ -1,8 +1,18 @@
 const express = require('express');
 const app = express();
 
+// 轉換
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 初始化資料庫
+const { connectToDatabase, disconnectFromDatabase } = require('./db/db');
+connectToDatabase();
+process.on('SIGINT', function() {
+    disconnectFromDatabase();
+    // 這裡可以進行其他的清理操作，例如關閉伺服器
+    process.exit(0);
+});
 
 // 防止惡意攻擊
 const requestCounts = new Map();

@@ -1,6 +1,4 @@
 const { v4: uuidv4 } = require('uuid');
-const db = require('../db/db');
-const mongoose = require('mongoose');
 const userModel = require('../models/userModel');
 
 const express = require('express');
@@ -15,33 +13,22 @@ router.post('/verify/register',(req, res) => {
   else if(user.trim()=='' || password.trim()=='' || mail.trim()=='') return res.status(200).send('blank');
   else{
     req.body.token = uuidv4();
-    db(()=>{
-      userModel.findOne({user:user})
-      .then((data,err)=>{
-        if(!data){
-          userModel.create(req.body)
-          .then((data, err) => {
-            if (err) {
-              console.log(err)
-              res.status(200).send('error when creating')
-            }
-            else {
-              pushToSheet(mail)
-              console.log('完成')
-              res.status(200).send('success')
-            }
-            mongoose.disconnect();
-          })
-        }
-        else {
-          res.status(200).send('User Existed');
-          mongoose.disconnect();
-        }
-      })
-    },()=>{
-        console.log('連接失敗');
-        res.status(200).send('error when connecting');
-        mongoose.disconnect();
+    userModel.findOne({user:user})
+    .then((data,err)=>{
+      if(!data){
+        userModel.create(req.body)
+        .then((data, err) => {
+          if (err) res.status(200).send('error when creating')
+          else {
+            pushToSheet(mail)
+            res.status(200).send('success')
+          }
+        })
+      }
+      else res.status(200).send('User Existed');
+    })
+    .catch(e=>{
+      res.status(200).send('Failed To register');
     })
   }
 });
@@ -52,19 +39,13 @@ router.post('/verify/login',(req, res) => {
   var password = req.body.password;
   if(user.trim()=='' || password.trim()=='') return res.status(200).send('blank');
   else{
-    db(()=>{
-      userModel.findOne({$and:[{user:user},{password:password}]})
-      .then((data,err)=>{
-          if(!data) res.status(200).send('User Not Exists')
-          else {
-            res.status(200).send(data)
-          }
-          mongoose.disconnect();
-      })
-    },()=>{
-        console.log('連接失敗');
-        res.status(500).send('error when connecting');
-        mongoose.disconnect();
+    userModel.findOne({$and:[{user:user},{password:password}]})
+    .then((data,err)=>{
+        if(!data) res.status(200).send('User Not Exists')
+        else res.status(200).send(data)
+    })
+    .catch(e=>{
+      res.status(200).send('Failed when connecting to server')
     })
   }
 });
@@ -74,7 +55,9 @@ function pushToSheet(mail){
   axios.post('https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec',{
       user:mail
   }).then(res=>{
-      console.log(res.data)
+    console.log('new user: '+res.data)
+  }).catch(e=>{
+    console.log('Failed to send Email To Appscript')
   })
 }
 module.exports = router;
