@@ -3,7 +3,7 @@
       <div class="list" :class="{on: $route.path.includes('/main')||$route.path.includes('/schedule')}" @click="goTo('/main')"><i class="fa-solid fa-house"></i></div>
       <div class="list" :class="{on: $route.path.includes('/navigator')}" @click="goTo('/navigator')"><i class="fa-solid fa-location-dot"></i></div>
       <div class="list" :class="{on: $route.path.includes('/ai')}" @click="goTo('/ai')"><i class="fa-solid fa-robot"></i></div>
-      <div class="list" :class="{on: $route.path.includes('/news')}" @click="goTo('/news')"><i class="fa-solid fa-newspaper"></i></div>
+      <div class="list" :class="{on: $route.path.includes('/more') || $route.path.includes('/medNews')}" @click="goTo('/more')"><i class="fa-solid fa-gift"></i></div>
       <div class="list" :class="{on: $route.path.includes('/personal')}" @click="goTo('/personal')"><i class="fa-solid fa-user"></i></div>
     </div>
 </template>

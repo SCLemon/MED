@@ -4,11 +4,11 @@ import jsCookie from 'js-cookie'
 
 import Main from '../pages/Main/Main.vue'
 import Navigator from '../pages/Navigator/Navigator.vue'
-import News from '../pages/News/News.vue'
+import MedNews from '../pages/MedNews/MedNews.vue'
 import Personal from '../pages/Personal/Personal.vue'
 import Ai from '../pages/Ai/Ai.vue'
-import EachNews from '../pages/News/EachNews/EachNews.vue'
-import MainNews from '../pages/News/MainNews/MainNews.vue'
+import EachMedNews from '../pages/MedNews/EachMedNews/EachMedNews.vue'
+import MainMedNews from '../pages/MedNews/MainMedNews/MainMedNews.vue'
 import NavDetail from '../pages/Navigator/NavDetail/NavDetail.vue'
 import NavMain from '../pages/Navigator/NavMain/NavMain.vue'
 import NavFilter from '../pages/Navigator/NavFilter/NavFilter.vue'
@@ -18,6 +18,7 @@ import Add from '../pages/Main/Add/Add.vue'
 import List from '../pages/Main/List/List.vue'
 import Revise from '../pages/Main/Revise/Revise.vue'
 import Schedule from '../pages/Schedule/Schedule.vue'
+import More from '../pages/More/More.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -59,15 +60,19 @@ const router = new VueRouter({
             }]
         },
         {
-            path:'/news',
-            component:News,
+            path:'/more',
+            component:More,
+        },
+        {
+            path:'/medNews',
+            component:MedNews,
             children:[{
                 path:'',
-                component:MainNews,
+                component:MainMedNews,
             },
             {
                 path:'detail',
-                component:EachNews,
+                component:EachMedNews,
             }]
         },
         {

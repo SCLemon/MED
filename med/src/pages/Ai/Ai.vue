@@ -312,6 +312,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
+    padding-top: 10px;
   }
   .conversation{
     display: flex;

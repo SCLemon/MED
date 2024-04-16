@@ -7,7 +7,7 @@
 
 <script>
 export default {
-    name:'EachNews',
+    name:'EachMedNews',
     mounted(){},
     data(){
         return{

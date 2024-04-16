@@ -9,7 +9,7 @@
         <div class="listBox">
             <div class="box" v-for="(obj,id) in list" :key="id">
               <router-link :to="{
-                  path:'/news/detail',
+                  path:'/medNews/detail',
                   query:{'NewsContent':obj}}"
               >
                 <div class="img">
@@ -33,7 +33,7 @@
   import axios from 'axios';
   import { format } from "date-fns";
   export default {
-    name:'MainNews',
+    name:'MainMedNews',
     data(){
       return{
         keyword:'',

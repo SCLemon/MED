@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-        <i class="fa-solid fa-chevron-left back" v-if="$route.path == '/news/detail'" @click="$router.back()"></i>
+        <i class="fa-solid fa-chevron-left back" v-if="$route.path == '/medNews/detail'" @click="$router.back()"></i>
         <div class="second">Health Medical News</div>
     </div>
     <router-view></router-view>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name:'News',
+  name:'MedNews',
 }
 </script>
 
