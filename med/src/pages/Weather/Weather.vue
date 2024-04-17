@@ -2,7 +2,7 @@
   <div class="main" :style="{backgroundImage}">
     <div class="data">
         <div class="imgIcon"><img :src="getIcon(data.currentConditions?data.currentConditions.conditions:'')" alt="" class="weatherIcon"></div>
-        <div class="degree">{{data.currentConditions?data.currentConditions.temp:''}}&#176;</div>
+        <div class="degree">{{data.currentConditions?data.currentConditions.temp:0}}&#176;</div>
         <div class="location">緯度 {{lat}}&#176;, 經度 {{ lon }}&#176;</div>
         <div class="future">
             <div class="list" v-for="(obj,id) in data.days" :key="id">
@@ -44,7 +44,6 @@ export default {
         getWeatherInfo(latitude,longitude){
             axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude}%2C${longitude}?unitGroup=metric&key=L44KD95MNYTRNHK4P8VJQTDCB&contentType=json`)
             .then(res=>{
-                console.log(res.data)
                 this.data=res.data;
             }).catch(e=>{
                 this.$bus.$emit('handleAlert','Failed To Get Weather Info','error');
