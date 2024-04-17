@@ -9,7 +9,7 @@
           <img :src="(obj.role!='user')?'/images/robot.jpeg':userImg" alt="" class="user-icon">
           <div class="conversation-content">
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
-            <div class="text" v-html="obj.content"></div>
+            <div class="text" v-text="obj.content"></div>
           </div>
         </div>
       </div>
