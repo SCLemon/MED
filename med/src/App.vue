@@ -7,6 +7,7 @@
 
 <script>
 import FooterGuide from './components/FooterGuide.vue'
+import jsCookie from 'js-cookie';
 export default {
   name: 'App',
   components: {
@@ -17,6 +18,14 @@ export default {
   },
   mounted(){
     this.$bus.$on('handleAlert',(msg,type)=>this.handleAlert(msg,type));
+
+    // 防止惡意攻擊
+    window.addEventListener('click',()=>{
+      if(jsCookie.get('token')!='' && jsCookie.get('token')){}
+      else if(this.$route.path.includes('/verify')){}
+      else location.reload();
+    })
+    
   },
   methods:{
     handleAlert(msg,type){

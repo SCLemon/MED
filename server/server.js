@@ -29,6 +29,7 @@ const limitRequests = (req, res, next) => {
         else {
             if (count >= 5) {
                 blacklist.push(clientIP);
+                res.cookie('token', '', { expires: new Date(0) });
                 return res.status(403).send('Forbidden');
             }
             else requestCounts.set(clientIP, { count: count + 1, timestamp: timestamp });
@@ -36,8 +37,15 @@ const limitRequests = (req, res, next) => {
     } else requestCounts.set(clientIP, { count: 1, timestamp: currentTime });
     next();
 };
-app.use(limitRequests);
 
+// 驗證 referer
+const verifyReferer = (req, res, next)=>{
+    const referer = req.get('referer');
+    if(referer.includes('localhost')|| referer.includes('192.168.100.136')) next()
+    else res.status(403).send('Forbidden');
+}
+app.use(limitRequests);
+app.use(verifyReferer)
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
 app.use(verifyRouter);
