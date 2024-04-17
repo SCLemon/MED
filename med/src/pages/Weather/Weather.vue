@@ -30,7 +30,7 @@ export default {
             lat:0,
             lon:0,
             data:{},
-            backgroundImage:new Date().getHours()>18?"url('images/sun.jpg')":"url('images/moon.webp')"
+            backgroundImage:(new Date().getHours()>5 && new Date().getHours()<18)?"url('images/sun.jpg')":"url('images/moon.webp')"
         }
     },
     methods:{
