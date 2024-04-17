@@ -44,6 +44,7 @@ export default {
         getWeatherInfo(latitude,longitude){
             axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude}%2C${longitude}?unitGroup=metric&key=L44KD95MNYTRNHK4P8VJQTDCB&contentType=json`)
             .then(res=>{
+                console.log(res.data)
                 this.data=res.data;
             }).catch(e=>{
                 this.$bus.$emit('handleAlert','Failed To Get Weather Info','error');
@@ -54,6 +55,8 @@ export default {
                 case 'Clear':
                     return 'images/weather/weather_1.png';
                 case 'Rain, Overcast':
+                    return 'images/weather/weather_2.png';
+                case 'Rain':
                     return 'images/weather/weather_2.png';
                 case 'Rain, Partially cloudy':
                     return 'images/weather/weather_3.png';
