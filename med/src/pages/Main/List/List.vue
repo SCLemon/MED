@@ -9,7 +9,7 @@
     <div class="list">
       <div class="list-content" v-for="(obj, id) in list" :key="id">
           <div class="title">
-            <div class="title-name">{{ obj.date }}</div>
+            <div class="title-name">{{ obj.date }}（{{ handleDayOfWeek(obj.date) }}）</div>
             <div class="title-edit" @click="openEdit(obj.date)" v-if="obj.date != editTime">Edit</div>
             <div class="title-edit" @click="editTime=''" v-else>Close</div>
           </div>
@@ -36,6 +36,7 @@
 <script>
 import axios from 'axios';
 import jsCookie from 'js-cookie';
+import { format } from 'date-fns';
 export default {
   name: "List",
   mounted() {
@@ -54,6 +55,9 @@ export default {
       .catch(e=>{
         this.$bus.$emit('handleAlert','Getting TodoList Error When Connecting Server','error');
       })
+    },
+    handleDayOfWeek(date){
+      return format(date,'EEE')
     },
     handleData(obj){
       for(var i=0;i<obj.length;i++){
