@@ -10,6 +10,10 @@
           <div class="conversation-content">
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
             <div class="text" v-text="obj.content"></div>
+            <div class="icoBlock">
+              <i class="fa-solid fa-headphones ico" @click="textSpeech(obj.content)" v-if="!synthStatus"></i>
+              <i class="fa-regular fa-circle-stop ico" @click="stopSpeech()" v-else></i>
+              <i class="fa-regular fa-copy ico" @click="copyText(obj.content)"></i></div>
           </div>
         </div>
       </div>
@@ -17,7 +21,14 @@
         <div class="search">
           <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
           <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
-          <input type="text" class="input" v-model="input" :placeholder="placeholder">
+          <!-- <textarea type="text" class="input" v-model="input" :placeholder="placeholder" rows="1"></textarea> -->
+          <el-input
+            class="input"
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 4}"
+            :placeholder="placeholder"
+            v-model="input">
+          </el-input>
           <i class="fa-solid fa-paper-plane icon-out" @click="sendChatGPT()"></i>
         </div>
         <div class="more" ref="more">
@@ -46,25 +57,33 @@ import axios from 'axios';
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
+import { Table } from 'element-ui';
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
 export default {
   name:'Ai',
   mounted(){
+    // 初始化使用者資料
     this.setWindowScroll();
     this.getData();
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    // 創建文字轉語音
+    this.utterance.rate = 1.05;
+    this.utterance.lang = 'auto';
+    this.utterance.onend = () => {
+      this.synthStatus = !this.synthStatus;
+    };
+
+    // 創建語音辨識
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     this.recognition = new SpeechRecognition();
     this.recognition.continuous = true;
-
     this.recognition.onstart = (event)=>{
       this.startVoice =true;
       this.placeholder='Sound Recognition Start ...'
       this.$bus.$emit('handleAlert','Sound Recognition Start','success');
     }
-
     this.recognition.onresult = (event) => {
       var result = event.results[this.outputIndex][0].transcript;
       this.outputIndex++;
@@ -88,6 +107,11 @@ export default {
     return{
       input:'',
       outputIndex:0,
+      // synth
+      synth:window.speechSynthesis,
+      synthStatus:false,
+      utterance:new SpeechSynthesisUtterance(),
+      // recognition
       startVoice:false,
       recognition:{},
       placeholder:'Send Your Questions',
@@ -199,7 +223,8 @@ export default {
         this.recognition.stop();
       }
       else this.recognition.start();
-      this.startVoice = !this.startVoice; // 開始錄音轉為 true
+      // 開始錄音轉為 true
+      this.startVoice = !this.startVoice; 
     },
     handleImg(){
       this.$bus.$emit('handleAlert','Image Recognize Start','success');
@@ -221,6 +246,31 @@ export default {
     },
     openOrigin(){
       this.$refs.imgOrigin.click();
+    },
+    copyText(text){
+      try{
+        navigator.clipboard.writeText(text)
+        this.$bus.$emit('handleAlert','Copy Text Successfully','success');
+      }
+      catch(e){
+        this.$bus.$emit('handleAlert','Failed To Copy Text','error');
+      }
+    },
+    textSpeech(text){
+      this.synthStatus = true;
+      this.utterance.text = text;
+      this.synth.speak(this.utterance);
+    },
+    stopSpeech(){
+      this.synthStatus = false;
+      this.synth.cancel();
+    },
+    getVoiceList(){ // 之後可以用來創建客製化列表
+      var voices;
+      window.speechSynthesis.addEventListener('voiceschanged', function(){
+        voices = this.getVoices();
+        console.log(voices);
+      });
     }
   }
 }
@@ -256,7 +306,7 @@ export default {
   }
   .search{
     width:100%;
-    height: 60px;
+    height: auto;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -311,7 +361,6 @@ export default {
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    padding-bottom: 10px;
     padding-top: 10px;
   }
   .conversation{
@@ -340,14 +389,25 @@ export default {
   }
   .input{
     width: 70%;
-    border: 0;
-    border-bottom: 1px solid rgb(205,205,205);
     padding:3px;
-    margin-left: 10px;
-    margin-right: 10px;
-    border-radius: 0;
+    margin-left: 8px;
+    margin-right: 8px;
   }
   .img_original{
     display: none;
+  }
+  .icoBlock{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    color: rgba(205,205,205);
+    justify-content: right;
+  }
+  .ico{
+    padding-left: 8px;
+  }
+  .ico:active,.ico:hover{
+    color: black;
+    cursor: pointer;
   }
 </style>

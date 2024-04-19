@@ -35,6 +35,7 @@ export default {
     },
     methods:{
         getLocation(){
+            this.$bus.$emit('handleAlert','Please Wait For Getting Infomation','warning');
             navigator.geolocation.getCurrentPosition(position=>{
                 this.lat = Number(position.coords.latitude).toFixed(2);
                 this.lon = Number(position.coords.longitude).toFixed(2);
@@ -45,6 +46,7 @@ export default {
             axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude}%2C${longitude}?unitGroup=metric&key=L44KD95MNYTRNHK4P8VJQTDCB&contentType=json`)
             .then(res=>{
                 this.data=res.data;
+                this.$bus.$emit('handleAlert','Getting Infomation Successfully','success');
             }).catch(e=>{
                 this.$bus.$emit('handleAlert','Failed To Get Weather Info','error');
             })
