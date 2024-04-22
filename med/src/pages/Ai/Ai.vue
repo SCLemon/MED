@@ -11,6 +11,7 @@
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
             <div class="text" v-text="obj.content"></div>
             <div class="icoBlock">
+              <i class="fa-solid fa-file-arrow-down ico" @click="generatePDF(obj.content)"></i>
               <i class="fa-solid fa-headphones ico" @click="textSpeech(obj.content)" v-if="!synthStatus"></i>
               <i class="fa-regular fa-circle-stop ico" @click="stopSpeech()" v-else></i>
               <i class="fa-regular fa-copy ico" @click="copyText(obj.content)"></i></div>
@@ -21,14 +22,7 @@
         <div class="search">
           <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
           <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
-          <!-- <textarea type="text" class="input" v-model="input" :placeholder="placeholder" rows="1"></textarea> -->
-          <el-input
-            class="input"
-            type="textarea"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            :placeholder="placeholder"
-            v-model="input">
-          </el-input>
+          <el-input class="input" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="placeholder" v-model="input"></el-input>
           <i class="fa-solid fa-paper-plane icon-out" @click="sendChatGPT()"></i>
         </div>
         <div class="more" ref="more">
@@ -44,7 +38,12 @@
               <div class="icon-title">圖片辨識</div>
             </div>
           </div>
-          <div class="func"></div>
+          <div class="func" @click="generatePDF()">
+            <div class="func-icon">
+              <i class="fa-solid fa-file-pdf icon"></i>
+              <div class="icon-title">匯出資料</div>
+            </div>
+          </div>
           <div class="func"></div>
         </div>
       </div>
@@ -54,10 +53,11 @@
 
 <script>
 import axios from 'axios';
+import { format } from 'date-fns'
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
-import { Table } from 'element-ui';
+import { jsPDF } from "jspdf";
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
@@ -202,7 +202,8 @@ export default {
         const response = await openai.chat.completions.create({
           messages: this.totalMsg,
           model: "gpt-3.5-turbo",
-          stream:true
+          stream:true,
+          max_tokens:1000
         })
         for await (const chunk of response) {
           const data = chunk.choices[0].delta.content;
@@ -271,6 +272,50 @@ export default {
         voices = this.getVoices();
         console.log(voices);
       });
+    },
+    generatePDF(content){
+      if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i)
+          || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i)|| navigator.userAgent.match(/Windows Phone/i))
+        {
+          this.$bus.$emit('handleAlert','Mobile phones currently do not support PDF export.','error');
+          return;
+        }
+      try{
+        const pageSize = 'a4'; 
+        const marginLeft = 20;
+        const marginRight = 20;
+        var lineCount=1;
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: pageSize,
+          marginLeft: marginLeft,
+          marginRight: marginRight,
+          lineHeight: 1.5,
+        });
+        doc.addFont('ttf/TaipeiSansTCBeta-Regular.ttf','TaipeiSans','normal');
+        doc.setFont('TaipeiSans')
+        console.log('here')
+        if(content){
+          var text = doc.splitTextToSize(content,235-marginLeft-marginRight);
+          doc.text(text, 10, 15);
+        }
+        else{
+          for(var obj of this.totalMsg){
+            var text = doc.splitTextToSize(`${obj.role}: ${obj.content}`,235-marginLeft-marginRight)
+            if(lineCount+text.length>34){
+              doc.addPage('a4','p');
+              lineCount=1;
+            }
+            doc.text(text, 10, 15+10*(lineCount-1),{});
+            lineCount+=(text.length==1?text.length:text.length-1);
+          }
+        }
+        doc.save(`${format(new Date(),'yyyy-MM-dd')}-chatRecord.pdf`);
+        this.$bus.$emit('handleAlert','Export Data into PDF Successfully','success');
+      }catch(e){
+        this.$bus.$emit('handleAlert','Failed To Export Data into PDF','error');
+      }
     }
   }
 }
