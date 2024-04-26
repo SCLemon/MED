@@ -11,7 +11,7 @@
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
             <div class="text" v-text="obj.content"></div>
             <div class="icoBlock">
-              <i class="fa-solid fa-file-arrow-down ico" @click="generatePDF(obj.content)"></i>
+              <i class="fa-solid fa-share ico" @click="isMobile()?shareData(obj.content):generatePDF(obj.content)"></i>
               <i class="fa-solid fa-headphones ico" @click="textSpeech(obj.content)" v-if="!synthStatus"></i>
               <i class="fa-regular fa-circle-stop ico" @click="stopSpeech()" v-else></i>
               <i class="fa-regular fa-copy ico" @click="copyText(obj.content)"></i></div>
@@ -38,9 +38,9 @@
               <div class="icon-title">圖片辨識</div>
             </div>
           </div>
-          <div class="func" @click="generatePDF()">
+          <div class="func" @click="isMobile()?shareData():generatePDF()">
             <div class="func-icon">
-              <i class="fa-solid fa-file-pdf icon"></i>
+              <i class="fa-solid fa-share-from-square icon"></i>
               <div class="icon-title">匯出資料</div>
             </div>
           </div>
@@ -56,7 +56,7 @@ import axios from 'axios';
 import { format } from 'date-fns'
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
-import Tesseract from 'tesseract.js'
+import Tesseract, { imageType } from 'tesseract.js'
 import { jsPDF } from "jspdf";
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
@@ -273,13 +273,15 @@ export default {
         console.log(voices);
       });
     },
-    generatePDF(content){
+    isMobile(){
       if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i)
           || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i)|| navigator.userAgent.match(/Windows Phone/i))
         {
-          this.$bus.$emit('handleAlert','Mobile phones currently do not support PDF export.','error');
-          return;
+          return true;
         }
+      else return false;
+    },
+    generatePDF(content){
       try{
         const pageSize = 'a4'; 
         const marginLeft = 20;
@@ -295,7 +297,6 @@ export default {
         });
         doc.addFont('ttf/TaipeiSansTCBeta-Regular.ttf','TaipeiSans','normal');
         doc.setFont('TaipeiSans')
-        console.log('here')
         if(content){
           var text = doc.splitTextToSize(content,235-marginLeft-marginRight);
           doc.text(text, 10, 15);
@@ -315,6 +316,28 @@ export default {
         this.$bus.$emit('handleAlert','Export Data into PDF Successfully','success');
       }catch(e){
         this.$bus.$emit('handleAlert','Failed To Export Data into PDF','error');
+      }
+    },
+    shareData(content){
+      try{
+        if(navigator.share){
+          var output;
+          if(content){
+            output=`<meta charset="utf-8"><div style='line-height:2'>${content}</div>`;
+          }
+          else output = `<meta charset="utf-8">`+this.totalMsg.map((item)=>{
+            return `<div style='line-height:2'>${item.role} : ${item.content}</div>`
+          }).join('<br>');
+          const blob = new Blob([output], { type: 'text/html' });
+          const file = new File([blob],`${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`)
+          navigator.share({
+            files:[file],
+            title:`${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`
+          }).catch(e=>{});
+        }
+        else this.$bus.$emit('handleAlert','Share Data Not Allowed','error');
+      }catch(e){
+        this.$bus.$emit('handleAlert','Failed To Share Data','error');
       }
     }
   }
