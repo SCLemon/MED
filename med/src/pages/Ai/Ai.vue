@@ -444,6 +444,7 @@ export default {
   .icoBlock{
     width: 100%;
     height: 25px;
+    margin-top: 7px;
     display: flex;
     color: rgba(205,205,205);
     justify-content: right;
