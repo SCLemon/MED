@@ -13,7 +13,7 @@ router.post('/verify/register',(req, res) => {
   else if(user.trim()=='' || password.trim()=='' || mail.trim()=='') return res.status(200).send('blank');
   else{
     req.body.token = uuidv4();
-    userModel.findOne({user:user})
+    userModel.findOne({mail:mail})
     .then((data,err)=>{
       if(!data){
         userModel.create(req.body)
@@ -35,11 +35,11 @@ router.post('/verify/register',(req, res) => {
 
 //登入
 router.post('/verify/login',(req, res) => {
-  var user = req.body.user;
+  var mail = req.body.mail;
   var password = req.body.password;
-  if(user.trim()=='' || password.trim()=='') return res.status(200).send('blank');
+  if(mail.trim()=='' || password.trim()=='') return res.status(200).send('blank');
   else{
-    userModel.findOne({$and:[{user:user},{password:password}]})
+    userModel.findOne({$and:[{mail:mail},{password:password}]})
     .then((data,err)=>{
         if(!data) res.status(200).send('User Not Exists')
         else res.status(200).send(data)

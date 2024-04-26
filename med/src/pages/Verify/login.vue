@@ -7,8 +7,8 @@
       </div>
       <div class="form">
         <div class="form-div">
-          <div class="text">Username</div>
-          <input type="text" name="" id="" class="input" v-model="user">
+          <div class="text">Email</div>
+          <input type="text" name="" id="" class="input" v-model="mail">
         </div>
         <div class="form-div">
           <div class="text">Password</div>
@@ -32,21 +32,21 @@ export default {
   mounted(){},
   data(){
     return {
-      user:'',
+      mail:'',
       password:'',
     }
   },
   methods:{
     sendData(){
-      if(this.user.trim()!=='' && this.password.trim()!=''){
+      if(this.mail.trim()!=='' && this.password.trim()!=''){
         axios.post('/verify/login',{
-          user: this.user,
+          mail: this.mail,
           password: this.password,
         }).then(res=>{
           if(res.data!='User Not Exists'){
             document.cookie=`token=${res.data.token};expires=${(new Date(new Date().getTime()+86400*1000*14)).toUTCString()}`;
             this.$bus.$emit('handleAlert','Success To Login','success')
-            this.user='';
+            this.mail='';
             this.password='';
             this.$router.replace('/');
           }
