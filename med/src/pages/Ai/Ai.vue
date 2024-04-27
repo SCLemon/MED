@@ -1,7 +1,17 @@
 <template>
   <div>
     <div class="top">
-      <i class="fa-solid fa-hand-holding-medical"></i> Smart Assistant <i class="fa-solid fa-eraser eraser" @click="confirmForm('確認刪除？',deleteData)"></i>
+      <i class="fa-solid fa-hand-holding-medical"></i> Smart Assistant 
+      <el-dropdown class="setting">
+        <span class="el-dropdown-link">
+          <i class="fa-solid fa-bars"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>參數配置</el-dropdown-item>
+          <el-dropdown-item><div @click="toggleUploadBox()">匯入資料</div></el-dropdown-item>
+          <el-dropdown-item><div @click="confirmForm('確認刪除？',deleteData)">刪除紀錄</div></el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <div class="chat">
       <div class="list" ref="list">
@@ -11,7 +21,7 @@
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
             <div class="text" v-text="obj.content"></div>
             <div class="icoBlock">
-              <i class="fa-solid fa-share ico" @click="isMobile()?shareData(obj.content):generatePDF(obj.content)"></i>
+              <i class="fa-solid fa-share ico" @click="shareData(obj.content)"></i>
               <i class="fa-solid fa-headphones ico" @click="textSpeech(obj.content)" v-if="!synthStatus"></i>
               <i class="fa-regular fa-circle-stop ico" @click="stopSpeech()" v-else></i>
               <i class="fa-regular fa-copy ico" @click="copyText(obj.content)"></i></div>
@@ -38,15 +48,25 @@
               <div class="icon-title">圖片辨識</div>
             </div>
           </div>
-          <div class="func" @click="isMobile()?shareData():generatePDF()">
+          <div class="func" @click="shareData()">
             <div class="func-icon">
               <i class="fa-solid fa-share-from-square icon"></i>
-              <div class="icon-title">匯出資料</div>
+              <div class="icon-title">匯出文字</div>
             </div>
           </div>
-          <div class="func"></div>
+          <div class="func" @click="exportJSON()">
+            <div class="func-icon">
+              <i class="fa-solid fa-arrow-right-arrow-left icon"></i>
+              <div class="icon-title">數據交互</div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="uploadBox" ref="uploadBox">
+      <div class="uploadToggle" @click="toggleUploadBox()"><i class="fa-solid fa-xmark xmark"></i></div>
+      <div class="uploadMain" @click="$refs.uploadFile.click()"><i class="fa-solid fa-cloud-arrow-up uploadIcon"></i><div class="uploadText">Upload File</div></div>
+      <input type="file" style="display: none;" accept=".json"  ref="uploadFile" @change="importJSON()">
     </div>
   </div>
 </template>
@@ -56,8 +76,7 @@ import axios from 'axios';
 import { format } from 'date-fns'
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
-import Tesseract, { imageType } from 'tesseract.js'
-import { jsPDF } from "jspdf";
+import Tesseract from 'tesseract.js'
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
@@ -281,70 +300,129 @@ export default {
         }
       else return false;
     },
-    generatePDF(content){
-      try{
-        const pageSize = 'a4'; 
-        const marginLeft = 20;
-        const marginRight = 20;
-        var lineCount=1;
-        const doc = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: pageSize,
-          marginLeft: marginLeft,
-          marginRight: marginRight,
-          lineHeight: 1.5,
-        });
-        doc.addFont('ttf/TaipeiSansTCBeta-Regular.ttf','TaipeiSans','normal');
-        doc.setFont('TaipeiSans')
-        if(content){
-          var text = doc.splitTextToSize(content,235-marginLeft-marginRight);
-          doc.text(text, 10, 15);
-        }
-        else{
-          for(var obj of this.totalMsg){
-            var text = doc.splitTextToSize(`${obj.role}: ${obj.content}`,235-marginLeft-marginRight)
-            if(lineCount+text.length>34){
-              doc.addPage('a4','p');
-              lineCount=1;
-            }
-            doc.text(text, 10, 15+10*(lineCount-1),{});
-            lineCount+=(text.length==1?text.length:text.length-1);
-          }
-        }
-        doc.save(`${format(new Date(),'yyyy-MM-dd')}-chatRecord.pdf`);
-        this.$bus.$emit('handleAlert','Export Data into PDF Successfully','success');
-      }catch(e){
-        this.$bus.$emit('handleAlert','Failed To Export Data into PDF','error');
-      }
-    },
     shareData(content){
       try{
+        var output;
+        if(content) output=`<meta charset="utf-8"><div style='line-height:2'>${content}</div>`;
+        else output = `<meta charset="utf-8">`+this.totalMsg.map((item)=>{
+          return `<div style='line-height:2'>${item.role} : ${item.content}</div>`
+        }).join('<br>');
+        const blob = new Blob([output], { type: 'text/html' });
+
         if(navigator.share){
-          var output;
-          if(content){
-            output=`<meta charset="utf-8"><div style='line-height:2'>${content}</div>`;
-          }
-          else output = `<meta charset="utf-8">`+this.totalMsg.map((item)=>{
-            return `<div style='line-height:2'>${item.role} : ${item.content}</div>`
-          }).join('<br>');
-          const blob = new Blob([output], { type: 'text/html' });
           const file = new File([blob],`${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`)
           navigator.share({
             files:[file],
             title:`${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`
           }).catch(e=>{});
         }
-        else this.$bus.$emit('handleAlert','Share Data Not Allowed','error');
+        else{
+          let fileName = `${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`
+          var href = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          document.body.appendChild(link);
+          link.href = href;
+          link.download = fileName;
+          link.click();
+          document.body.removeChild(link);
+        }
+        this.$bus.$emit('handleAlert','Success To Share Data','success');
       }catch(e){
         this.$bus.$emit('handleAlert','Failed To Share Data','error');
       }
+    },
+    exportJSON(){
+     try{
+      const blob = new Blob([JSON.stringify(this.totalMsg)], { type: 'text/json' });
+      const file = new File([blob],`${format(new Date(),'yyyy-MM-dd')}-chatRecord.json`)
+      if(navigator.share){ 
+        navigator.share({
+          files:[file],
+          title:`${format(new Date(),'yyyy-MM-dd')}-chatRecord.json`
+        }).catch(e=>{});
+      }
+      else{
+        let fileName = `${format(new Date(),'yyyy-MM-dd')}-chatRecord.json`
+        var href = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        document.body.appendChild(link);
+        link.href = href;
+        link.download = fileName;
+        link.click();
+        document.body.removeChild(link);
+      }
+      this.$bus.$emit('handleAlert','Success To Export Data','success');
+     }catch(e){
+      this.$bus.$emit('handleAlert','Failed To Export Data','error');
+     }
+    },
+    importJSON(){
+     try{
+      var file = this.$refs.uploadFile.files[0];
+      var fileReader = new FileReader();
+      fileReader.onload = (e)=>{
+        this.totalMsg = JSON.parse(e.target.result);
+        this.$refs.uploadFile.value='';
+        this.toggleUploadBox();
+        this.recordData();
+        this.$bus.$emit('handleAlert','Success To Import Data','success');
+      }
+      fileReader.readAsText(file);
+     }
+     catch(e){
+      this.$bus.$emit('handleAlert','Failed To Import Data','error');
+     }
+    },
+    toggleUploadBox(){
+      var target = this.$refs.uploadBox;
+      target.classList.toggle('uploadShow')
     }
   }
 }
 </script>
 
 <style scoped>
+  .uploadBox{
+    position: absolute;
+    top:0;
+    left:0;
+    bottom: 0;
+    right:0;
+    margin: auto;
+    width:100vw;
+    height:100vh;
+    z-index:1001;
+    background-color: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  .uploadShow{
+    display: flex;
+  }
+  .uploadToggle{
+    position: absolute;
+    top:10px;
+    left:10px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+  }
+  .uploadMain{
+    width: 90%;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+  }
+  .uploadIcon{
+    font-size: 100px;
+  }
+  .uploadText{
+    margin-top: 20px;
+    font-size: 24px;
+  }
   .top{
     top:0;
     width:100%;
@@ -361,10 +439,20 @@ export default {
     width:100%;
     height: calc(100vh - 130px);
   }
-  .eraser{
+  .el-dropdown-link {
+    cursor: pointer;
+    color: black;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
+  .setting{
     position: absolute;
-    right: 20px;
-    top:20px;
+    right: 0px;
+    top:0px;
+    width: 70px;
+    height: 60px;
+    font-size: 20px;
   }
   .searchBox{
     position: absolute;
