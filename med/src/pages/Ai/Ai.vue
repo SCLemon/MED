@@ -7,7 +7,7 @@
           <i class="fa-solid fa-bars"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>參數配置</el-dropdown-item>
+          <el-dropdown-item><router-link :to="{path:'/aiSetting'}" class="link">參數配置</router-link></el-dropdown-item>
           <el-dropdown-item><div @click="toggleUploadBox()">匯入資料</div></el-dropdown-item>
           <el-dropdown-item><div @click="confirmForm('確認刪除？',deleteData)">刪除紀錄</div></el-dropdown-item>
         </el-dropdown-menu>
@@ -33,7 +33,8 @@
           <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
           <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
           <el-input class="input" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="placeholder" v-model="input"></el-input>
-          <i class="fa-solid fa-paper-plane icon-out" @click="sendChatGPT()"></i>
+          <i v-if="!isStillOutput" class="fa-solid fa-feather icon-out" @click="sendChatGPT()"></i>
+          <i v-else class="fa-solid fa-hourglass-start fa-spin-pulse icon-out"></i>
         </div>
         <div class="more" ref="more">
           <div class="func">
@@ -86,7 +87,7 @@ export default {
     // 初始化使用者資料
     this.setWindowScroll();
     this.getData();
-
+    this.getSetting();
     // 創建文字轉語音
     this.utterance.rate = 1.05;
     this.utterance.lang = 'auto';
@@ -126,6 +127,13 @@ export default {
     return{
       input:'',
       outputIndex:0,
+      setting:{
+        temperature:1,
+        max_tokens:1000,
+        frequency_penalty:0,
+        presence_penalty:0,
+      },
+      isStillOutput:false,
       // synth
       synth:window.speechSynthesis,
       synthStatus:false,
@@ -164,6 +172,19 @@ export default {
     toggleMore(){
       this.$refs.more.classList.toggle('showMore');
       this.$refs.moreIcon.classList.toggle('showMark');
+    },
+    getSetting(){
+      axios.get(`/aiSetting/get/${jsCookie.get('token')}`)
+      .then(res=>{
+        if(res.data!='new'){
+          this.setting = res.data;
+        }
+        else if(res.data=='new'){}
+        else this.$bus.$emit('handleAlert','Failed To Getting Adjust Setting','error');
+      })
+      .catch(e=>{
+        this.$bus.$emit('handleAlert','Getting Setting Error When Connecting Server','error');
+      })
     },
     getData(){
       axios.get(`/chat/get/${jsCookie.get('token')}`)
@@ -207,7 +228,8 @@ export default {
       })
     },
     async sendChatGPT(){
-      if(this.input.trim()!=''){
+      if(this.input.trim()!='' && !this.isStillOutput){
+        this.isStillOutput=true;
         this.$refs.moreIcon.classList.remove('showMark');
         this.$refs.more.classList.remove('showMore');
         this.totalMsg.push({
@@ -222,13 +244,22 @@ export default {
           messages: this.totalMsg,
           model: "gpt-3.5-turbo",
           stream:true,
-          max_tokens:1000
+          max_tokens:this.setting.max_tokens,
+          temperature:this.setting.temperature,
+          frequency_penalty:this.setting.frequency_penalty,
+          presence_penalty:this.setting.presence_penalty
         })
         for await (const chunk of response) {
           const data = chunk.choices[0].delta.content;
-          if(data==undefined) this.recordData();
+          if(data==undefined){
+            this.recordData();
+            this.isStillOutput=false;
+          }
           else this.totalMsg[this.totalMsg.length-1].content+=data;
         }
+      }
+      else if (this.isStillOutput){
+        this.$bus.$emit('handleAlert','Please Wait For Text Generating','error');
       }
       else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
     },
@@ -314,7 +345,13 @@ export default {
           navigator.share({
             files:[file],
             title:`${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`
-          }).catch(e=>{});
+          })
+          .then(res=>{
+            this.$bus.$emit('handleAlert','Success To Share Data','success');
+          })
+          .catch(e=>{
+            this.$bus.$emit('handleAlert','Share Data Canceled','error');
+          });
         }
         else{
           let fileName = `${format(new Date(),'yyyy-MM-dd')}-chatRecord.html`
@@ -325,8 +362,8 @@ export default {
           link.download = fileName;
           link.click();
           document.body.removeChild(link);
+          this.$bus.$emit('handleAlert','Success To Share Data','success');
         }
-        this.$bus.$emit('handleAlert','Success To Share Data','success');
       }catch(e){
         this.$bus.$emit('handleAlert','Failed To Share Data','error');
       }
@@ -339,7 +376,13 @@ export default {
         navigator.share({
           files:[file],
           title:`${format(new Date(),'yyyy-MM-dd')}-chatRecord.json`
-        }).catch(e=>{});
+        })
+        .then(res=>{
+          this.$bus.$emit('handleAlert','Success To Share Data','success');
+        })
+        .catch(e=>{
+          this.$bus.$emit('handleAlert','Share Data Canceled','error');
+        });
       }
       else{
         let fileName = `${format(new Date(),'yyyy-MM-dd')}-chatRecord.json`
@@ -350,8 +393,8 @@ export default {
         link.download = fileName;
         link.click();
         document.body.removeChild(link);
+        this.$bus.$emit('handleAlert','Success To Export Data','success');
       }
-      this.$bus.$emit('handleAlert','Success To Export Data','success');
      }catch(e){
       this.$bus.$emit('handleAlert','Failed To Export Data','error');
      }
@@ -382,6 +425,10 @@ export default {
 </script>
 
 <style scoped>
+  .link{
+    text-decoration: none;
+    color: #606266;
+  }
   .uploadBox{
     position: absolute;
     top:0;

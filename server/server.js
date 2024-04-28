@@ -54,6 +54,10 @@ app.use(verifyRouter);
 const chatRouter = require('./routes/chatRouter');
 app.use(chatRouter);
 
+// AI 設置
+const aiSettingRouter = require('./routes/AiSettingRouter');
+app.use(aiSettingRouter);
+
 // 個人資訊
 const userInfoRouter = require('./routes/userInfoRouter');
 app.use(userInfoRouter);

@@ -20,6 +20,7 @@ import Revise from '../pages/Main/Revise/Revise.vue'
 import Schedule from '../pages/Schedule/Schedule.vue'
 import More from '../pages/More/More.vue'
 import Weather from '../pages/Weather/Weather.vue'
+import AiSetting from '../pages/Ai/Setting/AiSetting.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -83,6 +84,10 @@ const router = new VueRouter({
         {
             path:'/ai',
             component:Ai
+        },
+        {
+            path:'/aiSetting',
+            component:AiSetting
         },
         {
             path:'/personal',

@@ -34,6 +34,9 @@ module.exports = defineConfig({
       '/filter': {
         target: 'http://127.0.0.1:3007',
       },
+      '/aiSetting': {
+        target: 'http://127.0.0.1:3007',
+      },
       '/schedule': {
         target: 'http://127.0.0.1:3007',
       },
