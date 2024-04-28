@@ -19,7 +19,7 @@
           <img :src="(obj.role!='user')?'/images/robot.jpeg':userImg" alt="" class="user-icon">
           <div class="conversation-content">
             <div class="name">{{ obj.role=='user'?'You':'Lemon AI' }}</div>
-            <div class="text" v-text="obj.content"></div>
+            <div class="text" v-html="convertIntoHTML(obj.content)"></div>
             <div class="icoBlock">
               <i class="fa-solid fa-share ico" @click="shareData(obj.content)"></i>
               <i class="fa-solid fa-headphones ico" @click="textSpeech(obj.content)" v-if="!synthStatus"></i>
@@ -78,6 +78,7 @@ import { format } from 'date-fns'
 import OpenAI from "openai";
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
+import markdownit from 'markdown-it'
 const apiKey = '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';
 const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
 
@@ -419,6 +420,10 @@ export default {
     toggleUploadBox(){
       var target = this.$refs.uploadBox;
       target.classList.toggle('uploadShow')
+    },
+    convertIntoHTML(text){
+      const md = markdownit();
+      return md.render(text);
     }
   }
 }
