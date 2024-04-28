@@ -491,6 +491,9 @@ export default {
     width:100%;
     height: calc(100vh - 130px);
   }
+  .text{
+    line-height: 2;
+  }
   .el-dropdown-link {
     cursor: pointer;
     color: black;
