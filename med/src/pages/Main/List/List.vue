@@ -7,7 +7,7 @@
       </router-link>
     </div>
     <div class="list">
-      <div class="list-content" v-for="(obj, id) in list" :key="id">
+      <div class="list-content" v-for="(obj, id) in list" :key="id" v-show="handleDateIsAfterOrToday(obj.date)">
           <div class="title">
             <div class="title-name">{{ obj.date }}（{{ handleDayOfWeek(obj.date) }}）</div>
             <div class="title-edit" @click="openEdit(obj.date)" v-if="obj.date != editTime">Edit</div>
@@ -36,7 +36,7 @@
 <script>
 import axios from 'axios';
 import jsCookie from 'js-cookie';
-import { format } from 'date-fns';
+import { format, isAfter, isEqual } from 'date-fns';
 export default {
   name: "List",
   mounted() {
@@ -59,12 +59,13 @@ export default {
     handleDayOfWeek(date){
       return format(date,'EEE')
     },
+    handleDateIsAfterOrToday(date){
+      return isAfter(new Date(format(date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) || isEqual(new Date(format(date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd')))
+    },
     handleData(obj){
-      for(var i=0;i<obj.length;i++){
-        obj.sort((a,b)=>{
-          return this.handleSort(a.todo.period)-this.handleSort(b.todo.period)
-        })
-      }
+      obj.sort((a,b)=>{
+        return this.handleSort(a.todo.period)-this.handleSort(b.todo.period)
+      })
       this.list = obj.reduce((acc, curr) => {
         const foundIndex = acc.findIndex(item => item.date === curr.date);
         if (foundIndex !== -1) {
