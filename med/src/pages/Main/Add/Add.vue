@@ -45,6 +45,7 @@ export default {
             period: '',
             status:false,
             content:'',
+            mail:this.$route.query.mail,
             options: [{
                 value: 'morning',
                 label: '早晨'
@@ -80,7 +81,8 @@ export default {
                 }
                 axios.post('/reminder/add',upload,{
                     headers:{
-                        'user-token':jsCookie.get('token')
+                        'user-token':jsCookie.get('token'),
+                        'user-mail':this.mail
                     }
                 })
                 .then(res=>{
@@ -89,7 +91,8 @@ export default {
                         this.date='';
                         this.period='';
                         this.content='';
-                        this.status='',
+                        this.status='';
+                        this.mail='';
                         this.$bus.$emit('handleAlert','Add Reminder Success','success');
                         this.$router.back();
                     }

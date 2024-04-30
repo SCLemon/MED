@@ -25,12 +25,13 @@ router.post('/reminder/add',(req, res) => {
   req.body.todo.taskId= uuidv4();
   var obj ={
     token: req.headers['user-token'],
+    mail: req.headers['user-mail'],
     data: {
       date:req.body.date,
       todo:req.body.todo
     }
   }
-  taskModel.findOneAndUpdate({token:obj.token},{$push:{data:obj.data}},{upsert: true})
+  taskModel.findOneAndUpdate({token:obj.token,mail:obj.mail},{$push:{data:obj.data}},{upsert: true})
   .then((data,err)=>{
     if (err) res.status(200).send('error when finding record in taskModel')
     else res.status(200).send('success')

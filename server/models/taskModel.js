@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // 创建文档结构
 const taskSchema = new mongoose.Schema({
     token:String,
+    mail:String,
     data:[{
         date:String,
         todo:{

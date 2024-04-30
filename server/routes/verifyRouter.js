@@ -20,7 +20,6 @@ router.post('/verify/register',(req, res) => {
         .then((data, err) => {
           if (err) res.status(200).send('error when creating')
           else {
-            pushToSheet(mail)
             res.status(200).send('success')
           }
         })
@@ -50,14 +49,4 @@ router.post('/verify/login',(req, res) => {
   }
 });
 
-function pushToSheet(mail){
-  const axios =require('axios');
-  axios.post('https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec',{
-      user:mail
-  }).then(res=>{
-    console.log('new user: '+res.data)
-  }).catch(e=>{
-    console.log('Failed to send Email To Appscript')
-  })
-}
 module.exports = router;

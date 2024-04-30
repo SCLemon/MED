@@ -2,7 +2,7 @@
   <div class="box">
     <div class="add">
       <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link> 
-      <router-link class="title-add" :to="'/main/add'">
+      <router-link class="title-add" :to="{path:'/main/add',query:{'mail':mail}}">
           <div class="btn"><i class="fa-solid fa-address-book add-icon"></i>Add</div>
       </router-link>
     </div>
@@ -40,7 +40,8 @@ import { format, isAfter, isEqual } from 'date-fns';
 export default {
   name: "List",
   mounted() {
-   this.getData();
+    this.getData();
+    this.getUserInfo();
   },
   computed:{
     activeList:function(){
@@ -51,6 +52,15 @@ export default {
     }
   },
   methods: {
+    getUserInfo(){
+      axios.get(`/userInfo/get/${jsCookie.get('token')}`)
+      .then(res=>{
+        if(res.data) this.mail = res.data.mail;
+        else this.$bus.$emit('handleAlert','Failed To Getting UserInfo','error');
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Getting UserInfo Error','error');
+      })
+    },
     getData(){
       axios.get(`/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
@@ -122,7 +132,8 @@ export default {
   data() {
     return {
       list:[],
-      editTime:''
+      editTime:'',
+      mail:''
     };
   },
 };
