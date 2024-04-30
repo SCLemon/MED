@@ -7,7 +7,7 @@
       </router-link>
     </div>
     <div class="list">
-      <div class="list-content" v-for="(obj, id) in list" :key="id" v-show="handleDateIsAfterOrToday(obj.date)">
+      <div class="list-content" v-for="(obj, id) in activeList" :key="id">
           <div class="title">
             <div class="title-name">{{ obj.date }}（{{ handleDayOfWeek(obj.date) }}）</div>
             <div class="title-edit" @click="openEdit(obj.date)" v-if="obj.date != editTime">Edit</div>
@@ -42,13 +42,19 @@ export default {
   mounted() {
    this.getData();
   },
+  computed:{
+    activeList:function(){
+      return this.list.filter(obj=>{
+        return isAfter(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) 
+        || isEqual(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd')))
+      })
+    }
+  },
   methods: {
     getData(){
       axios.get(`/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
-        if(Array.isArray(res.data.data)){
-          this.handleData(res.data.data)
-        }
+        if(Array.isArray(res.data.data)) this.handleData(res.data.data)
         else if(res.data=='new'){}
         else this.$bus.$emit('handleAlert','Failed To Getting TodoList','error');
       })
@@ -58,9 +64,6 @@ export default {
     },
     handleDayOfWeek(date){
       return format(date,'EEE')
-    },
-    handleDateIsAfterOrToday(date){
-      return isAfter(new Date(format(date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) || isEqual(new Date(format(date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd')))
     },
     handleData(obj){
       obj.sort((a,b)=>{
