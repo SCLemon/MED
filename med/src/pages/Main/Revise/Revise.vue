@@ -28,6 +28,13 @@
         placeholder="请输入内容"
         v-model="content">
     </el-input>
+    <div class="switch">
+        <el-switch
+            v-model="status"
+            active-text="已完成"
+            inactive-text="尚未完成">
+        </el-switch>
+    </div>
     <div class="btn" @click="sendData($route.query.todoListContent.taskId)">Update</div>
   </div>
 </template>
@@ -42,6 +49,7 @@ export default {
         this.title = this.$route.query.todoListContent.title;
         this.content = this.$route.query.todoListContent.content;
         this.period = this.$route.query.todoListContent.period;
+        this.status = this.$route.query.todoListContent.status
         this.date = this.$route.query.todoListDate;
     },
     data(){
@@ -50,6 +58,7 @@ export default {
             date:'',
             period: '',
             content:'',
+            status:false,
             options: [{
                 value: 'morning',
                 label: '早晨'
@@ -80,7 +89,8 @@ export default {
                     todo:{
                         title:this.title,
                         period:this.period,
-                        content:this.content
+                        content:this.content,
+                        status:this.status,
                     }
                 }
                 axios.put('/reminder/update',upload,{
@@ -94,6 +104,7 @@ export default {
                         this.date='';
                         this.period='';
                         this.content='';
+                        this.status='',
                         this.$bus.$emit('handleAlert','Update Reminder Success','success');
                         this.$router.back();
                     }
@@ -141,8 +152,14 @@ export default {
         border: 0.1px solid rgb(190,190,190);
         border-radius: 5px;
         font-size: 17px;
-        margin-top: 17px;
+        margin-top: 10px;
         background-color: #97bf5f;
         color: white;
+    }
+    .switch{
+        margin-top: 8px;
+        padding-left: 5px;
+        height: 40px;
+        line-height: 40px;
     }
 </style>

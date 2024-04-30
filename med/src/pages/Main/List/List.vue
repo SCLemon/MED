@@ -18,7 +18,7 @@
             <div class="todo-each" v-for="(t, id) in obj.todo" :key="id">
               <router-link :to="{
                   path:'/main/revise',
-                  query:{'todoListContent':t,'todoListDate':obj.date}}" class="link">
+                  query:{'todoListContent':t,'todoListDate':obj.date}}" :class="`link ${t.status?'finish':''}`">
                 <div class="task">
                   <i :class="`fa-solid fa-circle circle ${t.period}`"></i>
                   {{ t.title }}
@@ -169,9 +169,13 @@ export default {
   width: 100%;
   height: calc(100vh - 200px);
 }
+.finish{
+  color: rgba(195,195,195);
+  text-decoration: line-through;
+}
 .list-content {
   width: calc(100vw - 40px);
-  height: 150px;
+  min-height: 150px;
   border: 1px solid red;
   border-radius: 5px;
   margin: 0 auto;
@@ -205,16 +209,17 @@ export default {
 }
 .todo {
   width: 100%;
-  height: 110px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding-left: 15px;
   padding-right: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .todo-main {
   width: 100%;
-  height: 90px;
+  min-height: 90px;
   overflow: scroll;
 }
 .todo-each {

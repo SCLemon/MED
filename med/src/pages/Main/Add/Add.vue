@@ -43,6 +43,7 @@ export default {
             title:'',
             date:'',
             period: '',
+            status:false,
             content:'',
             options: [{
                 value: 'morning',
@@ -73,7 +74,8 @@ export default {
                     todo:{
                         title:this.title,
                         period:this.period,
-                        content:this.content
+                        content:this.content,
+                        status:this.status,
                     }
                 }
                 axios.post('/reminder/add',upload,{
@@ -87,6 +89,7 @@ export default {
                         this.date='';
                         this.period='';
                         this.content='';
+                        this.status='',
                         this.$bus.$emit('handleAlert','Add Reminder Success','success');
                         this.$router.back();
                     }

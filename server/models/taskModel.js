@@ -10,6 +10,7 @@ const taskSchema = new mongoose.Schema({
             title:String,
             period:String,
             content:String,
+            status:Boolean,
             taskId:String
         }
     }]
