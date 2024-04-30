@@ -492,7 +492,7 @@ export default {
     height: calc(100vh - 130px);
   }
   .text{
-    line-height: 2;
+    line-height: 1.6;
   }
   .el-dropdown-link {
     cursor: pointer;
