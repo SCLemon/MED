@@ -4,9 +4,6 @@ const axios =require('axios');
 const { connectToDatabase } = require('../db/db');
 connectToDatabase();
 
-const job = schedule.scheduleJob('*/1 * * * *', function() {
-    console.log('正常運行中，目前時間為：', new Date());
-});
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
     taskModel.find()
     .then((res,err)=>{
@@ -24,9 +21,7 @@ function send(data){
         contents:data
     }).then(res=>{
       console.log(res.data)
-      process.exit(0);
     }).catch(e=>{
       console.log('Failed to send Email To Appscript')
-      process.exit(0);
     })
 }
