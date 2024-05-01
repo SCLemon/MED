@@ -64,6 +64,7 @@ export default {
     getData(){
       axios.get(`/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
+        this.$bus.$emit('setRemindStatus',res.data.remind);
         if(Array.isArray(res.data.data)) this.handleData(res.data.data)
         else if(res.data=='new'){}
         else this.$bus.$emit('handleAlert','Failed To Getting TodoList','error');

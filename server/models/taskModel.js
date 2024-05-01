@@ -5,6 +5,10 @@ const mongoose = require('mongoose');
 const taskSchema = new mongoose.Schema({
     token:String,
     mail:String,
+    remind:{
+        type:Boolean,
+        default:true,
+    },
     data:[{
         date:String,
         todo:{

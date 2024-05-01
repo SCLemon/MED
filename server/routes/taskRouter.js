@@ -78,6 +78,18 @@ router.delete('/reminder/delete/:taskId', (req, res) => {
   })
 });
 
+// 通知狀態更新
+router.put('/reminder/remind/',(req,res)=>{
+  taskModel.findOneAndUpdate(
+    {token : req.headers['user-token']},
+    {$set:{remind: req.body.remind}})
+    .then((result)=>{
+      res.status(200).send('success');
+    })
+    .catch(e=>{
+      res.status(200).send('Failed To Change Status in taskModel');
+    })
+})
 
 
 
