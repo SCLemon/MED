@@ -8,15 +8,12 @@ connectToDatabase();
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
     taskModel.find()
     .then((res,err)=>{
-        res = res.filter(obj=>obj.remind);
+        res = res.filter(obj => obj.remind && obj.data.length);
         for(var i=0;i<res.length;i++){
-            res[i].data = res[i].data.filter(obj=>{
-                return new Date(obj.date).getDate() == new Date().getDate();
-            }).sort((a,b)=>{
-                return compare(a.todo.period) - compare(b.todo.period)
-            })
+            res[i].data = res[i].data.filter(obj => new Date(obj.date).getDate() == new Date().getDate())
+                        .sort((a,b) => compare(a.todo.period) - compare(b.todo.period))
         }
-       send(res);
+    send(res);
     })
 });
 
