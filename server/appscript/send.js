@@ -8,6 +8,7 @@ connectToDatabase();
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
     taskModel.find()
     .then((res,err)=>{
+        res = res.filter(obj=>obj.remind);
         for(var i=0;i<res.length;i++){
             res[i].data = res[i].data.filter(obj=>{
                 return new Date(obj.date).getDate() == new Date().getDate();
@@ -18,6 +19,7 @@ const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
        send(res);
     })
 });
+
 function compare(period){
     switch(period){
         case 'morning':
