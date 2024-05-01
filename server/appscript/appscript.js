@@ -2,7 +2,11 @@ const sheet = SpreadsheetApp.getActive().getSheetByName('mail');
 function doPost(e) {
   var data = JSON.parse(e.postData.contents).contents;
   for(var i=0;i<data.length;i++){
-    send(data[i].mail,data[i].data)
+    try{
+      send(data[i].mail,data[i].data)
+    }catch(e){
+      continue;
+    }
   }
   return ContentService.createTextOutput('success').setMimeType(ContentService.MimeType.TEXT);
 }

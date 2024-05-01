@@ -73,7 +73,7 @@ export default {
 }
 .bell{
   position: absolute;
-  right: 5px;
+  right:  10px;
   text-align: center;
   line-height: 60px;
   top: 0px;
