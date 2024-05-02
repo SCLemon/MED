@@ -123,7 +123,7 @@ export default {
   border-collapse:collapse;
 }
 .rows{
-  width: 50px;
+  width: 12vw;
   height: calc((100vh - 240px) / 13);
   line-height: calc((100vh - 240px) / 13);
   text-align: center;
