@@ -5,7 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "fullInstall":"npm i & cd ../server && npm i",
+    "fullStart":"npm run serve & cd ../server && npm start"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
