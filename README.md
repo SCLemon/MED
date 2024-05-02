@@ -1,9 +1,10 @@
 
+<img src="banner.png">
 # MED Reminder
 
 
 This is a daily application app created by integrating AI technology, which includes most commonly used tools to assist you in effectively managing daily life and enhancing functional convenience.
-<img src="banner.png">
+
 
 ## Programming languages
 - Vue CLI
