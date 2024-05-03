@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-        <i class="fa-solid fa-chevron-left back" v-if="$route.path == '/navigator/filter'" @click="$router.back()"></i>
+        <i class="fa-solid fa-chevron-left back" @click="$router.back()"></i>
         <div class="second">Navigator Filter Parameter</div>
     </div>
     <div class="main">

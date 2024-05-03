@@ -45,7 +45,7 @@ const verifyReferer = (req, res, next)=>{
     else res.status(403).send('Forbidden');
 }
 app.use(limitRequests);
-app.use(verifyReferer)
+//app.use(verifyReferer)
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
 app.use(verifyRouter);

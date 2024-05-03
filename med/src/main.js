@@ -11,9 +11,11 @@ Vue.use(ElementUI);
 import * as VueGoogleMaps from 'vue2-google-maps'
 
 import './registerServiceWorker'
+
+import {googleMapKey} from './apiKey'
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyDzUXKKyo-Cs3FNNRONt75fUrQEvUTraTE',
+    key: googleMapKey,
     libraries: 'places', 
   },
 })

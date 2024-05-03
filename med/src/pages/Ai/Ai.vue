@@ -76,11 +76,11 @@
 import axios from 'axios';
 import { format } from 'date-fns'
 import OpenAI from "openai";
+import {openaiKey} from '../../apiKey'
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
 import markdownit from 'markdown-it'
-const apiKey = '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';
-const openai = new OpenAI({apiKey:apiKey,dangerouslyAllowBrowser: true});
+const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
 
 export default {
   name:'Ai',
