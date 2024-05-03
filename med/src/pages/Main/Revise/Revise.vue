@@ -81,7 +81,7 @@ export default {
     },
     methods:{
         sendData(taskId){
-            if(this.title.trim()=='' || this.date=='' || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
+            if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
             else{
                 var upload = {
                     taskId:taskId,

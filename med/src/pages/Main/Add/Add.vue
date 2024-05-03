@@ -68,7 +68,7 @@ export default {
     },
     methods:{
         sendData(){
-            if(this.title.trim()=='' || this.date=='' || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
+            if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
             else{
                 var upload = {
                     date:format(new Date(this.date),'yyyy/MM/dd'),

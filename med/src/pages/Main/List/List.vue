@@ -36,7 +36,7 @@
 <script>
 import axios from 'axios';
 import jsCookie from 'js-cookie';
-import { format, isAfter, isEqual } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 export default {
   name: "List",
   mounted() {
@@ -46,8 +46,7 @@ export default {
   computed:{
     activeList:function(){
       return this.list.filter(obj=>{
-        return isAfter(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) 
-        || isEqual(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd')))
+        return !isBefore(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) 
       })
     }
   },
