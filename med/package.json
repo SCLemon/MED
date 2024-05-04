@@ -6,8 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "fullInstall":"npm i & cd ../server && npm i",
-    "fullStart":"npm run serve & cd ../server && npm start"
+    "fullInstall": "npm i & cd ../server && npm i",
+    "fullStart": "npm run serve & cd ../server && npm start"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
@@ -33,7 +33,10 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
-    "vue-template-compiler": "^2.6.14"
+    "javascript-obfuscator": "^4.1.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "vue-template-compiler": "^2.6.14",
+    "webpack-obfuscator": "^3.5.1"
   },
   "eslintConfig": {
     "root": true,
