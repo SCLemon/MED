@@ -6,20 +6,19 @@ module.exports = defineConfig({
   lintOnSave: false,
   publicPath: './',
   configureWebpack:(config)=>{
-    // config.optimization.minimizer[0].options.terserOptions.compress = {
-    //   drop_console: true,
-    // };
-    config.plugins.push(
-      new WebpackObfuscator({
-        rotateUnicodeArray: true,
-      })
-    );
-    config.optimization.minimizer.push(
-      new TerserPlugin({
-        terserOptions: {
-          mangle: true, // 开启变量名混淆
-        },
-      })
-    );
+    if (process.env.NODE_ENV === 'production') {
+      config.plugins.push(
+        new WebpackObfuscator({
+          rotateUnicodeArray: true,
+        })
+      );
+      config.optimization.minimizer.push(
+        new TerserPlugin({
+          terserOptions: {
+            mangle: true, // 开启变量名混淆
+          },
+        })
+      );
+    }
   }
 })
