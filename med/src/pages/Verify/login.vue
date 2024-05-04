@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import {host} from '../../serverPath'
 import axios from 'axios';
 export default {
   name:'Register',
@@ -39,7 +40,7 @@ export default {
   methods:{
     sendData(){
       if(this.mail.trim()!=='' && this.password.trim()!=''){
-        axios.post('/verify/login',{
+        axios.post(`${host}/verify/login`,{
           mail: this.mail,
           password: this.password,
         }).then(res=>{

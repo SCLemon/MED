@@ -1,9 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 // 轉換
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 開放跨域
+app.use(cors({
+    origin: '*' 
+}))
 
 // 初始化資料庫
 const { connectToDatabase, disconnectFromDatabase } = require('./db/db');
@@ -13,6 +19,8 @@ process.on('SIGINT', function() {
     // 這裡可以進行其他的清理操作，例如關閉伺服器
     process.exit(0);
 });
+
+
 
 // 防止惡意攻擊
 const requestCounts = new Map();
@@ -46,6 +54,9 @@ const verifyReferer = (req, res, next)=>{
 }
 app.use(limitRequests);
 //app.use(verifyReferer)
+
+
+
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
 app.use(verifyRouter);

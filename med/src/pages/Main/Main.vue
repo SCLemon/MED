@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import {host} from '../../serverPath'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 export default {
@@ -25,7 +26,7 @@ export default {
   methods:{
     changeRemind(){
       this.remind=!this.remind;
-      axios.put('/reminder/remind',{
+      axios.put(`${host}/reminder/remind`,{
         remind:this.remind
       },{
         headers:{

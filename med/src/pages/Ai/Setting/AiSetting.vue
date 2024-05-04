@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import {host} from '../../../serverPath.js'
 import jsCookie from 'js-cookie';
 import axios from 'axios';
 export default {
@@ -48,7 +49,7 @@ export default {
     },
     methods:{
         sendData(){
-            axios.post('/aiSetting/record',{
+            axios.post(`${host}/aiSetting/record`,{
                 record:this.setting
             },
             {
@@ -65,7 +66,7 @@ export default {
             })
         },
         getData(){
-            axios.get(`/aiSetting/get/${jsCookie.get('token')}`)
+            axios.get(`${host}/aiSetting/get/${jsCookie.get('token')}`)
             .then(res=>{
                 if(res.data!='new'){
                     this.setting = res.data;

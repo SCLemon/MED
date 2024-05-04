@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import {host} from '../../serverPath.js'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 export default {
@@ -64,7 +65,7 @@ export default {
   },
   methods:{
     getUserInfo(){
-      axios.get(`/userInfo/get/${jsCookie.get('token')}`)
+      axios.get(`${host}/userInfo/get/${jsCookie.get('token')}`)
       .then(res=>{
         if(res.data){
           this.update.user = res.data.user;
@@ -100,7 +101,7 @@ export default {
       if(!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(this.update.mail)) this.$bus.$emit('handleAlert','Invalid Mail Format','error');
       else if(this.update.user.trim()=='' || this.update.password.trim()=='' || this.update.mail.trim()=='') this.$bus.$emit('handleAlert','Blank Not Allowed','error');
       else{
-        axios.put('/userInfo/update',this.update,{
+        axios.put(`${host}/userInfo/update`,this.update,{
           headers:{
             'user-token':jsCookie.get('token')
           }

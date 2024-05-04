@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import {host} from '../../../serverPath'
 import jsCookie from 'js-cookie';
 import axios from 'axios';
 import { format } from "date-fns";
@@ -79,7 +80,7 @@ export default {
                         status:this.status,
                     }
                 }
-                axios.post('/reminder/add',upload,{
+                axios.post(`${host}/reminder/add`,upload,{
                     headers:{
                         'user-token':jsCookie.get('token'),
                         'user-mail':this.mail

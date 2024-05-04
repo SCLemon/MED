@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import {host} from '../../serverPath'
 import axios from 'axios'
 import jsCookie from 'js-cookie';
 export default {
@@ -56,7 +57,7 @@ export default {
     },
     methods:{
       getData(){
-        axios.get(`/schedule/get/${jsCookie.get('token')}`)
+        axios.get(`${host}/schedule/get/${jsCookie.get('token')}`)
         .then(res=>{
           if(res.data=='new'){}
           else if(!(res.data).toString().includes('error')) this.list = res.data;
@@ -67,7 +68,7 @@ export default {
         })
       },
       record(){
-        axios.post('/schedule/record',{
+        axios.post(`${host}/schedule/record`,{
           record:this.list
         },{
           headers:{

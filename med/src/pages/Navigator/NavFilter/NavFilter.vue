@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import {host} from '../../../serverPath'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 export default {
@@ -62,7 +63,7 @@ export default {
     },
     methods: {
         sendData(){
-            axios.post('/filter/record',{
+            axios.post(`${host}/filter/record`,{
                 record:this.filter
             },
             {
@@ -79,7 +80,7 @@ export default {
             })
         },
         getData(){
-            axios.get(`/filter/get/${jsCookie.get('token')}`)
+            axios.get(`${host}/filter/get/${jsCookie.get('token')}`)
             .then(res=>{
                 if(res.data!='new'){
                     this.filter = res.data;

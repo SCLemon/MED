@@ -44,6 +44,7 @@
   </template>
   
   <script>
+  import { host } from '../../../serverPath';
   import axios from 'axios';
   import jsCookie from 'js-cookie';
   export default {
@@ -169,7 +170,7 @@
         return result;
       },
       getFilter(){
-            axios.get(`/filter/get/${jsCookie.get('token')}`)
+            axios.get(`${host}/filter/get/${jsCookie.get('token')}`)
             .then(res=>{
                 if(res.data!='new'){
                   // option

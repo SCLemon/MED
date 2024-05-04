@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import {host} from '../../serverPath'
 import axios from 'axios';
 import { format } from 'date-fns'
 import OpenAI from "openai";
@@ -175,7 +176,7 @@ export default {
       this.$refs.moreIcon.classList.toggle('showMark');
     },
     getSetting(){
-      axios.get(`/aiSetting/get/${jsCookie.get('token')}`)
+      axios.get(`${host}/aiSetting/get/${jsCookie.get('token')}`)
       .then(res=>{
         if(res.data!='new'){
           this.setting = res.data;
@@ -188,7 +189,7 @@ export default {
       })
     },
     getData(){
-      axios.get(`/chat/get/${jsCookie.get('token')}`)
+      axios.get(`${host}/chat/get/${jsCookie.get('token')}`)
       .then(res=>{
         if(res.data == 'new') this.totalMsg = [{role:'system',content:'hello! how can I help you?'}];
         else this.totalMsg =res.data;
@@ -198,7 +199,7 @@ export default {
     },
     deleteData(){
       this.input='';
-      axios.delete(`/chat/delete/${jsCookie.get('token')}`)
+      axios.delete(`${host}/chat/delete/${jsCookie.get('token')}`)
       .then(res=>{
         if(res.data == 'success') {
           this.$bus.$emit('handleAlert','Delete Message Success','success');
@@ -210,7 +211,7 @@ export default {
       })
     },
     recordData(){
-      axios.post('/chat/record',{
+      axios.post(`${host}/chat/record`,{
         record: this.totalMsg
       },{
         headers: {

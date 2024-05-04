@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import {host} from '../../../serverPath'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 import { format, isBefore } from 'date-fns';
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     getUserInfo(){
-      axios.get(`/userInfo/get/${jsCookie.get('token')}`)
+      axios.get(`${host}/userInfo/get/${jsCookie.get('token')}`)
       .then(res=>{
         if(res.data) this.mail = res.data.mail;
         else this.$bus.$emit('handleAlert','Failed To Getting UserInfo','error');
@@ -61,7 +62,7 @@ export default {
       })
     },
     getData(){
-      axios.get(`/reminder/get/${jsCookie.get('token')}`)
+      axios.get(`${host}/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
         this.$bus.$emit('setRemindStatus',res.data.remind);
         if(Array.isArray(res.data.data)) this.handleData(res.data.data)
@@ -110,7 +111,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-          axios.delete(`/reminder/delete/${id}`,{
+          axios.delete(`${host}/reminder/delete/${id}`,{
           headers:{
             'user-token':jsCookie.get('token')
           }

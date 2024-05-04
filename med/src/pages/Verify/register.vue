@@ -30,6 +30,7 @@
   </template>
   
   <script>
+  import {host} from '../../serverPath'
   import axios from 'axios';
   export default {
     name:'Register',
@@ -44,7 +45,7 @@
     methods:{
       sendData(){
         if(this.user.trim()!=='' && this.password.trim()!='' && this.mail.trim()!=''){
-          axios.post('/verify/register',{
+          axios.post(`${host}/verify/register`,{
             user: this.user,
             password: this.password,
             mail:this.mail
