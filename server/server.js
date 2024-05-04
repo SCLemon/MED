@@ -46,16 +46,7 @@ const limitRequests = (req, res, next) => {
     next();
 };
 
-// 驗證 referer
-const verifyReferer = (req, res, next)=>{
-    const referer = req.get('referer');
-    if(referer.includes('localhost')|| referer.includes('192.168.100.136')) next()
-    else res.status(403).send('Forbidden');
-}
 app.use(limitRequests);
-//app.use(verifyReferer)
-
-
 
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
