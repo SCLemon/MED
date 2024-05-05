@@ -14,7 +14,7 @@ router.post('/aiSetting/record',(req, res) => {
       if(err) res.status(200).send('error when creating new record in AiSettingModel');
       else res.status(200).send('success')
   }).catch(e=>{
-    res.status(200).send('error when creating new record in filterModel');
+    res.status(200).send('error when creating new record in AiSettingModel');
   })
 });
 

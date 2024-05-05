@@ -2,7 +2,7 @@
   <div>
     <div class="top">
         <i class="fa-solid fa-chevron-left back"  @click="$router.replace('/more')"></i>
-        <i class="fa-regular fa-images"></i> Image Generator
+        <i class="fa-regular fa-images"></i> Image Generator <i class="fa-solid fa-clock-rotate-left history" @click="$router.replace('/imageHistory')"></i>
     </div>
     <div class="main">
         <div class="block">
@@ -38,12 +38,20 @@
             placeholder="Input Your Prompt Text"
             v-model="setting.prompt">
         </el-input>
+        <div class="switch" v-if="!isMobile">
+            <el-switch
+                v-model="protect"
+                active-text="自動下載"
+                inactive-text="手動下載">
+            </el-switch>
+        </div>
         <div class="block block2">
             <el-button type="primary" class="send" @click="optimization()" :loading="gen.isLoading">{{gen.status}}</el-button>
         </div>
         <div :class="`output output-${setting.size}`" v-if="gen.isFinish">
             <img v-for="(obj,id) in output" :key="id" :src="`data:image/png;base64,${obj.b64_json}`" alt="" :class="`img size-${setting.size}`">
         </div>
+        <div class="alert-text" v-if="gen.isFinish"><i class="fa-solid fa-circle-exclamation exclamation"></i>{{isMobile?'圖片資料不保留，請長按上方圖片以保存':'圖片資料不保留，離開前請記得保存'}}</div>
     </div>
   </div>
 </template>
@@ -51,17 +59,43 @@
 <script>
 import OpenAI from "openai";
 import {openaiKey} from '../../apiKey'
+import axios from 'axios';
+import jsCookie from 'js-cookie'
+import {host} from '../../serverPath'
+import {format} from 'date-fns'
 const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
 export default {
     name:'ImageGenerator',
+    mounted(){
+        try{
+            var d = this.$route.query.ImageDetail
+            if(d){
+                this.quality = d.record.quality;
+                this.style = d.record.style;
+                this.setting = d.record.setting;
+            }
+        }
+        catch(e){}
+    },
+    computed:{
+      isMobile(){
+        if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i)|| navigator.userAgent.match(/Windows Phone/i))
+          {
+            return true;
+          }
+        else return false;
+      }
+    },
     data(){
         return{
+            protect:true,
             gen:{
                 isFinish:false,
                 isLoading:false,
                 status:'Start To Generate'
             },
-            output:'',
+            output:[],
             quality:'Standard',
             style:'Vivid',
             setting:{
@@ -115,6 +149,7 @@ export default {
             });          
         },
         generate(){
+            this.autoSave();
             this.$bus.$emit('handleAlert','Start To Generating Image','warning');
             this.setting.style = this.style.toLowerCase();
             this.setting.quality = this.quality.toLowerCase();
@@ -124,6 +159,7 @@ export default {
             openai.images.generate(this.setting)
             .then(res=>{
                 this.output=res.data;
+                this.recordData();
                 this.$bus.$emit('handleAlert','Success To Generate Image','success')
             })
             .catch(e=>{
@@ -134,7 +170,41 @@ export default {
                 this.gen.isFinish=true;
                 this.gen.status='Start To Generate'
             })
+        },
+        recordData(){
+            axios.post(`${host}/imageHistory/record`,{
+                date:format(new Date(),'yyyy-MM-dd'),
+                record:{
+                    quality:this.quality,
+                    style:this.style,
+                    setting:this.setting,
+                }
+            },{
+                headers:{
+                    'user-token':jsCookie.get('token')
+                }
+            })
+            .then(res=>{})
+            .catch(e=>{
+                this.$bus.$emit('handleAlert','Failed To Record the Generated Image','error')
+            })
+        },
+        autoSave(){
+           try{
+            if(this.output.length && this.protect && !this.isMobile){
+                var a = document.createElement("a"); 
+                for(var i =0 ; i< this.output.length ;i++){
+                    a.href = "data:image/png;base64," + this.output[i].b64_json;
+                    a.download = `${i+1}.png`;
+                    a.click();
+                }
+            }
+           }
+           catch(e){}
         }
+    },
+    beforeDestroy(){
+        this.autoSave();
     }
 }
 </script>
@@ -177,7 +247,6 @@ export default {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        padding-bottom: 30px;
         overflow: scroll;
     }
     .output-256x256{
@@ -215,9 +284,6 @@ export default {
         margin-left: 4.5%;
         margin-right: 3.75%;
     }
-    .block2{
-        margin-top: 10px;
-    }
     .send{
         width:100%;
         margin: 0 auto;
@@ -239,5 +305,27 @@ export default {
     .size-1024x1024{
         width: 1024px;
         height: 1024px;
+    }
+    .history{
+        position: absolute;
+        right:5px;
+        height: 60px;
+        line-height: 60px;
+        width: 60px;
+    }
+    .switch{
+        margin-top: 15px;
+        margin-left: 20px;
+        height: 40px;
+        line-height: 40px;
+    }
+    .alert-text{
+        font-size: 14px;
+        margin-left: 20px;
+    }
+    .exclamation{
+        margin-right: 8px;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 </style>

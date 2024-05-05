@@ -76,6 +76,11 @@ app.use(filterRouter);
 const scheduleRouter = require('./routes/scheduleRouter');
 app.use(scheduleRouter);
 
+// 圖片生成紀錄
+const imageRouter = require('./routes/imageRouter');
+app.use(imageRouter);
+
+
 app.listen(3007, () => {
     console.log('服务已经启动, 端口 3007 正在监听中....')
 })

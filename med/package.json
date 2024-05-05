@@ -17,6 +17,7 @@
     "element-ui": "^2.15.14",
     "html2canvas": "^1.4.1",
     "openai": "^4.32.1",
+    "pako": "^2.1.0",
     "register-service-worker": "^1.7.2",
     "tesseract.js": "^5.0.5",
     "vue": "^2.6.14",

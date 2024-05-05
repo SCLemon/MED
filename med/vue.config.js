@@ -15,7 +15,7 @@ module.exports = defineConfig({
       config.optimization.minimizer.push(
         new TerserPlugin({
           terserOptions: {
-            mangle: true, // 开启变量名混淆
+            mangle: true,
           },
         })
       );
