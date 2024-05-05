@@ -9,6 +9,7 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item><router-link :to="{path:'/aiSetting'}" class="link">參數配置</router-link></el-dropdown-item>
           <el-dropdown-item><div @click="toggleUploadBox()">匯入資料</div></el-dropdown-item>
+          <el-dropdown-item><div @click="exportJSON()">匯出資料</div></el-dropdown-item>
           <el-dropdown-item><div @click="confirmForm('確認刪除？',deleteData)">刪除紀錄</div></el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -55,12 +56,13 @@
               <div class="icon-title">匯出文字</div>
             </div>
           </div>
-          <div class="func" @click="exportJSON()">
+          <div class="func" @click="previewMD()">
             <div class="func-icon">
-              <i class="fa-solid fa-arrow-right-arrow-left icon"></i>
-              <div class="icon-title">數據交互</div>
+              <i class="fa-brands fa-markdown icon"></i>
+              <div class="icon-title">預覽格式</div>
             </div>
           </div>
+          <div class="preview" v-if="preview" v-html="md" ref="preview"></div>
         </div>
       </div>
     </div>
@@ -125,6 +127,12 @@ export default {
       this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
   },
+  computed:{
+    md(){
+      const md = markdownit();
+      return md.render(this.input);
+    }
+  },
   data(){
     return{
       input:'',
@@ -145,7 +153,8 @@ export default {
       recognition:{},
       placeholder:'Send Your Questions',
       totalMsg:[{role:'system',content:'hello! how can I help you?'}],
-      userImg:(localStorage.getItem('userImg')==''||localStorage.getItem('userImg')==undefined)?'/images/1.jpeg':localStorage.getItem('userImg')
+      userImg:(localStorage.getItem('userImg')==''||localStorage.getItem('userImg')==undefined)?'/images/1.jpeg':localStorage.getItem('userImg'),
+      preview:false,
     }
   },
   watch:{
@@ -154,12 +163,21 @@ export default {
             handler(value){
                 this.setWindowScroll();
             }
+        },
+        md:{
+            deep:true,
+            handler(value){
+                this.setPreviewScroll();
+            }
         }
   },
   beforeDestroy(){
     this.recognition={};
   },
   methods:{
+    previewMD(){
+      this.preview=!this.preview;
+    },
     confirmForm(msg,func) {
       this.$confirm(msg, '提示', {
         confirmButtonText: '確定',
@@ -174,6 +192,7 @@ export default {
     toggleMore(){
       this.$refs.more.classList.toggle('showMore');
       this.$refs.moreIcon.classList.toggle('showMark');
+      this.preview=false;
     },
     getSetting(){
       axios.get(`${host}/aiSetting/get/${jsCookie.get('token')}`)
@@ -271,6 +290,14 @@ export default {
         el.scrollTop = el.scrollHeight;
       })
     },
+    setPreviewScroll(){
+      var el = this.$refs.preview;
+      if(el){
+        this.$nextTick(function(){
+          el.scrollTop = el.scrollHeight;
+        })
+      }
+    },
     voiceRecognition(){
       if(this.startVoice){
         this.recognition.stop();
@@ -318,7 +345,7 @@ export default {
       this.synthStatus = false;
       this.synth.cancel();
     },
-    getVoiceList(){ // 之後可以用來創建客製化列表
+    getVoiceList(){
       var voices;
       window.speechSynthesis.addEventListener('voiceschanged', function(){
         voices = this.getVoices();
@@ -622,5 +649,16 @@ export default {
   .ico:active,.ico:hover{
     color: black;
     cursor: pointer;
+  }
+  .preview{
+    width: 100%;
+    height: 40vh;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    word-break: break-all;
+    overflow-y: scroll;
+    border-top: 0.1px dashed gray;
   }
 </style>
