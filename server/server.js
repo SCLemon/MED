@@ -20,8 +20,6 @@ process.on('SIGINT', function() {
     process.exit(0);
 });
 
-
-
 // 防止惡意攻擊
 const requestCounts = new Map();
 const blacklist = [];
@@ -48,6 +46,9 @@ const limitRequests = (req, res, next) => {
 
 app.use(limitRequests);
 
+// api router
+const apiRouter = require('./routes/apiRouter');
+app.use(apiRouter);
 // 驗證
 const verifyRouter = require('./routes/verifyRouter');
 app.use(verifyRouter);

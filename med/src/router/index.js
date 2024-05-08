@@ -24,6 +24,7 @@ import AiSetting from '../pages/Ai/Setting/AiSetting.vue'
 import ImageGenerator from '../pages/ImageGenerator/ImageGenerator.vue'
 import ImageHistory from '../pages/ImageGenerator/ImageHistory/ImageHistory'
 import ImageDetail from '../pages/ImageGenerator/ImageDetail/ImageDetail'
+import News from '../pages/News/News.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -115,6 +116,10 @@ const router = new VueRouter({
         {
             path:'/imageDetail',
             component:ImageDetail
+        },
+        {
+            path:'/news',
+            component:News
         },
         {
             path:'/',

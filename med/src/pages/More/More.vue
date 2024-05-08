@@ -5,7 +5,7 @@
     </div>
     <div class="main">
         <div class="row">
-            <div class="block c1" @click="goTo('')">
+            <div class="block c1" @click="goTo('news')">
                 <img src="../../../public/images/news.png" alt="">
                 <div class="text">即時新聞</div>
             </div>
