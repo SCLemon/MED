@@ -22,7 +22,7 @@
     <div class="main">
         <div class="headline">Curated For You</div>
         <div class="listBox" ref="listBox" @scroll="scrolling()">
-            <a :href="obj.url" target="bd" v-for="(obj,id) in articles" :key="id" class="link">
+            <a :href="obj.url" target="bd" v-for="(obj,id) in filterList" :key="id" class="link">
                 <div class="list">
                     <div class="artist"><i class="fa-solid fa-database pen"></i>{{ obj.source.name }}</div>
                     <div class="title">
@@ -31,7 +31,7 @@
                     </div>
                     <div class="date">
                         <i class="fa-solid fa-calendar-days calendar"></i> {{ handleDate(obj.publishedAt) }}
-                        <i class="fa-solid fa-palette clock"></i> {{ obj.author }}
+                        <i class="fa-solid fa-palette clock"></i> <div class="author">{{ obj.author }}</div> 
                     </div>
                 </div>
             </a>
@@ -47,6 +47,7 @@ export default {
     name:'News',
     data(){
         return{
+            isFinish:true,
             final:false,
             changelang:false,
             categories: ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
@@ -79,6 +80,13 @@ export default {
     },
     mounted(){
        this.getData();
+    },
+    computed:{
+        filterList(){
+            return this.articles.filter(obj=>{
+                return obj.title !='[Removed]'
+            })
+        }
     },
     watch:{
         category:{
@@ -120,7 +128,10 @@ export default {
                             el.scrollTop=0;
                             this.articles = res.data.articles;
                         }
-                        else this.articles = this.articles.concat(res.data.articles);
+                        else{
+                            this.articles = this.articles.concat(res.data.articles);
+                        }
+                        this.isFinish = true;
                     }
                     else {
                         this.final = true;
@@ -134,8 +145,9 @@ export default {
         },
         scrolling(){
             var el = this.$refs.listBox;
-            if(el.offsetHeight+el.scrollTop>=el.scrollHeight-5){
+            if(el.offsetHeight+el.scrollTop>=el.scrollHeight-5 && this.isFinish){
                 this.page++;
+                this.isFinish=false;
                 this.getData();
             }
         }
@@ -296,5 +308,10 @@ export default {
     }
     .link{
         text-decoration: none;
+    }
+    .author{
+        width: 200px;
+        white-space:nowrap;
+        overflow-x: scroll ;
     }
 </style>

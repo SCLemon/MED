@@ -26,7 +26,7 @@
         <div class="detail">
             <div class="subtitle">
                 <div class="sub-list" v-if="content.formatted_address"><i class="fa-solid fa-location-dot"></i><span class="subText">{{ content.formatted_address }}</span></div>
-                <div class="sub-list" v-if="content.website"><i class="fa-solid fa-earth-americas"></i><a class="subText" :href="content.website">{{ content.website }}</a></div>
+                <div class="sub-list" v-if="content.website"><i class="fa-solid fa-earth-americas"></i><a class="subText" :href="content.website" target="bd">{{ content.website }}</a></div>
                 <div class="sub-list" v-if="content.formatted_phone_number"><i class="fa-solid fa-phone"></i><span class="subText">{{ content.formatted_phone_number }}</span></div>
                 <div class="sub-list sub-list2" v-if="content.current_opening_hours"><i class="fa-regular fa-clock"></i>
                     <div class="hours">
