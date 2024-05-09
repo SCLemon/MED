@@ -9,20 +9,27 @@
                 <img src="../../../public/images/news.png" alt="">
                 <div class="text">即時新聞</div>
             </div>
-            <div class="block c2" @click="goTo('/weather')">
-                <img src="../../../public/images/weather.png" alt="">
-                <div class="text">天氣預報</div>
+            <div class="block c2" @click="goTo('/stock')">
+                <img src="../../../public/images/stock.png" alt="">
+                <div class="text">即時行情</div>
             </div>
         </div>
         <div class="row">
-            <div class="block c2" @click="goTo('/medNews')">
-                <img src="../../../public/images/pills.png" alt="">
-                <div class="text">醫學知識</div>
+            <div class="block c2" @click="goTo('/weather')">
+                <img src="../../../public/images/weather.png" alt="">
+                <div class="text">天氣預報</div>
             </div>
             <div class="block c1" @click="goTo('/imageGenerator')">
                 <img src="../../../public/images/pictures.png" alt="">
                 <div class="text">AI 圖片生成</div>
             </div>
+        </div>
+        <div class="row">
+            <div class="block c1" @click="goTo('/medNews')">
+                <img src="../../../public/images/pills.png" alt="">
+                <div class="text">醫學知識</div>
+            </div>
+            <div class="block c2"></div>
         </div>
     </div>
   </div>

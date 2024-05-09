@@ -81,6 +81,9 @@ app.use(scheduleRouter);
 const imageRouter = require('./routes/imageRouter');
 app.use(imageRouter);
 
+// 證券資訊
+const stockRouter = require('./routes/stockRouter');
+app.use(stockRouter);
 
 app.listen(3007, () => {
     console.log('服务已经启动, 端口 3007 正在监听中....')

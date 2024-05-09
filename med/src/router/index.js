@@ -25,6 +25,8 @@ import ImageGenerator from '../pages/ImageGenerator/ImageGenerator.vue'
 import ImageHistory from '../pages/ImageGenerator/ImageHistory/ImageHistory'
 import ImageDetail from '../pages/ImageGenerator/ImageDetail/ImageDetail'
 import News from '../pages/News/News.vue'
+import Stock from '../pages/Stock/Stock.vue'
+import StockInfo from '../pages/Stock/StockInfo/StockInfo.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -120,6 +122,14 @@ const router = new VueRouter({
         {
             path:'/news',
             component:News
+        },
+        {
+            path:'/stock',
+            component:Stock
+        },
+        {
+            path:'/stockInfo',
+            component:StockInfo
         },
         {
             path:'/',

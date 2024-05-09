@@ -32,6 +32,9 @@ module.exports = defineConfig({
       '/imageHistory':{
         target: 'http://127.0.0.1:3007',
       },
+      '/stock':{
+        target: 'http://127.0.0.1:3007',
+      },
       '/api':{
         target: 'http://127.0.0.1:3007',
       }
