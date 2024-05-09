@@ -4,7 +4,7 @@
         <div :class="`searchBar ${changelang?'':'open'}`">
             <div v-if="!changelang" :class="`searchInput`">
                 <i class="fa-solid fa-magnifying-glass glass"></i>
-                <input type="text" class="input" v-model="q" placeholder="Search news,media,topic, and etc.">
+                <input type="text" class="input" v-model="q" placeholder="Search news,media,topic, and etc."  @keydown.enter="search()">
             </div>
             <el-select v-model="country" placeholder="请選擇地區" v-else>
                 <el-option v-for="item in cities" :key="item.value" :label="item.label" :value="item.value">
@@ -21,7 +21,7 @@
     </div>
     <div class="main">
         <div class="headline">Curated For You</div>
-        <div class="listBox" ref="listBox" @scroll="scrolling()">
+        <div class="listBox" ref="listBox" @scroll="scrolling()" v-show="isLoaded">
             <a :href="obj.url" target="bd" v-for="(obj,id) in filterList" :key="id" class="link">
                 <div class="list">
                     <div class="artist"><i class="fa-solid fa-database pen"></i>{{ obj.source.name }}</div>
@@ -36,6 +36,9 @@
                 </div>
             </a>
         </div>
+        <div class="loading" v-show="!isLoaded">
+
+        </div>
     </div>
   </div>
 </template>
@@ -47,6 +50,7 @@ export default {
     name:'News',
     data(){
         return{
+            isLoaded:false,
             isFinish:true,
             final:false,
             changelang:false,
@@ -93,6 +97,7 @@ export default {
             deep:true,
             handler:function(){
                 this.page=1;
+                this.isLoaded = false;
                 this.final=false,
                 this.getData();
             }
@@ -101,14 +106,7 @@ export default {
             deep:true,
             handler:function(){
                 this.page=1;
-                this.final=false,
-                this.getData();
-            }
-        },
-        q:{
-            deep:true,
-            handler:function(){
-                this.page=1;
+                this.isLoaded = false;
                 this.final=false,
                 this.getData();
             }
@@ -118,27 +116,33 @@ export default {
         handleDate(date){
             return format(new Date(date),'yyyy-MM-dd')
         },
-        getData(){
+        search(){
+            this.page=1;
+            this.isLoaded = false;
+            this.final=false,
+            this.getData('q');
+        },
+        getData(flag){
             if(!this.final){
-                axios.get(`/api/news?country=${this.country}&q=${this.q}&category=${this.category}&page=${this.page}`)
+                var url = (flag && this.q.trim()!='')?`/api/news/everything?q=${this.q}&page=${this.page}`:`/api/news/headline?country=${this.country}&q=${this.q}&category=${this.category}&page=${this.page}`
+                axios.get(url)
                 .then(res=>{
                     if(res.data.articles.length){
                         if(this.page==1) {
-                            var el = this.$refs.listBox;
-                            el.scrollTop=0;
                             this.articles = res.data.articles;
+                            this.$nextTick(()=>{
+                                var el = this.$refs.listBox;
+                                el.scrollTop=0;
+                            })
                         }
-                        else{
-                            this.articles = this.articles.concat(res.data.articles);
-                        }
-                        this.isFinish = true;
+                        else this.articles = this.articles.concat(res.data.articles);
                     }
-                    else {
-                        this.final = true;
-                        this.$bus.$emit('handleAlert','This is the last page of the news.','warning');
-                    }
+                    else this.$bus.$emit('handleAlert','This is the last page of the news.','warning');
+                    this.isLoaded = true; // showResult
+                    this.isFinish = true; // scroll
                 })
                 .catch(e=>{
+                    console.log(e)
                     this.$bus.$emit('handleAlert','Failed To Get Breaking News','error');
                 })
             }
@@ -148,7 +152,7 @@ export default {
             if(el.offsetHeight+el.scrollTop>=el.scrollHeight-5 && this.isFinish){
                 this.page++;
                 this.isFinish=false;
-                this.getData();
+                this.q.trim()!=''?this.getData('q'):this.getData();
             }
         }
     }
@@ -313,5 +317,13 @@ export default {
         width: 200px;
         white-space:nowrap;
         overflow-x: scroll ;
+    }
+    .loading{
+        width: 100%;
+        height: calc((100vh - 270px) / 3);
+        background-image: url(./image/loader.gif);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
     }
 </style>
