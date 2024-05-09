@@ -160,7 +160,7 @@ export default {
                 const options = {
                     title: format(new Date(),'yyyy-MM-dd HH:mm:ss'),
                     legend:'none',
-                    chartArea:{top:20,width:'80%',height:'80%'},
+                    chartArea:{width:'80%',height:'80%'},
                     hAxis: {
                         viewWindowMode: 'auto',
                     },
