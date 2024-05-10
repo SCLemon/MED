@@ -1,6 +1,4 @@
 
-<img src="banner.png">
-
 # MED Reminder
 
 
@@ -23,6 +21,34 @@ https://www.mongodb.com/download-center/community/releases
 
 
 
+## API Keys
+
+To run this project, you will need to add the following environment variables to your apiKey file
+
+OpenAI API `API_KEY`  
+```
+https://platform.openai.com/
+```
+
+Fugle API `API_KEY`
+```
+https://newsapi.org/s/taiwan-news-api
+```
+
+Google Cloud API `API_KEY`
+```
+https://cloud.google.com/apis?hl=zh-TW
+```
+
+News API `API_KEY`
+```
+https://developer.fugle.tw/
+```
+
+Weather API `API_KEY`
+```
+https://www.visualcrossing.com/weather-api
+```
 ## Run Locally
 
 Clone the project
