@@ -307,9 +307,7 @@ export default {
         cursor: pointer;
     }
     .selected{
-        background: rgba(210,210,210);
-        color: white;
-        border: 1px solid white;
+        border: 1px solid black;
     }
     .chart{
         width: calc(100vw - 40px);
