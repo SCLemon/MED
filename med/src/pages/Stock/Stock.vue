@@ -6,12 +6,15 @@
             <div class="icon" @click="isSearch=!isSearch">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
+            <div class="icon2" @click="changeExchange()">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
         </div>
         <div class="listHeader">
             <div class="title title-extend">商品</div>
             <div class="title">代號</div>
         </div>
-        <div class="listBox">
+        <div class="listBox" ref="listBox">
             <router-link :to="{path:'/stockInfo',query:{'stock':obj}}" class="product" v-for="(obj,id) in findData" :key="id">
                 <div class="title title-extend product-name">{{obj.name}}</div>
                 <div class="title">{{ obj.symbol }}</div>
@@ -29,6 +32,7 @@ export default {
             isSearch:false,
             list:[],
             input:'',
+            market:'TWSE'
         }
     },
     computed:{
@@ -43,10 +47,26 @@ export default {
     },
     methods:{
         getData(){
-            axios.get('/stock/list')
+            axios.get(`/stock/list?exchange=${this.market}`)
             .then(res=>{
-                this.list = res.data.data
+                if(!res.data.data.length){
+                    this.$bus.$emit('handleAlert',`Failed To Get Info of ${this.market} Market`,'error')
+                }
+                else {
+                    this.list = res.data.data
+                    this.$nextTick(()=>{
+                        this.$refs.listBox.scrollTop = 0;
+                    })
+                    this.$bus.$emit('handleAlert',`Success To Get Info of ${this.market} Market`,'success')
+                }
             })
+            .catch(e=>{
+                this.$bus.$emit('handleAlert',`Failed To Get Info of ${this.market} Market`,'error')
+            })
+        },
+        changeExchange(){
+            this.market == 'TWSE'? this.market = 'TPEx': this.market = 'TWSE';
+            this.getData();
         }
     }
 }
@@ -69,6 +89,12 @@ export default {
     .icon{
         position: absolute;
         right:10px;
+        top:0;
+        width: 60px;
+    }
+    .icon2{
+        position: absolute;
+        left:10px;
         top:0;
         width: 60px;
     }

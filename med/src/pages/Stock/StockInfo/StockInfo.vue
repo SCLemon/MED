@@ -23,6 +23,9 @@
             <div class="limit-content h">Highest: <span :class="`highest ${comparePrice(datas.highPrice)}`">{{datas.highPrice}}</span></div>
             <div class="limit-content l">Lowest: <span :class="`lowest ${comparePrice(datas.lowPrice)}`">{{datas.lowPrice}}</span></div>
         </div>
+        <div class="option">
+            <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj?'selected':''}`" @click="select(obj)">{{ obj }} 分</div>
+        </div>
         <div class="chart" ref="chart"></div>
         <div class="detail">
             <div class="detail-top">Overview
@@ -78,6 +81,8 @@ export default {
             chart:{},
             times:0,
             timer:0,
+            timeframes:[1,5,10,15,30,60],
+            timeframe:30,
         }
     },
     mounted(){
@@ -88,7 +93,7 @@ export default {
             this.getData();
             this.timer = setInterval(()=>{
                 this.getData();
-            },20000);
+            },10000);
         };
         document.head.appendChild(script);
     },
@@ -127,6 +132,10 @@ export default {
         clearInterval(this.timer)
     },
     methods:{
+        select(timeframe){
+            this.timeframe = timeframe;
+            this.getCandle();
+        },
         getData(){
             axios.get(`/stock/getInfo?symbol=${this.stock.symbol}`)
             .then(res=>{
@@ -135,7 +144,7 @@ export default {
             })
         },
         getCandle(){
-            axios.get(`/stock/candles?symbol=${this.stock.symbol}&timeframe=5`)
+            axios.get(`/stock/candles?symbol=${this.stock.symbol}&timeframe=${this.timeframe}`)
             .then(res=>{
                 this.candles = res.data;
                 google.charts.setOnLoadCallback(this.drawChart);
@@ -160,7 +169,7 @@ export default {
                 const options = {
                     title: format(new Date(),'yyyy-MM-dd HH:mm:ss'),
                     legend:'none',
-                    chartArea:{width:'80%',height:'80%'},
+                    chartArea:{width:'80%',height:'70%'},
                     hAxis: {
                         viewWindowMode: 'auto',
                     },
@@ -168,7 +177,7 @@ export default {
                         minValue:this.datas.lowPrice*0.998,
                         maxValue:this.datas.lowPrice*1.002
                     },
-                    width: this.$refs.chart.clientWidth+30
+                    width: this.$refs.chart.clientWidth+65,
                 };
                 if(this.times){
                     this.chart.clearChart()
@@ -176,7 +185,9 @@ export default {
                 this.chart = new google.visualization.CandlestickChart(this.$refs.chart);
                 this.chart.draw(data, options);
                 this.times++;
-            }catch(e){}
+            }catch(e){
+                console.log(e)
+            }
         },
     }
 }
@@ -275,11 +286,35 @@ export default {
     .l{
         text-align: right;
     }
+    .option{
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    .option-select{
+        width: calc((100vw - 40px) / 6);
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 10px;
+        border: 1px solid rgb(230,230,230);
+        font-size: 12px;
+    }
+    .option-select:hover{
+        cursor: pointer;
+    }
+    .selected{
+        background: rgba(210,210,210);
+        color: white;
+        border: 1px solid white;
+    }
     .chart{
         width: calc(100vw - 40px);
-        margin-left: 20px;
-        margin-right: 20px;
-        height: 230px;
+
+        height: 195px;
         margin-bottom: 10px;
     }
     .detail{

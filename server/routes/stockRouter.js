@@ -23,7 +23,7 @@ router.get('/stock/candles',(req,res)=>{
     client.stock.intraday.candles({ symbol: symbol, timeframe: timeframe })
     .then(data => {
         try{
-            var result = data.data.map(item => [format(item.date,'HH:mm'), item.low, item.open, item.close, item.high,`color:${item.close>item.open?'red':item.close<item.open?'#27de27':'gray'}`]);
+            var result = data.data.map(item => [format(item.date,'HH'), item.low, item.open, item.close, item.high,`color:${item.close>item.open?'red':item.close<item.open?'#27de27':'gray'}`]);
             res.send(result);
         }catch(e){}
     })
@@ -34,10 +34,14 @@ router.get('/stock/candles',(req,res)=>{
 
 router.get('/stock/list',(req,res)=>{
     client.stock.intraday
-    .tickers({ type: "EQUITY", exchange: "TWSE", isNormal: true })
+    .tickers({ type: "EQUITY", exchange: req.query.exchange, isNormal: true })
     .then((data) =>{
+        data.data.sort((a,b)=>{
+            return parseInt(a.symbol) - parseInt(b.symbol);
+        })
         res.send(data)
     }).catch(e=>{
+        console.log(e)
         res.send('error')
     })
 })
