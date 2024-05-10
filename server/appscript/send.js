@@ -3,7 +3,7 @@ const taskModel = require('../models/taskModel');
 const axios =require('axios');
 const { connectToDatabase } = require('../db/db');
 connectToDatabase();
-
+const url = 'https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec' // appscript
 
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
     taskModel.find()
@@ -32,7 +32,7 @@ function compare(period){
     }
 }
 function send(data){
-    axios.post('https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec',{
+    axios.post(url,{
         contents:data
     }).then(res=>{
       console.log(res.data)

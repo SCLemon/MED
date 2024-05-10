@@ -49,6 +49,18 @@ Weather API `API_KEY`
 ```
 https://www.visualcrossing.com/weather-api
 ```
+## AppScript Setup
+The code has been placed in the following folder
+```
+server/appscript/appscript.js
+```
+You only need to create an appscript at Google Platform, and get an url, and put it in the following file.
+```
+server/appscript/send.js
+```
+
+
+
 ## Proxy Config
 ```
  proxy: {
@@ -83,7 +95,7 @@ https://www.visualcrossing.com/weather-api
         target: 'http://127.0.0.1:3007',
       }
     }
-
+```
 
 
 ## Run Locally
