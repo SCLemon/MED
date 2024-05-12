@@ -74,9 +74,6 @@ export default {
             else this.interval = format(new Date(this.second*1000),'mm:ss')
         },1000)
         this.utterance.lang = 'auto';
-        this.utterance.onend = () => {
-            this.synthStatus = !this.synthStatus;
-        };
     },
     beforeDestroy(){
         clearInterval(this.timer);
