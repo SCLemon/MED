@@ -27,6 +27,8 @@ import ImageDetail from '../pages/ImageGenerator/ImageDetail/ImageDetail'
 import News from '../pages/News/News.vue'
 import Stock from '../pages/Stock/Stock.vue'
 import StockInfo from '../pages/Stock/StockInfo/StockInfo.vue'
+import Word from '../pages/Word/Word.vue'
+import WordTest from '../pages/Word/WordTest/WordTest.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -130,6 +132,14 @@ const router = new VueRouter({
         {
             path:'/stockInfo',
             component:StockInfo
+        },
+        {
+            path:'/word',
+            component:Word
+        },
+        {
+            path:'/word/test',
+            component:WordTest
         },
         {
             path:'/',

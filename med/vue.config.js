@@ -35,6 +35,9 @@ module.exports = defineConfig({
       '/stock':{
         target: 'http://127.0.0.1:3007',
       },
+      '/word':{
+        target: 'http://127.0.0.1:3007',
+      },
       '/api':{
         target: 'http://127.0.0.1:3007',
       }

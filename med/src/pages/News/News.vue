@@ -12,7 +12,6 @@
                 <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
             </el-option>
         </el-select>
-            
         </div>
         <i class="fa-solid fa-globe globe" @click="changelang=!changelang"></i>
     </div>

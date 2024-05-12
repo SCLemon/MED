@@ -3,7 +3,7 @@ const taskModel = require('../models/taskModel');
 const axios =require('axios');
 const { connectToDatabase } = require('../db/db');
 connectToDatabase();
-const url = 'Your AppScript Url' // appscript
+const url = 'https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec' // appscript
 
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
     taskModel.find()

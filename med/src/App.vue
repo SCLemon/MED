@@ -83,5 +83,7 @@ export default {
       bottom: 0;
       border-top: 0.1px solid rgb(210, 210, 210);
     }
-
+    .el-progress__text{
+      margin-left: 15px !important;
+    }
 </style>
