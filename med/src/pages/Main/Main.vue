@@ -1,8 +1,10 @@
 <template>
   <div class="mainBox">
     <i class="fa-solid fa-chevron-left back" v-if="$route.path != '/main'" @click="$router.back()"></i>
+    <i class="fa-solid fa-cloud-sun back2" v-else @click="$router.replace('/weather')"></i>
+    
     <div class="top">TodoList Reminder</div>
-    <i :class="`fa-regular fa-bell${remind?'':'-slash'} bell`" @click="changeRemind()" v-if="$route.path=='/main'"></i>
+    <i :class="`fa-solid fa-bell${remind?'':'-slash'} bell`" @click="changeRemind()" v-if="$route.path=='/main'"></i>
     <router-view></router-view>
   </div>
 </template>
@@ -70,6 +72,20 @@ export default {
   width: 60px;
 }
 .back:hover{
+  cursor: pointer;
+}
+.back2 {
+  position: absolute;
+  left: 12px;
+  text-align: center;
+  line-height: 60px;
+  top: 0px;
+  font-size: 20px;
+  height: 60px;
+  z-index:999;
+  width: 60px;
+}
+.back2:hover{
   cursor: pointer;
 }
 .bell{

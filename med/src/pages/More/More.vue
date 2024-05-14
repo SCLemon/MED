@@ -24,14 +24,6 @@
                 <div class="text">單字學習卡</div>
             </div>
         </div>
-        <div class="row">
-            <div class="block c1" @click="goTo('/weather')">
-                <img src="../../../public/images/weather.png" alt="">
-                <div class="text">天氣預報</div>
-            </div>
-            <div class="block c2" @click="goTo('')">
-            </div>
-        </div>
     </div>
   </div>
 </template>

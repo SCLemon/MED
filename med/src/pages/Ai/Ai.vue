@@ -465,7 +465,7 @@ export default {
   }
   .back{
       position: absolute;
-      left: 0px;
+      left: 5px;
       text-align: center;
       line-height: 60px;
       top: 0px;

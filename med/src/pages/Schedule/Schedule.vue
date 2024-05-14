@@ -1,7 +1,10 @@
 <template>
   <div class="mainBox">
     <div class="main">
-      <div class="title">School Schedule</div>
+      <div class="title">
+        <i class="fa-solid fa-chevron-left left" @click="$router.back()"></i>
+        School Schedule
+      </div>
       <div class="table">
         <div class="col">
           <div class="t">Class</div>
@@ -89,11 +92,22 @@ export default {
 .title {
   color: white;
   text-shadow: 2px 2px 3px gray;
-  height: 60px;
-  line-height: 60px;
-  font-size: 24px;
+  height: 100px;
+  line-height: 100px;
+  font-size: 28px;
   font-weight: bolder;
   text-align: center;
+  position: relative;
+}
+.left{
+  position: absolute;
+  left: 0;
+  width: 60px;
+  text-align: center;
+  line-height: 100px;
+}
+.left:hover{
+  cursor: pointer;
 }
 .main{
   padding-top: 10px;
@@ -125,8 +139,8 @@ export default {
 }
 .rows{
   width: 12vw;
-  height: calc((100vh - 240px) / 13);
-  line-height: calc((100vh - 240px) / 13);
+  height: calc((100vh - 280px) / 13);
+  line-height: calc((100vh - 280px) / 13);
   text-align: center;
   border-bottom: 0.1px solid white;
   border-right: 0.1px solid white;
