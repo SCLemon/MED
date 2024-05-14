@@ -1,7 +1,7 @@
 <template>
   <div class="all">
     <div class="top">
-        <div class="back" @click="$router.back()"><i class="fa-solid fa-chevron-left left"></i>back</div>
+        <div class="back" @click="$router.replace('/word')"><i class="fa-solid fa-chevron-left left"></i>back</div>
         {{category}}
         <div class="interval">{{interval}}</div>
     </div>
@@ -41,6 +41,7 @@ export default {
         return{
             category:this.$route.query.category,
             list:this.$route.query.list,
+            options:this.$route.query.options,
             shuffleIndex:[],
             showQuestion:{},
             status:this.$route.query.status,
@@ -81,11 +82,20 @@ export default {
     },
     computed:{
         question(){
-            var after = this.status[this.category].map((obj,id)=>{
-                return obj<2 ? id:undefined
-            }).filter(obj=>obj!=undefined)
-            if(after.length == 0) return this.list
-            else return after
+            var original = this.status[this.category].map((obj,id)=>{return id})
+            .filter(obj=>{
+                return obj!=undefined && (obj>=(this.options.range[0]-1)) && (obj<=(this.options.range[1]-1))
+            })
+            if(this.options.degree == 'all') return original
+            else{
+                var after = this.status[this.category].map((obj,id)=>{
+                    return obj<=+(this.options.degree) ? id:undefined
+                }).filter(obj=>{
+                    return obj!=undefined && (obj>=(this.options.range[0]-1)) && (obj<=(this.options.range[1]-1))
+                })
+                if(after.length == 0) return original
+                else return after
+            }
         },
         placeholder(){
             if(this.showQuestion.word){
@@ -100,7 +110,7 @@ export default {
     },
     methods:{
         shuffleArray(){
-            let shuffledArray = this.question.slice();
+            let shuffledArray = this.question.slice(0,this.options.quantity);
             for (let i = shuffledArray.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
@@ -123,11 +133,9 @@ export default {
             this.isChange=0;
             this.num++;
             this.color='black'
-            if(this.num == this.list.length){
+            if(this.num == this.shuffleIndex.length){
                 this.$bus.$emit('handleAlert','Congratulations on completing the answer.','success');
-                setTimeout(() => {
-                    this.$router.back(); 
-                }, 1500);
+                this.$router.replace('/word');
             }
             else this.showQuestion = this.list[this.shuffleIndex[this.num]];
             this.q='';
@@ -144,7 +152,6 @@ export default {
             })
         },
         speak(){
-            console.log(this.speed)
             this.utterance.rate = this.speed/50;
             this.utterance.text = this.showQuestion.word;
             this.synth.speak(this.utterance);

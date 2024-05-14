@@ -8,9 +8,9 @@
                 </div>
             </div>
             <router-link class="globe" :to="{
-                path:'/word/test',
+                path:'/word/option',
                 query:{category:this.category,status:this.status,list:this.list}
-            }"><i class="fa-solid fa-vial"></i></router-link>
+            }"><i class="fa-solid fa-pen"></i></router-link>
         </div>
         <div class="category">
             <div  v-for="cat in categories" :key="cat" :class="['cat-select', {'selected': category === cat}]" @click="changeCat(cat)">{{ cat }}</div>
