@@ -29,9 +29,7 @@
                 <img src="../../../public/images/weather.png" alt="">
                 <div class="text">天氣預報</div>
             </div>
-            <div class="block c2" @click="goTo('/imageGenerator')">
-                <img src="../../../public/images/pictures.png" alt="">
-                <div class="text">AI 圖片生成</div>
+            <div class="block c2" @click="goTo('')">
             </div>
         </div>
     </div>

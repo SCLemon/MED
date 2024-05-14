@@ -2,8 +2,8 @@
     <div class="footer">
       <div class="list" :class="{on: $route.path.includes('/main')||$route.path.includes('/schedule')}" @click="goTo('/main')"><i class="fa-solid fa-house"></i></div>
       <div class="list" :class="{on: $route.path.includes('/navigator')}" @click="goTo('/navigator')"><i class="fa-solid fa-location-dot"></i></div>
-      <div class="list" :class="{on: $route.path.includes('/ai')}" @click="goTo('/ai')"><i class="fa-solid fa-message"></i></div>
-      <div class="list" :class="{on: !$route.path.includes('/schedule') && !$route.path.includes('/main') && !$route.path.includes('/navigator') && !$route.path.includes('/ai') && !$route.path.includes('/personal')}" @click="goTo('/more')"><i class="fa-solid fa-cube"></i></div>
+      <div class="list" :class="{on: $route.path.includes('/ai') || $route.path.includes('/image')}" @click="goTo('/ai')"><i class="fa-solid fa-message"></i></div>
+      <div class="list" :class="{on: !$route.path.includes('/schedule') && !$route.path.includes('/main') && !$route.path.includes('/navigator') && !$route.path.includes('/ai') && !$route.path.includes('/image') && !$route.path.includes('/personal')}" @click="goTo('/more')"><i class="fa-solid fa-layer-group"></i></div>
       <div class="list" :class="{on: $route.path.includes('/personal')}" @click="goTo('/personal')"><i class="fa-solid fa-user"></i></div>
     </div>
 </template>

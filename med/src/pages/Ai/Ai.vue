@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="top">
+      <i class="fa-solid fa-wand-magic-sparkles back"  @click="$router.replace('/imageGenerator')"></i>
       <i class="fa-solid fa-hand-holding-medical"></i> Smart Assistant 
       <el-dropdown class="setting">
         <span class="el-dropdown-link">
@@ -462,6 +463,20 @@ export default {
     text-decoration: none;
     color: #606266;
   }
+  .back{
+      position: absolute;
+      left: 0px;
+      text-align: center;
+      line-height: 60px;
+      top: 0px;
+      font-size: 20px;
+      height: 60px;
+      z-index:999;
+      width: 60px;
+    }
+    .back:hover{
+      cursor: pointer;
+    }
   .uploadBox{
     position: absolute;
     top:0;

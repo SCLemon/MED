@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top">
-        <i class="fa-solid fa-chevron-left back"  @click="$router.replace('/more')"></i>
+        <i class="fa-solid fa-chevron-left back"  @click="$router.replace('/ai')"></i>
         <i class="fa-regular fa-images"></i> Image Generator <i class="fa-solid fa-clock-rotate-left history" @click="$router.replace('/imageHistory')"></i>
     </div>
     <div class="main">
