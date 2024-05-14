@@ -10,17 +10,17 @@
             <div class="section">
                <span>Category</span><el-input :placeholder="category" :disabled="true"></el-input>
             </div>
-            <div class="degree">
-                <el-radio class="check" v-model="options.degree" label="-1">Wrong</el-radio>
-                <el-radio class="check" v-model="options.degree" label="1">Basic</el-radio>
-                <el-radio class="check" v-model="options.degree" label="2">A++</el-radio>
-                <el-radio class="check" v-model="options.degree" label="all">All</el-radio>
-            </div>
+            
             <div class="section">
                <span class="text"> Range </span><el-slider v-model="options.range" range show-stops :min="1" :max="list.length"></el-slider>
             </div>
             <div class="section">
                <span class="text"> Quantity </span><el-input-number v-model="options.quantity" :min="1" :max="options.range[1]-options.range[0]+1" label="描述文字"></el-input-number>
+            </div>
+            <div class="degree">
+                <el-radio class="check" v-model="options.degree" label="1">Basic</el-radio>
+                <el-radio class="check" v-model="options.degree" label="2">Proficient</el-radio>
+                <el-radio class="check" v-model="options.degree" label="all">All</el-radio>
             </div>
             <div class="section">
                 <el-button type="primary" class="btn" @click="start()">Start Exam</el-button>
@@ -137,7 +137,6 @@ export default {
         width: 70%;
     }
     .degree{
-        width: 90%;
         height: 80px;
         line-height: 80px;
         margin: 0 auto;

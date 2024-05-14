@@ -20,6 +20,7 @@
                 <div :class="`color ${colorStatus(id)}`"></div>
                 <div class="text">{{obj.word}}</div>
                 <div class="mean">{{obj.definitions[0].partOfSpeech=='片'?'phrase':obj.definitions[0].partOfSpeech}}. {{obj.definitions[0].text}}</div>
+                <div class="index">{{ id+1 }}</div>
             </div>
         </div>
         <div class="pro">
@@ -199,6 +200,14 @@ export default {
         justify-content: space-evenly;
         align-items: center;
         position: relative;
+    }
+    .index{
+        position: absolute;
+        color: rgba(200,200,200);
+        left: 10px;
+        top: 2px;
+        line-height: 1;
+        font-size: 8px;
     }
     .pro{
         height: 40px;
