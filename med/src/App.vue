@@ -61,7 +61,7 @@ export default {
           this.remind = res.data.remind;
           this.list = (res.data.data).filter(todo => (todo.date === date && todo.todo.status === false));
           if(this.remind){
-            this.text2 = `今日尚有 ${this.list.length} 個事項待完成！點擊查看詳情。`
+            this.text2 = this.list.length? `今日尚有 ${this.list.length} 個事項待完成！點擊查看詳情。`: `恭喜您今日事項已全數完成！別忘了為明天得自己訂定一下目標！`
             this.handleNotification();
           }
         }

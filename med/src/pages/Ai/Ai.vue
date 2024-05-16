@@ -34,8 +34,9 @@
         <div class="search">
           <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
           <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
+          <i class="fa-regular fa-image icon-out" @click="uploadImage()"></i>
           <el-input class="input" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="placeholder" v-model="input"></el-input>
-          <i v-if="!isStillOutput" class="fa-solid fa-feather icon-out" @click="sendChatGPT()"></i>
+          <i v-if="!isStillOutput" class="fa-solid fa-feather icon-out" @click="sendText()"></i>
           <i v-else class="fa-solid fa-hourglass-start fa-spin-pulse icon-out"></i>
         </div>
         <div class="more" ref="more">
@@ -127,12 +128,6 @@ export default {
       this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
   },
-  computed:{
-    md(){
-      const md = markdownit();
-      return md.render(this.input);
-    }
-  },
   data(){
     return{
       input:'',
@@ -171,13 +166,116 @@ export default {
             }
         }
   },
+  computed:{
+    gpt(){
+      return {
+        messages:[],
+        model: "gpt-4o",
+        stream:true,
+        max_tokens:this.setting.max_tokens,
+        temperature:this.setting.temperature,
+        frequency_penalty:this.setting.frequency_penalty,
+        presence_penalty:this.setting.presence_penalty
+      }
+    },
+    md(){
+      const md = markdownit();
+      return md.render(this.input);
+    },
+  },
+  updated(){
+    var dom = document.querySelectorAll('.conversation-content img');
+    dom.forEach(img=>{
+        img.style.width='77vw'
+        img.style.marginTop='5px'
+    })
+  },
   beforeDestroy(){
     this.recognition={};
   },
   methods:{
-    previewMD(){
-      this.preview=!this.preview;
+    getData(){
+      axios.get(`${host}/chat/get/${jsCookie.get('token')}`)
+      .then(res=>{
+        if(res.data == 'new') this.totalMsg = [{role:'system',content:'hello! how can I help you?'}];
+        else this.totalMsg =res.data;
+      }).catch(e=>{
+        this.$bus.$emit('handleAlert','Getting Message Error','error');
+      })
     },
+    sendText(){
+      if(this.input.trim()!='' && !this.isStillOutput){
+        this.isStillOutput=true;
+        this.$refs.moreIcon.classList.remove('showMark');
+        this.$refs.more.classList.remove('showMore');
+        this.totalMsg.push({
+          role:'user',
+          content:this.input
+        },{
+          role:'assistant',
+          content:''
+        });
+        this.sendChatGPT(this.totalMsg);
+      }
+      else if (this.isStillOutput) this.$bus.$emit('handleAlert','Please Wait For Text Generating','error');
+      else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
+    },
+    uploadImage() {
+      if(this.input.trim()==''){
+        this.$bus.$emit('handleAlert','Please Input Your Question about Image first','error');
+        return
+      }
+      this.$prompt('请输入圖片網址', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        var arr = [{
+          role:'user',
+          content:[{
+            type: "text", text: this.input
+          },
+          {
+            type: "image_url",
+            image_url: {
+              "url": value,
+            },
+          }],
+        }]
+        this.totalMsg.push({
+          role:'user',
+          content:this.input+`  ![image](${value})`
+        },{
+          role:'assistant',
+          content:''
+        })
+        this.sendChatGPT(arr);
+      }).catch((e) => {
+        console.log(e)
+      });
+    },
+    async sendChatGPT(arr){
+      try{
+        if(this.input.trim()!='' && !this.isStillOutput){
+          this.input=''
+          this.gpt.messages = arr;
+          const response = await openai.chat.completions.create(this.gpt)
+          for await (const chunk of response) {
+            const data = chunk.choices[0].delta.content;
+            if(data==undefined){
+              this.recordData();
+              this.isStillOutput=false;
+            }
+            else this.totalMsg[this.totalMsg.length-1].content+=data;
+          }
+        }
+        else if (this.isStillOutput) this.$bus.$emit('handleAlert','Please Wait For Text Generating','error');
+        else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
+      }
+      catch(e){
+        this.$bus.$emit('handleAlert','Data Size Too Big or Data Type Not Allowed','error');
+      }
+    },
+
     confirmForm(msg,func) {
       this.$confirm(msg, '提示', {
         confirmButtonText: '確定',
@@ -205,15 +303,6 @@ export default {
       })
       .catch(e=>{
         this.$bus.$emit('handleAlert','Getting Setting Error When Connecting Server','error');
-      })
-    },
-    getData(){
-      axios.get(`${host}/chat/get/${jsCookie.get('token')}`)
-      .then(res=>{
-        if(res.data == 'new') this.totalMsg = [{role:'system',content:'hello! how can I help you?'}];
-        else this.totalMsg =res.data;
-      }).catch(e=>{
-        this.$bus.$emit('handleAlert','Getting Message Error','error');
       })
     },
     deleteData(){
@@ -247,42 +336,6 @@ export default {
       }).catch(e=>{
         this.$bus.$emit('handleAlert','Recording Message Error','error');
       })
-    },
-    async sendChatGPT(){
-      if(this.input.trim()!='' && !this.isStillOutput){
-        this.isStillOutput=true;
-        this.$refs.moreIcon.classList.remove('showMark');
-        this.$refs.more.classList.remove('showMore');
-        this.totalMsg.push({
-          role:'user',
-          content:this.input
-        },{
-          role:'assistant',
-          content:''
-        });
-        this.input=''
-        const response = await openai.chat.completions.create({
-          messages: this.totalMsg,
-          model: "gpt-3.5-turbo",
-          stream:true,
-          max_tokens:this.setting.max_tokens,
-          temperature:this.setting.temperature,
-          frequency_penalty:this.setting.frequency_penalty,
-          presence_penalty:this.setting.presence_penalty
-        })
-        for await (const chunk of response) {
-          const data = chunk.choices[0].delta.content;
-          if(data==undefined){
-            this.recordData();
-            this.isStillOutput=false;
-          }
-          else this.totalMsg[this.totalMsg.length-1].content+=data;
-        }
-      }
-      else if (this.isStillOutput){
-        this.$bus.$emit('handleAlert','Please Wait For Text Generating','error');
-      }
-      else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
     },
     setWindowScroll(){
       var el = this.$refs.list;
@@ -329,7 +382,7 @@ export default {
     },
     copyText(text){
       try{
-        navigator.clipboard.writeText(text)
+        navigator.clipboard.writeText(text);
         this.$bus.$emit('handleAlert','Copy Text Successfully','success');
       }
       catch(e){
@@ -452,7 +505,10 @@ export default {
     convertIntoHTML(text){
       const md = markdownit();
       return md.render(text);
-    }
+    },
+    previewMD(){
+      this.preview=!this.preview;
+    },
   }
 }
 </script>
@@ -641,7 +697,7 @@ export default {
     color: red;
   }
   .input{
-    width: 70%;
+    width: 60%;
     padding:3px;
     margin-left: 8px;
     margin-right: 8px;
