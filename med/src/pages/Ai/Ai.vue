@@ -85,7 +85,6 @@ import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
 import markdownit from 'markdown-it'
 const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
-
 export default {
   name:'Ai',
   mounted(){

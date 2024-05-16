@@ -110,12 +110,12 @@ export default {
     },
     methods:{
         shuffleArray(){
-            let shuffledArray = this.question.slice(0,this.options.quantity);
+            let shuffledArray = this.question.slice();
             for (let i = shuffledArray.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
             }
-            this.shuffleIndex = shuffledArray;
+            this.shuffleIndex = shuffledArray.slice(0,this.options.quantity);
         },
         check(){
             this.isChange=1;
