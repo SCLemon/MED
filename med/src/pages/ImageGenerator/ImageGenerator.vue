@@ -29,7 +29,7 @@
         </div>
         <div class="block">
             <div class="title">張數</div>
-            <el-slider v-model="setting.n" class="slider" :min="0" :max="10" :step="1"></el-slider>
+            <el-slider v-model="setting.n" class="slider" :min="0" :max="setting.model=='dall-e-3'?1:10" :step="1"></el-slider>
         </div>
         <el-input
             class="textarea"
@@ -99,7 +99,7 @@ export default {
             quality:'Standard',
             style:'Vivid',
             setting:{
-                model: "dall-e-2",
+                model: "dall-e-3",
                 response_format:'b64_json',
                 n:1,
                 quality:'standard',
@@ -130,7 +130,7 @@ export default {
                         role:'user',
                         content:this.setting.prompt
                     }],
-                    model: "gpt-3.5-turbo"
+                    model: "gpt-4o"
                 })
                 .then(res=>{
                     this.setting.prompt = res.choices[0].message.content;
