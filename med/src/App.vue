@@ -116,6 +116,9 @@ export default {
 </script>
 
 <style>
+    html{
+      overflow: hidden;
+    }
     [v-cloak]{
       display: none;
     }

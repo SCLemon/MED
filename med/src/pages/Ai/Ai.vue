@@ -85,6 +85,8 @@ import {openaiKey} from '../../apiKey'
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
 import markdownit from 'markdown-it'
+import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
 const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
 export default {
   name:'Ai',
@@ -189,6 +191,24 @@ export default {
         img.style.width='77vw'
         img.style.marginTop='5px'
     })
+    var block = document.querySelectorAll('.text pre');
+    block.forEach(obj=>{
+      obj.style.border='0'
+      obj.style.padding='0'
+      obj.style.backgroundColor = 'transparent'
+    })
+    var preview = document.querySelectorAll('.preview pre');
+    preview.forEach(obj=>{
+      obj.style.border='0'
+      obj.style.padding='0'
+      obj.style.backgroundColor = 'transparent'
+    })
+    var code = document.querySelectorAll('.text code');
+    code.forEach(code=>{
+      code.style.border='0'
+      code.style.borderRadius='5px'
+    })
+    hljs.highlightAll();
   },
   beforeDestroy(){
     this.recognition={};
@@ -205,7 +225,6 @@ export default {
     },
     sendText(){
       if(this.input.trim()!='' && !this.isStillOutput){
-        this.isStillOutput=true;
         this.$refs.moreIcon.classList.remove('showMark');
         this.$refs.more.classList.remove('showMore');
         this.totalMsg.push({
@@ -256,6 +275,7 @@ export default {
     async sendChatGPT(arr){
       try{
         if(this.input.trim()!='' && !this.isStillOutput){
+          this.isStillOutput=true;
           this.input=''
           this.gpt.messages = arr;
           const response = await openai.chat.completions.create(this.gpt)
