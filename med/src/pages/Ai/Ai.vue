@@ -132,6 +132,7 @@ export default {
   },
   data(){
     return{
+      markdown: markdownit(),
       input:'',
       outputIndex:0,
       setting:{
@@ -181,8 +182,7 @@ export default {
       }
     },
     md(){
-      const md = markdownit();
-      return md.render(this.input);
+      return this.markdown.render(this.input);
     },
   },
   updated(){
@@ -295,7 +295,6 @@ export default {
         this.$bus.$emit('handleAlert','Data Size Too Big or Data Type Not Allowed','error');
       }
     },
-
     confirmForm(msg,func) {
       this.$confirm(msg, '提示', {
         confirmButtonText: '確定',
@@ -523,8 +522,7 @@ export default {
       target.classList.toggle('uploadShow')
     },
     convertIntoHTML(text){
-      const md = markdownit();
-      return md.render(text);
+      return this.markdown.render(text);
     },
     previewMD(){
       this.preview=!this.preview;
