@@ -41,25 +41,25 @@ router.get('/stock/list',(req,res)=>{
         })
         res.send(data)
     }).catch(e=>{
-        console.log(e)
         res.send('error')
     })
 })
 
-// router.get('/stock/getInfo',(req,res)=>{
-//     var list = ['00679B','00939','00940','00941'];
-//     var output =[];
-//     var flag = 0;
-//     if(list.length){
-//         for(var i =0; i<list.length ;i++){
-//             stock.intraday.quote({symbol:list[i]})
-//             .then(data =>{
-//                 output.push(data)
-//                 flag++;
-//                 if(flag == list.length) res.send(output);
-//             });
-//         }
-//     }
-//     else res.send(output);
-// })
+router.get('/stock/history',(req,res)=>{
+    var date = format(new Date()-365*86400*1000,'yyyy-MM-dd')
+    var symbol = req.query.symbol;
+    stock.historical.candles({
+        symbol:symbol,
+        from:date,
+        fields:'open,high,low,close,volume',
+    })
+    .then(data=>{
+        var output = data.data.map(item => [new Date(item.date).getTime(),item.open, item.high, item.low, item.close,item.volume]).reverse();
+        res.send(output)
+    })
+    .catch(e=>{
+        console.log(e)
+        res.send('error')
+    })
+})
 module.exports = router;

@@ -2,6 +2,8 @@
   <div>
     <div class="top">
         <i class="fa-solid fa-chevron-left back"  @click="$router.back()"></i> {{datas.name}} ({{ datas.symbol }})
+        <div class="changeChart" v-if="chartType=='today'" @click="changeChart('history')">歷史行情</div>
+        <div class="changeChart" v-else @click="changeChart('today')">日內行情</div>
     </div>
     <div class="price">
         <div class="left">
@@ -23,10 +25,11 @@
             <div class="limit-content h">Highest: <span :class="`highest ${comparePrice(datas.highPrice)}`">{{datas.highPrice}}</span></div>
             <div class="limit-content l">Lowest: <span :class="`lowest ${comparePrice(datas.lowPrice)}`">{{datas.lowPrice}}</span></div>
         </div>
-        <div class="option">
+        <div class="option" v-if="chartType=='today'">
             <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj?'selected':''}`" @click="select(obj)">{{ obj }} 分</div>
         </div>
-        <div class="chart" ref="chart"></div>
+        <div class="chart" ref="chart" v-show="chartType=='today'"></div>
+        <div class="h-chart" id="h-chart" v-show="chartType=='history'"></div>
         <div class="detail">
             <div class="detail-top">Overview
                 <div :class="`avg`">Average: <span :class="`${comparePrice(datas.avgPrice)}`">{{datas.avgPrice}}</span></div>
@@ -71,6 +74,7 @@
 <script>
 import axios from 'axios'
 import {format} from 'date-fns'
+import { host } from '@/serverPath'
 export default {
     name:'StockInfo',
     data(){
@@ -79,6 +83,8 @@ export default {
             datas:{},
             candles:[],
             chart:{},
+            history:{},
+            chartType:'today',
             times:0,
             timer:0,
             timeframes:[1,5,10,15,30,60],
@@ -93,7 +99,7 @@ export default {
             this.getData();
             this.timer = setInterval(()=>{
                 this.getData();
-            },10000);
+            },5000);
         };
         document.head.appendChild(script);
     },
@@ -137,7 +143,7 @@ export default {
             this.getCandle();
         },
         getData(){
-            axios.get(`/stock/getInfo?symbol=${this.stock.symbol}`)
+            axios.get(`${host}/stock/getInfo?symbol=${this.stock.symbol}`)
             .then(res=>{
                 this.datas = res.data;
                 this.getCandle();
@@ -148,6 +154,14 @@ export default {
             .then(res=>{
                 this.candles = res.data;
                 google.charts.setOnLoadCallback(this.drawChart);
+            })
+        },
+        getHistory(){
+            var url =`${host}/stock/history?symbol=${this.stock.symbol}`
+            axios.get(url)
+            .then(res=>{
+                this.history=res.data;
+                this.drawHistory();
             })
         },
         comparePrice(price){
@@ -189,6 +203,77 @@ export default {
                 console.log(e)
             }
         },
+        drawHistory(){
+            const  groupingUnits = [['week',[1,2,3,4]], ['month',[1, 2, 3, 4, 6]]];
+            const ohlc = []
+            const volume = [];
+            var d =this.history;
+            for(var i=0; i<d.length;i++){
+                ohlc.push([d[i][0],d[i][1],d[i][2],d[i][3],d[i][4]])
+                volume.push([d[i][0],d[i][5]])
+            };
+            Highcharts.stockChart('h-chart',{
+                rangeSelector: {
+                    selected: 1
+                },
+                yAxis: [{
+                    labels: {
+                        align: 'right',
+                        x: -3
+                    },
+
+                    height: '60%',
+                    lineWidth: 1,
+                    resize: {
+                        enabled: true
+                    }
+                }, {
+                    labels: {
+                        align: 'right',
+                        x: -3
+                    },
+                    top: '65%',
+                    height: '35%',
+                    offset: 0,
+                    lineWidth: 1,
+                }],
+                tooltip: {
+                    split: true
+                },
+                series: [{
+                    type: 'candlestick',
+                    name: `${this.stock.name} (${this.stock.symbol})`,
+                    data: ohlc,
+                    dataGrouping: {
+                        units: groupingUnits
+                    },
+                    color: '#27de27',    
+                    upColor: '#f94b4b',
+                }, {
+                    type: 'column',
+                    name: 'Volume',
+                    data: volume,
+                    yAxis: 1,
+                    dataGrouping: {
+                        units: groupingUnits
+                    }
+                }]
+            })
+        },
+        changeChart(type){
+            this.chartType=type;
+            if(type!='today'){
+                this.chart.clearChart();
+                clearInterval(this.timer);
+                this.getHistory();
+            }
+            else{
+                this.getData();
+                this.timer = setInterval(()=>{
+                    this.getData();
+                },5000);
+            }
+        }
     }
 }
 </script>
@@ -207,18 +292,31 @@ export default {
         letter-spacing: 1px;
     }
     .back{
-      position: absolute;
-      left: 0px;
-      text-align: center;
-      line-height: 60px;
-      top: 0px;
-      font-size: 20px;
-      height: 60px;
-      z-index:999;
-      width: 60px;
+        position: absolute;
+        left: 0px;
+        text-align: center;
+        line-height: 60px;
+        top: 0px;
+        font-size: 20px;
+        height: 60px;
+        z-index:999;
+        width: 60px;
     }
     .back:hover{
-      cursor: pointer;
+        cursor: pointer;
+    }
+    .changeChart{
+        position: absolute;
+        right: 20px;
+        text-align: center;
+        line-height: 60px;
+        top: 0px;
+        font-size: 12px;
+        height: 60px;
+        z-index:999;
+    }
+    .changeChart{
+        cursor: pointer;
     }
     .price{
         width: 100%;
@@ -261,6 +359,7 @@ export default {
     .main{
         width: 100%;
         height: calc(100vh - 210px);
+        overflow-y: scroll;
     }
     .limit{
         width: 100%;
@@ -299,7 +398,7 @@ export default {
         height: 30px;
         line-height: 30px;
         text-align: center;
-        border-radius: 10px;
+        border-radius: 8px;
         border: 1px solid rgb(230,230,230);
         font-size: 12px;
     }
@@ -311,9 +410,11 @@ export default {
     }
     .chart{
         width: calc(100vw - 40px);
-
         height: 195px;
-        margin-bottom: 10px;
+    }
+    .h-chart{
+        width: calc(100vw);
+        height: 400px;
     }
     .detail{
         width: calc(100vw);
@@ -381,7 +482,7 @@ export default {
         color: white;
         width: 50%;
         border-radius: 5px 0 0 5px;
-        background-color: rgb(39, 222, 39);
+        background-color: #27de27;
     }
     .buy{
         height: 20px;
