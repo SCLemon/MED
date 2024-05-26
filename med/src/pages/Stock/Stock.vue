@@ -2,8 +2,8 @@
     <div>
         <div class="header">
             <div v-if="!isSearch">Stock Watchlist</div>
-            <input v-else type="text" class="input" v-model="input" placeholder="Search Stock">
-            <div class="icon" @click="isSearch=!isSearch">
+            <input v-else type="text" class="input" v-model="input" ref="input" placeholder="Search Stock">
+            <div class="icon" @click="search()">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
             <div class="icon2" @click="changeExchange()">
@@ -67,6 +67,12 @@ export default {
         changeExchange(){
             this.market == 'TWSE'? this.market = 'TPEx': this.market = 'TWSE';
             this.getData();
+        },
+        search(){
+            this.isSearch=!this.isSearch;
+            this.$nextTick(()=>{
+                if(this.isSearch) this.$refs.input.focus();
+            })
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="all">
     <div class="top">
         <i class="fa-solid fa-chevron-left back"  @click="$router.back()"></i> {{datas.name}} ({{ datas.symbol }})
         <div class="changeChart" v-if="chartType=='today'" @click="changeChart('history')">歷史行情</div>
@@ -204,7 +204,7 @@ export default {
             }
         },
         drawHistory(){
-            const  groupingUnits = [['week',[1,2,3,4]], ['month',[1, 2, 3, 4, 6]]];
+            const  groupingUnits = [['day',[1]],['week',[1]], ['month',[1, 2, 3, 4, 6]]];
             const ohlc = []
             const volume = [];
             var d =this.history;
@@ -214,7 +214,7 @@ export default {
             };
             Highcharts.stockChart('h-chart',{
                 rangeSelector: {
-                    selected: 1
+                    selected: 0
                 },
                 yAxis: [{
                     labels: {
@@ -236,6 +236,16 @@ export default {
                     height: '35%',
                     offset: 0,
                     lineWidth: 1,
+                },
+                {
+                    labels: {
+                        align: 'right',
+                        x: -3
+                    },
+                    top: '65%',
+                    height: '35%',
+                    offset: 0,
+                    lineWidth: 1,
                 }],
                 tooltip: {
                     split: true
@@ -243,6 +253,7 @@ export default {
                 series: [{
                     type: 'candlestick',
                     name: `${this.stock.name} (${this.stock.symbol})`,
+                    id:`${this.stock.name} (${this.stock.symbol})`,
                     data: ohlc,
                     dataGrouping: {
                         units: groupingUnits
@@ -257,6 +268,60 @@ export default {
                     dataGrouping: {
                         units: groupingUnits
                     }
+                },
+                // {
+                //     type: 'sma',
+                //     linkedTo: `${this.stock.name} (${this.stock.symbol})`,
+                //     params: {
+                //         period: 5
+                //     },
+                //     lineWidth: 1,
+                //     marker: {
+                //         enabled: false
+                //     }
+                // },{
+                //     type: 'sma',
+                //     linkedTo: `${this.stock.name} (${this.stock.symbol})`,
+                //     params: {
+                //         period: 20
+                //     },
+                //     lineWidth: 1,
+                //     marker: {
+                //         enabled: false
+                //     }
+                // },{
+                //     type: 'sma',
+                //     linkedTo: `${this.stock.name} (${this.stock.symbol})`,
+                //     params: {
+                //         period: 60
+                //     },
+                //     lineWidth: 1,
+                //     marker: {
+                //         enabled: false
+                //     }
+                // }, 
+                {
+                    type: 'bb',
+                    name:'BBand',
+                    linkedTo: `${this.stock.name} (${this.stock.symbol})`,
+                    params: {
+                        period: 20,
+                        standardDeviation: 2
+                    },
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false
+                    }
+                },{
+                    type: 'macd',
+                    name:'MACD',
+                    yAxis: 2,
+                    params: {
+                        shortPeriod: 3,
+                        longPeriod: 15,
+                        signalPeriod: 6
+                    },
+                    linkedTo: `${this.stock.name} (${this.stock.symbol})`
                 }]
             })
         },
@@ -279,6 +344,9 @@ export default {
 </script>
 
 <style scoped>
+    .all{
+        -webkit-user-select: none;
+    }
     .top{
         top:0;
         width:100%;
