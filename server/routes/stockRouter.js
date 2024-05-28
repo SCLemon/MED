@@ -20,7 +20,7 @@ router.get('/stock/getInfo',(req,res)=>{
 router.get('/stock/candles',(req,res)=>{
     var symbol = req.query.symbol;
     var timeframe = req.query.timeframe;
-    client.stock.intraday.candles({ symbol: symbol, timeframe: timeframe })
+    stock.intraday.candles({ symbol: symbol, timeframe: timeframe })
     .then(data => {
         try{
             var result = data.data.map(item => [format(item.date,'HH'), item.low, item.open, item.close, item.high,`color:${item.close>item.open?'red':item.close<item.open?'#27de27':'gray'}`]);
@@ -33,7 +33,7 @@ router.get('/stock/candles',(req,res)=>{
 })
 
 router.get('/stock/list',(req,res)=>{
-    client.stock.intraday
+    stock.intraday
     .tickers({ type: "EQUITY", exchange: req.query.exchange, isNormal: true })
     .then((data) =>{
         data.data.sort((a,b)=>{
@@ -61,5 +61,17 @@ router.get('/stock/history',(req,res)=>{
         console.log(e)
         res.send('error')
     })
+})
+router.get('/stock/price',(req,res)=>{
+    var symbol = req.query.symbol;
+    stock.intraday.candles({ symbol: symbol })
+    .then(data => {
+        var output = data.data.map(item=>[new Date(item.date).getTime(),item.average])
+        res.send(output)
+    })
+    .catch(e=>{
+        console.log(e)
+        res.send('error')
+    });
 })
 module.exports = router;

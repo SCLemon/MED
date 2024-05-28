@@ -2,8 +2,8 @@
   <div class="all">
     <div class="top">
         <i class="fa-solid fa-chevron-left back"  @click="$router.back()"></i> {{datas.name}} ({{ datas.symbol }})
-        <div class="changeChart" v-if="chartType=='today'" @click="changeChart('history')">歷史行情</div>
-        <div class="changeChart" v-else @click="changeChart('today')">日內行情</div>
+        <div class="changeChart" v-if="chartType=='history'" @click="changeChart('price')">日內行情</div>
+        <div class="changeChart" v-else @click="changeChart('history')">歷史行情</div>
     </div>
     <div class="price">
         <div class="left">
@@ -41,11 +41,13 @@
             <div class="limit-content h">Highest: <span :class="`highest ${comparePrice(datas.highPrice)}`">{{datas.highPrice}}</span></div>
             <div class="limit-content l">Lowest: <span :class="`lowest ${comparePrice(datas.lowPrice)}`">{{datas.lowPrice}}</span></div>
         </div>
-        <div class="option" v-if="chartType=='today'">
-            <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj?'selected':''}`" @click="select(obj)">{{ obj }} 分</div>
+        <div class="option" v-if="chartType!='history'">
+            <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj?'selected':''} ${chartType!='today'?'disabled':''}`" @click="select(obj)">{{ obj }} 分</div>
+            <div class="stock" @click="togglePriceChart()"><i class="fa-solid fa-arrow-trend-up"></i></div>
         </div>
         <div class="chart" ref="chart" v-show="chartType=='today'"></div>
         <div class="h-chart" id="h-chart" v-show="chartType=='history'"></div>
+        <div class="p-chart" id="p-chart" v-show="chartType=='price'"></div>
         <div class="detail">
             <div class="detail-top">Overview
                 <div :class="`avg`">Average: <span :class="`${comparePrice(datas.avgPrice)}`">{{datas.avgPrice}}</span></div>
@@ -99,23 +101,30 @@ export default {
             datas:{},
             candles:[],
             chart:{},
+            pChart:{},
             history:{},
-            chartType:'today',
+            price:[],
+            priceTimes:0,
+            chartType:'price',
             times:0,
-            timer:0,
-            timeframes:[1,5,10,15,30,60],
+            dataTimer:0,
+            priceTimer:0,
+            candleTimer:0,
+            timeframes:[5,10,15,30,60],
             timeframe:30,
         }
     },
     mounted(){
+        this.getData();
+        this.getPrice();
+        this.dataTimer = setInterval(()=>{
+            this.getData();
+            this.getPrice();
+        },5000);
         const script = document.createElement('script');
         script.src = 'https://www.gstatic.com/charts/loader.js';
         script.onload = () => {
             google.charts.load('current', { packages: ['corechart'] });
-            this.getData();
-            this.timer = setInterval(()=>{
-                this.getData();
-            },5000);
         };
         document.head.appendChild(script);
     },
@@ -151,18 +160,89 @@ export default {
         }
     },
     beforeDestroy(){
-        clearInterval(this.timer)
+        clearInterval(this.dataTimer);
+        clearInterval(this.priceTimer);
+        clearInterval(this.candleTimer);
     },
     methods:{
         select(timeframe){
+           if(this.chartType=='today'){
             this.timeframe = timeframe;
             this.getCandle();
+           }
+           else this.$bus.$emit('handleAlert','These options only apply to specific charts.','warning')
         },
+        // 第一張圖
+        getPrice(){
+            axios.get(`${host}/stock/price?symbol=${this.stock.symbol}`)
+            .then(res=>{
+                this.price = res.data;
+                this.drawPrice();
+            })
+        },
+        drawPrice(){
+            var color =this.showColor=='red'?'rgb(249, 75, 75)':'rgba(39,222,39,1)';
+            var color2 = this.showColor == 'red'? 'rgba(255, 0, 0, 0)':'rgba(0,255, 0, 0)'
+            this.pChart = Highcharts.stockChart('p-chart', {
+                plotOptions:{
+                    series:{
+                        animation:{
+                            duration:this.priceTimes>0?0:1000,
+                        }
+                    }
+                },
+                time: {
+                    timezone: 'Asia/Taipei'
+                },
+                title: {
+                    text: `${this.stock.name} (${this.stock.symbol})`
+                },
+                xAxis: {
+                    gapGridLineWidth: 0
+                },
+                navigator: {
+                    enabled: false // 禁用工具提示
+                },
+                rangeSelector: {
+                    buttons: [{
+                        type: 'all',
+                        count: 1,
+                        text: 'All'
+                    }],
+                    selected: 1,
+                    inputEnabled: false
+                },
+                series: [{
+                    name: `${this.stock.name} (${this.stock.symbol})`,
+                    type: 'area',
+                    data: this.price,
+                    color: this.showColor,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        
+                        stops: [
+                            [0, color],
+                            [1, color2]
+                        ]
+                    },
+                    threshold: null
+                }]
+            });
+            this.priceTimes++;
+        },
+        // 第二張圖
         getData(){
             axios.get(`${host}/stock/getInfo?symbol=${this.stock.symbol}`)
             .then(res=>{
                 this.datas = res.data;
-                this.getCandle();
             })
         },
         getCandle(){
@@ -171,20 +251,6 @@ export default {
                 this.candles = res.data;
                 google.charts.setOnLoadCallback(this.drawChart);
             })
-        },
-        getHistory(){
-            var url =`${host}/stock/history?symbol=${this.stock.symbol}`
-            axios.get(url)
-            .then(res=>{
-                this.history=res.data;
-                this.drawHistory();
-            })
-        },
-        comparePrice(price){
-            var refer = this.datas.referencePrice;
-            if(price<refer) return 'green'
-            else if(price == refer) return 'black'
-            else return 'red'
         },
         drawChart() {
             try{
@@ -218,6 +284,15 @@ export default {
             }catch(e){
                 console.log(e)
             }
+        },
+        // 第三張圖
+        getHistory(){
+            var url =`${host}/stock/history?symbol=${this.stock.symbol}`
+            axios.get(url)
+            .then(res=>{
+                this.history=res.data;
+                this.drawHistory();
+            })
         },
         drawHistory(){
             const  groupingUnits = [['day',[1]],['week',[1]], ['month',[1, 2, 3, 4, 6]]];
@@ -341,18 +416,36 @@ export default {
                 }]
             })
         },
+        // 其他
+        comparePrice(price){
+            var refer = this.datas.referencePrice;
+            if(price<refer) return 'green'
+            else if(price == refer) return 'black'
+            else return 'red'
+        },
+        togglePriceChart(){
+            this.chartType == 'today'? this.changeChart('price'): this.changeChart('today');
+        },
         changeChart(type){
             this.chartType=type;
-            if(type!='today'){
-                this.chart.clearChart();
-                clearInterval(this.timer);
-                this.getHistory();
+            this.priceTimes=0;
+            clearInterval(this.priceTimer);
+            clearInterval(this.candleTimer);
+            if(type=='today'){
+                this.getCandle();
+                this.candleTimer = setInterval(() => {
+                    this.getCandle();
+                }, 5000);
             }
-            else{
-                this.getData();
-                this.timer = setInterval(()=>{
-                    this.getData();
-                },5000);
+            else if(type!='today'){
+                if(this.chart.clearChart) this.chart.clearChart();
+                if(type=='history') this.getHistory();
+                else{
+                    this.getPrice();
+                    this.priceTimer = setInterval(() => {
+                        this.getPrice();
+                    }, 5000);
+                }
             }
         }
     }
@@ -360,6 +453,10 @@ export default {
 </script>
 
 <style scoped>
+    .disabled{
+        cursor: not-allowed !important;
+        border: 1px solid rgb(230,230,230) !important;
+    }
     .all{
         -webkit-user-select: none;
     }
@@ -420,8 +517,8 @@ export default {
     .cp{
         width: 45%;
         height: 60px;
-        border: 1px solid rgb(230,230,230);
-        border-radius: 5px;
+        border: 1px solid rgb(240,240,240);
+        border-radius: 3px;
         padding-left: 5px;
         padding-right: 5px;
         padding-top: 3px;
@@ -490,7 +587,7 @@ export default {
     }
     .limit{
         width: 100%;
-        height: 30px;
+        height: 40px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
@@ -521,7 +618,7 @@ export default {
         margin-bottom: 5px;
     }
     .option-select{
-        width: calc((100vw - 40px) / 6);
+        width: calc((90vw - 40px) / 5);
         height: 30px;
         line-height: 30px;
         text-align: center;
@@ -535,9 +632,23 @@ export default {
     .selected{
         border: 1px solid black;
     }
+    .stock{
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 3px;
+        background: rgb(51, 51, 51);
+        color: white;
+
+    }
     .chart{
         width: calc(100vw - 40px);
         height: 195px;
+    }
+    .p-chart{
+        width: calc(100vw);
+        height: 405px;
     }
     .h-chart{
         width: calc(100vw);
