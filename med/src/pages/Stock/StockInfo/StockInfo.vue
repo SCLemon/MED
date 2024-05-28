@@ -9,14 +9,30 @@
         <div class="left">
            <div class="box">
                 <div class="left-title">Current Price</div>
-                <div :class="`currentPrice ${showColor}`">{{datas.lastPrice}}</div>
+                <div :class="`currentPrice ${showColor}`">
+                    <div class="lastPrice">{{datas.lastPrice}}</div>
+                    <div class="delta">
+                        <div :class="`del1`">
+                            <span v-text="showColor=='red'?'+':''"></span>
+                            {{datas.change}}
+                        </div>
+                        <div :class="`del2`">
+                            <span v-text="showColor=='red'?'+':''"></span>
+                            {{datas.changePercent}}%
+                        </div>
+                    </div>
+                </div>
            </div>
         </div>
         <div class="right">
-            <div class="box2">
-                <div :class="`delta ${showColor}`">{{datas.change}}</div>
-                <div :class="`percent ${showColor}`">{{datas.changePercent}}%</div>
-           </div>
+            <div class="cp">
+                <div class="cp-title">Buy</div>
+                <div :class="`cp-price ${datas.lastTrade?comparePrice(datas.lastTrade.bid):''}`">{{ datas.lastTrade?datas.lastTrade.bid:'' }}</div>
+            </div>
+            <div class="cp">
+                <div class="cp-title">Sell</div>
+                <div :class="`cp-price ${datas.lastTrade?comparePrice(datas.lastTrade.ask):''}`">{{ datas.lastTrade?datas.lastTrade.ask:'' }}</div>
+            </div>
         </div>
     </div>
     <div class="main">
@@ -222,7 +238,7 @@ export default {
                         x: -3
                     },
 
-                    height: '60%',
+                    height: '200px',
                     lineWidth: 1,
                     resize: {
                         enabled: true
@@ -232,8 +248,8 @@ export default {
                         align: 'right',
                         x: -3
                     },
-                    top: '65%',
-                    height: '35%',
+                    top: '200px',
+                    height: '100px',
                     offset: 0,
                     lineWidth: 1,
                 },
@@ -242,8 +258,8 @@ export default {
                         align: 'right',
                         x: -3
                     },
-                    top: '65%',
-                    height: '35%',
+                    top: '300px',
+                    height: '100px',
                     offset: 0,
                     lineWidth: 1,
                 }],
@@ -398,20 +414,37 @@ export default {
         display: flex;
         align-items: center;
     }
+    .right{
+        justify-content: space-evenly;
+    }
+    .cp{
+        width: 45%;
+        height: 60px;
+        border: 1px solid rgb(230,230,230);
+        border-radius: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+    .cp-title{
+        font-size: 12px;
+        color: rgb(190, 190, 190);
+        height: 20px;
+        line-height: 20px;
+    }
+    .cp-price{
+        width: 100%;
+        font-size: 22px;
+        text-align: center;
+        height: 34px;
+        line-height: 34px;
+        font-weight: bolder;
+    }
     .box{
         width:100%;
         height: 60px;
         padding-left: 20px;
-    }
-    .box2{
-        width:100%;
-        height: 60px;
-        padding-right: 20px;
-    }
-    .delta,.percent{
-        height: 30px;
-        line-height: 30px;
-        text-align: right;
     }
     .left-title{
         height: 20px;
@@ -423,6 +456,32 @@ export default {
         line-height: 40px;
         font-weight: bolder;
         font-size: 24px;
+        display: flex;
+    }
+    .lastPrice{
+        width: 50%;
+        height: 40px;
+    }
+    .delta{
+        width: 50%;
+        height: 40px;
+        position: relative;
+    }
+    .del1{
+        position: absolute;
+        top:5px;
+        right: 30px;
+        line-height: 1;
+        font-weight: normal;
+        font-size: 12px;
+    }
+    .del2{
+        position: absolute;
+        top:25px;
+        line-height: 1;
+        right: 30px;
+        font-weight: normal;
+        font-size: 12px;
     }
     .main{
         width: 100%;
@@ -482,7 +541,7 @@ export default {
     }
     .h-chart{
         width: calc(100vw);
-        height: 400px;
+        height: 500px;
     }
     .detail{
         width: calc(100vw);
