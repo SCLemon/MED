@@ -57,7 +57,6 @@ export default {
                     this.$nextTick(()=>{
                         this.$refs.listBox.scrollTop = 0;
                     })
-                    this.$bus.$emit('handleAlert',`Success To Get Info of ${this.market} Market`,'success')
                 }
             })
             .catch(e=>{

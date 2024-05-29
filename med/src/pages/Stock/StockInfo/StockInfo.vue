@@ -42,7 +42,7 @@
             <div class="limit-content l">Lowest: <span :class="`lowest ${comparePrice(datas.lowPrice)}`">{{datas.lowPrice}}</span></div>
         </div>
         <div class="option" v-if="chartType!='history'">
-            <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj?'selected':''} ${chartType!='today'?'disabled':''}`" @click="select(obj)">{{ obj }} 分</div>
+            <div v-for="(obj,id) in timeframes" :key="id" :class="`option-select ${timeframe == obj && chartType=='today'?'selected':''} ${chartType!='today'?'disabled':''}`" @click="select(obj)">{{ obj }} 分</div>
             <div class="stock" @click="togglePriceChart()"><i class="fa-solid fa-arrow-trend-up"></i></div>
         </div>
         <div class="chart" ref="chart" v-show="chartType=='today'"></div>
@@ -108,18 +108,14 @@ export default {
             chartType:'price',
             times:0,
             dataTimer:0,
-            priceTimer:0,
-            candleTimer:0,
             timeframes:[5,10,15,30,60],
             timeframe:30,
         }
     },
     mounted(){
         this.getData();
-        this.getPrice();
         this.dataTimer = setInterval(()=>{
             this.getData();
-            this.getPrice();
         },5000);
         const script = document.createElement('script');
         script.src = 'https://www.gstatic.com/charts/loader.js';
@@ -161,8 +157,6 @@ export default {
     },
     beforeDestroy(){
         clearInterval(this.dataTimer);
-        clearInterval(this.priceTimer);
-        clearInterval(this.candleTimer);
     },
     methods:{
         select(timeframe){
@@ -194,9 +188,6 @@ export default {
                 time: {
                     timezone: 'Asia/Taipei'
                 },
-                title: {
-                    text: `${this.stock.name} (${this.stock.symbol})`
-                },
                 xAxis: {
                     gapGridLineWidth: 0
                 },
@@ -216,7 +207,7 @@ export default {
                     name: `${this.stock.name} (${this.stock.symbol})`,
                     type: 'area',
                     data: this.price,
-                    color: this.showColor,
+                    color: color,
                     tooltip: {
                         valueDecimals: 2
                     },
@@ -243,6 +234,8 @@ export default {
             axios.get(`${host}/stock/getInfo?symbol=${this.stock.symbol}`)
             .then(res=>{
                 this.datas = res.data;
+                if(this.chartType=='today') this.getCandle();
+                else if (this.chartType == 'price') this.getPrice();
             })
         },
         getCandle(){
@@ -429,23 +422,11 @@ export default {
         changeChart(type){
             this.chartType=type;
             this.priceTimes=0;
-            clearInterval(this.priceTimer);
-            clearInterval(this.candleTimer);
-            if(type=='today'){
-                this.getCandle();
-                this.candleTimer = setInterval(() => {
-                    this.getCandle();
-                }, 5000);
-            }
+            if(type=='today') this.getCandle();
             else if(type!='today'){
                 if(this.chart.clearChart) this.chart.clearChart();
                 if(type=='history') this.getHistory();
-                else{
-                    this.getPrice();
-                    this.priceTimer = setInterval(() => {
-                        this.getPrice();
-                    }, 5000);
-                }
+                else this.getPrice();
             }
         }
     }
@@ -455,7 +436,6 @@ export default {
 <style scoped>
     .disabled{
         cursor: not-allowed !important;
-        border: 1px solid rgb(230,230,230) !important;
     }
     .all{
         -webkit-user-select: none;
@@ -640,7 +620,9 @@ export default {
         border-radius: 3px;
         background: rgb(51, 51, 51);
         color: white;
-
+    }
+    .stock:hover{
+        cursor: pointer;
     }
     .chart{
         width: calc(100vw - 40px);
