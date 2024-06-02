@@ -7,26 +7,17 @@ connectToDatabase();
 const url = 'https://script.google.com/macros/s/AKfycbwL_FzBjtVrK4hoivhXjtWKaY6FLwhXofQxsJZw-IoCy0H4tRdhqPAxihIXlyvk5DUR/exec' // appscript
 
 const dailyJob = schedule.scheduleJob('0 8 * * *', function() {
-
     taskModel.find()
     .then((res,err)=>{
         res = res.filter(obj => obj.remind && obj.data.length);
         for(var i=0;i<res.length;i++){
-            res[i].data = res[i].data.filter(obj => obj.date == format(new Date(),'yyyy-MM-dd'))
+            res[i].data = res[i].data.filter(obj => obj.date == format(new Date(),'yyyy/MM/dd'))
                         .sort((a,b) => compare(a.todo.period) - compare(b.todo.period))
         }
         send(res);
     })
 });
-taskModel.find()
-.then((res,err)=>{
-    res = res.filter(obj => obj.remind && obj.data.length);
-    for(var i=0;i<res.length;i++){
-        res[i].data = res[i].data.filter(obj => obj.date == format(new Date(),'yyyy/MM/dd'))
-                    .sort((a,b) => compare(a.todo.period) - compare(b.todo.period))
-    }
-    send(res);
-})
+
 function compare(period){
     switch(period){
         case 'morning':
