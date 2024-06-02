@@ -30,6 +30,18 @@
           </div>
       </div>
     </div>
+    <div class="note" @click="recordNote()"><i class="fa-solid fa-pen-to-square"></i></div>
+    <div class="notebook" v-if="showNote">
+      <div class="note-head">
+        <div class="note-head-text">Freehand Notes</div>
+        <div class="note-revise" @click="editNote()" v-text="isNoteWrite?'預覽':'編輯'"></div>
+        <div class="note-close" @click="recordNote()">完成</div>
+      </div>
+      <div class="note-body">
+        <div class="note-show" v-if="!isNoteWrite" v-html="noteShow==''?'Looking forward to what you will jot down.':noteShow"></div>
+        <textarea class="note-text" ref="noteText" v-model="note" v-else placeholder="You can input using Markdown syntax."></textarea>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,6 +50,7 @@ import {host} from '../../../serverPath'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
 import { format, isBefore } from 'date-fns';
+import markdownit from 'markdown-it'
 export default {
   name: "List",
   mounted() {
@@ -49,7 +62,7 @@ export default {
       return this.list.filter(obj=>{
         return !isBefore(new Date(format(obj.date,'yyyy-MM-dd')),new Date(format(new Date(),'yyyy-MM-dd'))) 
       })
-    }
+    },
   },
   methods: {
     getUserInfo(){
@@ -65,7 +78,11 @@ export default {
       axios.get(`${host}/reminder/get/${jsCookie.get('token')}`)
       .then(res=>{
         this.$bus.$emit('setRemindStatus',res.data.remind);
-        if(Array.isArray(res.data.data)) this.handleData(res.data.data)
+        if(Array.isArray(res.data.data)){
+          this.note = res.data.note;
+          this.noteShow = markdownit().render(res.data.note);
+          this.handleData(res.data.data)
+        }
         else if(res.data=='new'){}
         else this.$bus.$emit('handleAlert','Failed To Getting TodoList','error');
       })
@@ -128,13 +145,49 @@ export default {
     },
     openEdit(time){
       this.editTime=time;
+    },
+    editNote(){
+      this.isNoteWrite=!this.isNoteWrite;
+      if(this.isNoteWrite){
+        this.$nextTick(()=>{
+          this.$refs.noteText.focus();
+        })
+      }
+      else{
+        this.noteShow = markdownit().render(this.note);
+      }
+    },
+    recordNote(){
+      this.isNoteWrite = false;
+      if(this.showNote){
+        this.noteShow = markdownit().render(this.note);
+        axios.put(`${host}/reminder/note`,{
+        note:this.note
+        },{
+          headers:{
+            'user-token':jsCookie.get('token')
+          }
+        })
+        .then(res=>{
+          if(res.data=='success'){}
+          else this.$bus.$emit('handleAlert','Failed To Record Note','error');
+        })
+        .catch(e=>{
+          this.$bus.$emit('handleAlert','Record Note Error By Server Connection','error')
+        })
+      }
+      this.showNote=!this.showNote;
     }
   },
   data() {
     return {
       list:[],
       editTime:'',
-      mail:''
+      mail:'',
+      note:'',
+      noteShow:'',
+      isNoteWrite:false,
+      showNote:false,
     };
   },
 };
@@ -180,6 +233,7 @@ export default {
   overflow: scroll;
   width: 100%;
   height: calc(100vh - 200px);
+  position: relative;
 }
 .finish{
   color: rgba(195,195,195);
@@ -279,5 +333,88 @@ export default {
 }
 .night {
   color: purple;
+}
+.note{
+  position: fixed;
+  width: 65px;
+  height: 65px;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  border-radius: 5px;
+  bottom: 85px;
+  right: 15px;
+  text-align: center;
+  line-height: 65px;
+  font-size: 28px;
+}
+.note:hover{
+  cursor: pointer;
+}
+.notebook{
+  position: absolute;
+  border: 1px solid rgb(227, 227, 227);
+  left: 0;
+  right: 0;
+  top:0;
+  bottom: 0;
+  width: 95vw;
+  height: 50vh;
+  margin: auto;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+.note-head{
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 10px;
+  border-bottom: 1px solid rgb(227, 227, 227);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding-right: 5px;
+}
+.note-head-text{
+  width: calc(95vw - 100px);
+  font-weight: bolder;
+}
+.note-close{
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  color: #1677ff;
+}
+.note-revise{
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  color: #1677ff;
+}
+.note-revise:hover{
+  cursor: pointer;
+}
+.note-close:hover{
+  cursor: pointer;
+}
+.note-body{
+  width: 100%;
+  height: calc(50vh - 51px);
+}
+.note-text{
+  width: 100%;
+  height: calc(50vh - 55px);
+  border: 0;
+  padding: 10px;
+}
+.note-text:focus{
+  outline: none;
+}
+.note-show{
+  width: 100%;
+  height: calc(50vh - 51px);
+  overflow-y: scroll;
+  padding: 10px;
 }
 </style>

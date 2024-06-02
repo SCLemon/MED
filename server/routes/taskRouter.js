@@ -91,6 +91,18 @@ router.put('/reminder/remind/',(req,res)=>{
     })
 })
 
+// Note更新
+router.put('/reminder/note/',(req,res)=>{
+  taskModel.findOneAndUpdate(
+    {token : req.headers['user-token']},
+    {$set:{note: req.body.note}},{upsert: true})
+    .then((result)=>{
+      res.status(200).send('success');
+    })
+    .catch(e=>{
+      res.status(200).send('Failed To Change Status in taskModel');
+    })
+})
 
 
 module.exports = router;
