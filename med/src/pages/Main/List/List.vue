@@ -30,8 +30,8 @@
           </div>
       </div>
     </div>
-    <div class="note" @click="recordNote()"><i class="fa-solid fa-pen-to-square"></i></div>
-    <div class="notebook" v-if="showNote">
+    <div class="note" @click="recordNote()" v-if="!showNote"><i class="fa-solid fa-pen-to-square"></i></div>
+    <div class="notebook" v-else>
       <div class="note-head">
         <div class="note-head-text">Freehand Notes</div>
         <div class="note-revise" @click="editNote()" v-text="isNoteWrite?'預覽':'編輯'"></div>
@@ -358,7 +358,7 @@ export default {
   top:0;
   bottom: 0;
   width: 95vw;
-  height: 50vh;
+  height: 70vh;
   margin: auto;
   background: white;
   display: flex;
@@ -404,7 +404,7 @@ export default {
 }
 .note-text{
   width: 100%;
-  height: calc(50vh - 55px);
+  height: calc(70vh - 55px);
   border: 0;
   padding: 10px;
 }
