@@ -34,7 +34,7 @@
         <div class="search">
           <input type="file" @change="handleImg()" accept="image/*" ref="imgOrigin" class="img_original"/>
           <i class="fa-solid fa-plus icon-out moreIcon" ref="moreIcon" @click="toggleMore()"></i>
-          <i class="fa-regular fa-image icon-out" @click="uploadImage()"></i>
+          <i class="fa-regular fa-image icon-out" @click="setting.model!='gpt-3.5-turbo'?uploadImage():alert('Image Input Not Allowed For gpt-3.5','error')"></i>
           <el-input class="input" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" :placeholder="placeholder" v-model="input"></el-input>
           <i v-if="!isStillOutput" class="fa-solid fa-feather icon-out" @click="sendText()"></i>
           <i v-else class="fa-solid fa-hourglass-start fa-spin-pulse icon-out"></i>
@@ -94,7 +94,9 @@ export default {
     // 初始化使用者資料
     this.setWindowScroll();
     this.getData();
-    this.getSetting();
+    setTimeout(() => {
+      this.getSetting();
+    }, 750);
     // 創建文字轉語音
     this.utterance.rate = 1.05;
     this.utterance.lang = 'auto';
@@ -136,6 +138,7 @@ export default {
       input:'',
       outputIndex:0,
       setting:{
+        model:'gpt-4o',
         temperature:1,
         max_tokens:1000,
         frequency_penalty:0,
@@ -173,7 +176,7 @@ export default {
     gpt(){
       return {
         messages:[],
-        model: "gpt-4o",
+        model: this.setting.model,
         stream:true,
         max_tokens:this.setting.max_tokens,
         temperature:this.setting.temperature,
@@ -527,6 +530,9 @@ export default {
     previewMD(){
       this.preview=!this.preview;
     },
+    alert(text,type){
+      this.$bus.$emit('handleAlert',text,type);
+    }
   }
 }
 </script>

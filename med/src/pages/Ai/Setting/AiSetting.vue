@@ -6,6 +6,12 @@
     </div>
     <div class="main">
         <div class="block">
+            <div class="title">模型</div>
+            <el-select v-model="setting.model" placeholder="请選擇">
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+        </div>
+        <div class="block">
             <div class="title">隨機度</div>
             <el-slider v-model="setting.temperature" class="slider" :min="0" :step="0.1" :max="2"></el-slider>
         </div>
@@ -33,7 +39,9 @@ export default {
     name:'AiSetting',
     data(){
         return {
+            options: [{value: 'gpt-4o',label: 'gpt-4o'},{value: 'gpt-4-turbo',label: 'gpt-4-turbo'},{value: 'gpt-3.5-turbo',label: 'gpt-3.5-turbo'}],
             setting:{
+                model:'gpt-4o',
                 temperature:1,
                 max_tokens:1000,
                 frequency_penalty:0,
