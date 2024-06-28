@@ -22,6 +22,9 @@
                 <div class="mean">{{obj.definitions[0].partOfSpeech=='片'?'phrase':obj.definitions[0].partOfSpeech}}. {{obj.definitions[0].text}}</div>
                 <div class="index">{{ id+1 }}</div>
             </a>
+            <a class="each2" v-if="q.trim()!=''" :href="`https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/${q}`" target="bd">
+                Search '{{q}}' from Cambridge Dictionary
+            </a>
         </div>
         <div class="pro">
             <el-progress :percentage="percent"></el-progress>
@@ -204,6 +207,20 @@ export default {
         align-items: center;
         position: relative;
         color: black;
+    }
+    .each2{
+        text-decoration: none;
+        width: 100%;
+        height: calc((100vh - 265px) / 10);
+        border-bottom: 1px solid rgb(245,245,245);
+        line-height: calc((100vh - 265px) / 10);
+        padding-left: 20px;
+        padding-right: 20px;
+        text-align: center;
+        overflow-x: scroll;
+        display: block;
+        color: black;
+        white-space: nowrap;
     }
     .index{
         position: absolute;
