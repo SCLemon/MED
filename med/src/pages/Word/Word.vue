@@ -16,12 +16,12 @@
             <div  v-for="cat in categories" :key="cat" :class="['cat-select', {'selected': category === cat}]" @click="changeCat(cat)">{{ cat }}</div>
         </div>
         <div class="main" ref="main">
-            <div class="each" v-for="(obj,id) in list" :key="id" v-show="obj.word.includes(q.toLowerCase())">
+            <a class="each" v-for="(obj,id) in list" :key="id" v-show="obj.word.includes(q.toLowerCase())" :href="`https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/${obj.word}`" target="bd">
                 <div :class="`color ${colorStatus(id)}`"></div>
                 <div class="text">{{obj.word}}</div>
                 <div class="mean">{{obj.definitions[0].partOfSpeech=='片'?'phrase':obj.definitions[0].partOfSpeech}}. {{obj.definitions[0].text}}</div>
                 <div class="index">{{ id+1 }}</div>
-            </div>
+            </a>
         </div>
         <div class="pro">
             <el-progress :percentage="percent"></el-progress>
@@ -79,6 +79,9 @@ export default {
         }
     },
     methods:{
+        searchDict(word){
+
+        },
         getData(){
             axios.get(`/json/${this.category}.json`)
             .then(res=>{
@@ -200,6 +203,7 @@ export default {
         justify-content: space-evenly;
         align-items: center;
         position: relative;
+        color: black;
     }
     .index{
         position: absolute;
