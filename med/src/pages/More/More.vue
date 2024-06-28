@@ -19,7 +19,17 @@
                 <img src="../../../public/images/stock.png" alt="">
                 <div class="text">市場行情</div>
             </div>
-            <div class="block c1" @click="goTo('/word')">
+            <div class="block c1" @click="goTo('/secondHand')">
+                <img src="../../../public/images/shop.png" alt="">
+                <div class="text">二手拍賣</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="block c1" @click="goTo('movie')">
+                <img src="../../../public/images/video.png" alt="">
+                <div class="text">電影娛樂</div>
+            </div>
+            <div class="block c2" @click="goTo('/word')">
                 <img src="../../../public/images/word.png" alt="">
                 <div class="text">單字學習卡</div>
             </div>

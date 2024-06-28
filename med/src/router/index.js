@@ -30,6 +30,8 @@ import StockInfo from '../pages/Stock/StockInfo/StockInfo.vue'
 import Word from '../pages/Word/Word.vue'
 import WordTest from '../pages/Word/WordTest/WordTest.vue'
 import WordOption from '../pages/Word/WordOption/WordOption.vue'
+import Movie from '../pages/Movie/Movie.vue'
+import SecondHand from '../pages/SecondHand/SecondHand.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -145,6 +147,14 @@ const router = new VueRouter({
         {
             path:'/word/option',
             component:WordOption
+        },
+        {
+            path:'/movie',
+            component:Movie
+        },
+        {
+            path:'/secondHand',
+            component:SecondHand
         },
         {
             path:'/',

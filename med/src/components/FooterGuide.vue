@@ -1,5 +1,5 @@
 <template>
-    <div class="footer">
+    <div class="footer" v-if="!$route.path.includes('/secondHand')">
       <div class="list" :class="{on: $route.path.includes('/main')||$route.path.includes('/schedule')||$route.path.includes('/weather')}" @click="goTo('/main')"><i class="fa-solid fa-house"></i></div>
       <div class="list" :class="{on: $route.path.includes('/navigator')}" @click="goTo('/navigator')"><i class="fa-solid fa-location-dot"></i></div>
       <div class="list" :class="{on: $route.path.includes('/ai') || $route.path.includes('/image')}" @click="goTo('/ai')"><i class="fa-solid fa-message"></i></div>
