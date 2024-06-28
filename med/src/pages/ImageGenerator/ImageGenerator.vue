@@ -14,6 +14,13 @@
             </el-radio-group>
         </div>
         <div class="block">
+            <div class="title">模型</div>
+            <el-radio-group v-model="setting.model" class="group">
+                <el-radio-button class="checkbox" label="dall-e-2"></el-radio-button>
+                <el-radio-button class="checkbox" label="dall-e-3"></el-radio-button>
+            </el-radio-group>
+        </div>
+        <div class="block">
             <div class="title">品質</div>
             <el-radio-group v-model="quality" class="group">
                 <el-radio-button class="checkbox" label="Standard"></el-radio-button>
