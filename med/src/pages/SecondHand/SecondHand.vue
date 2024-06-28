@@ -14,15 +14,15 @@ export default {
 <style scoped>
     .iframe{
         width: 100%;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 70px);
     }
     .left{
         margin-right: 5px;
     }
     .footer{
         width: 100%;
-        height: 60px;
-        line-height: 60px;
+        height: 70px;
+        line-height: 70px;
         padding-left: 20px;
         font-size: 18px;
     }
