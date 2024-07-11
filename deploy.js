@@ -1,57 +1,82 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-const https = require('https');
-const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 443; // 使用 HTTPS 的標準端口
+const PORT = process.env.PORT || 4040;
 
-// 讀取 SSL 憑證和私鑰
-const privateKeyPath = path.join(__dirname, '..', 'private.key');
-const certificatePath = path.join(__dirname, '..', 'certificate.crt');
+// 配置代理
+app.use('/chat/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/chat/',
+    changeOrigin: true
+  }));
+  
+  app.use('/verify/', createProxyMiddleware({
+    target: 'http://localhost:3007/verify/',
+    changeOrigin: true,
+    logger:console
+  }));
+  
+  app.use('/userInfo/', createProxyMiddleware({
+    target: 'http://localhost:3007/userInfo/',
+    changeOrigin: true,
+  }));
+  
+  app.use('/reminder/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/reminder/',
+    changeOrigin: true
+  }));
+  
+  app.use('/filter/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/filter/',
+    changeOrigin: true
+  }));
+  
+  app.use('/aiSetting/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/aiSetting/',
+    changeOrigin: true
+  }));
+  
+  app.use('/schedule/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/schedule/',
+    changeOrigin: true
+  }));
+  
+  app.use('/imageHistory/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/imageHistory/',
+    changeOrigin: true
+  }));
+  
+  app.use('/stock/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/stock/',
+    changeOrigin: true
+  }));
+  
+  app.use('/word/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/word/',
+    changeOrigin: true
+  }));
+  
+  app.use('/api/', createProxyMiddleware({
+    target: 'http://127.0.0.1:3007/api/',
+    changeOrigin: true
+  }));
 
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-const certificate = fs.readFileSync(certificatePath, 'utf8');
 
-const credentials = { key: privateKey, cert: certificate };
-
-// 設置靜態檔案目錄
+// 服务静态文件
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// 設置 API 反向代理
-const apiProxy = createProxyMiddleware({
-    target: 'http://localhost:3007', // 請替換為你的 API 伺服器地址
-    changeOrigin: true,
-});
-
-const paths = [
-    '/chat',
-    '/verify',
-    '/userInfo',
-    '/reminder',
-    '/filter',
-    '/aiSetting',
-    '/schedule',
-    '/imageHistory',
-    '/stock',
-    '/word',
-    '/api',
-];
-
-paths.forEach(path => {
-    app.use(path, apiProxy);
-});
-
-// 所有其他路由都返回前端應用的 index.html
+// 捕获所有其他路由并返回前端应用
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// 創建 HTTPS 伺服器
-const httpsServer = https.createServer(credentials, app);
+// 错误处理
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
-// 監聽 443 端口
-httpsServer.listen(PORT, () => {
-    console.log(`HTTPS Server is running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on  http://127.0.0.1:${PORT}`);
 });
