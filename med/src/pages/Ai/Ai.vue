@@ -117,7 +117,7 @@ export default {
       var result = event.results[this.outputIndex][0].transcript;
       this.outputIndex++;
       if(result == '發送' || result == '傳送') {
-        this.sendChatGPT();
+        this.sendText();
         this.voiceRecognition();
       }
       else if(result =='停止錄音' || result == '結束錄音' || result == '終止錄音' || result == '中止錄音') this.voiceRecognition();

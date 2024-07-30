@@ -9,7 +9,10 @@ const taskSchema = new mongoose.Schema({
         type:Boolean,
         default:true,
     },
-    note:String,
+    note:{
+        type:String,
+        default: 'Nice to meet you'
+    },
     data:[{
         date:String,
         todo:{
