@@ -64,7 +64,7 @@ export default {
     },
     computed:{
         percent(){
-            if(this.list.length){
+            if(this.list.length && this.status[this.category]){
                 var count =this.status[this.category].filter((x)=> x >= 2).length;
                 return +((count / this.list.length)*100).toFixed(0);
             }
@@ -82,11 +82,8 @@ export default {
         }
     },
     methods:{
-        searchDict(word){
-
-        },
         getData(){
-            axios.get(`/json/${this.category}.json`)
+            axios.get(`/word/list/${this.category}`)
             .then(res=>{
                 res.data.forEach((obj,id)=>{obj.index = id;})
                 this.list = res.data
@@ -95,7 +92,8 @@ export default {
         getStatus(){
             axios.get(`/word/status/${jsCookie.get('token')}`)
             .then(res=>{
-                this.status = res.data
+                if(res.data =='new') return
+                else this.status = res.data
             })
         },
         changeCat(cat){

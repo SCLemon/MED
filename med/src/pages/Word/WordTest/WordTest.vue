@@ -58,6 +58,7 @@ export default {
         }
     },
     mounted(){
+        console.log(this.status, this.category)
         if(this.status[this.category].length == 0){
             this.status[this.category] = Array(this.list.length).fill(0);
         }

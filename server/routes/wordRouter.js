@@ -3,6 +3,8 @@ const wordModel = require('../models/wordModel');
 const express = require('express');
 const router = express.Router();
 
+const fs = require('fs')
+const path = require('path')
 //紀錄 
 router.post('/word/record',(req, res) => {
   var obj ={
@@ -30,5 +32,10 @@ router.get('/word/status/:token', (req, res) => {
   })
 });
 
+router.get('/word/list/:category',(req,res)=>{
+  var category = req.params.category;
+  var data = fs.readFileSync(path.resolve(__dirname,`../json/${category}.json`));
+  res.send(data);
+})
 
 module.exports = router;
