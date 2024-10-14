@@ -1,6 +1,6 @@
 
 # MED Reminder
-
+![Banner](./banner.png)
 
 This is a daily application app created by integrating AI technology, which includes most commonly used tools to assist you in effectively managing daily life and enhancing functional convenience.
 
