@@ -4,6 +4,10 @@
 
 This is a daily application app created by integrating AI technology, which includes most commonly used tools to assist you in effectively managing daily life and enhancing functional convenience.
 
+## Hint
+If the website is in HTTP environment, something might break down like Navigator API, Downloader API. <br>
+But you can clone this repository and run it locally, it would proceed successfully.
+
 
 ## Programming languages
 - Vue CLI
@@ -28,6 +32,8 @@ To run this project, you will need to add the following environment variables to
 OpenAI API `API_KEY`  
 ```
 https://platform.openai.com/
+
+(You should add this parameter and export it manually because Github does not allow developers to upload content about OpenAI Key)
 ```
 
 Fugle API `API_KEY`
@@ -58,7 +64,6 @@ You only need to create an appscript at Google Platform, and get an url, and put
 ```
 server/appscript/send.js
 ```
-
 
 
 ## Proxy Config
@@ -122,7 +127,6 @@ Start the server (Frontend and Backend Simultaneously)
 ```bash
   npm run fullStart
 ```
-
 
 ## Authors
 
