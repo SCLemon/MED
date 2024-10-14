@@ -80,14 +80,11 @@
 import {host} from '../../serverPath'
 import axios from 'axios';
 import { format } from 'date-fns'
-import OpenAI from "openai";
-import {openaiKey} from '../../apiKey'
 import jsCookie from 'js-cookie';
 import Tesseract from 'tesseract.js'
 import markdownit from 'markdown-it'
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
 export default {
   name:'Ai',
   mounted(){
@@ -131,9 +128,35 @@ export default {
       this.placeholder='Send Your Questions';
       this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
+
+    this.socket = new WebSocket(`ws://${this.location}:3000`);
+    this.socket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.isComplete) {
+        this.recordData();
+        this.isStillOutput = false;
+        return;
+      }
+      if (data.msg) this.totalMsg[this.totalMsg.length - 1].content += data.msg;
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+      this.$bus.$emit('handleAlert', 'WebSocket Error', 'error');
+      this.isStillOutput = false;
+    };
+
+    this.socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
   },
   data(){
     return{
+      socket: null,
       markdown: markdownit(),
       input:'',
       outputIndex:0,
@@ -187,6 +210,9 @@ export default {
     md(){
       return this.markdown.render(this.input);
     },
+    location(){
+      return (window.location.href).split('//')[1].split(":")[0]
+    }
   },
   updated(){
     var dom = document.querySelectorAll('.conversation-content img');
@@ -215,6 +241,7 @@ export default {
   },
   beforeDestroy(){
     this.recognition={};
+    this.socket.close();
   },
   methods:{
     getData(){
@@ -275,28 +302,21 @@ export default {
         console.log(e)
       });
     },
-    async sendChatGPT(arr){
-      try{
-        if(this.input.trim()!='' && !this.isStillOutput){
-          this.isStillOutput=true;
-          this.input=''
-          this.gpt.messages = arr;
-          const response = await openai.chat.completions.create(this.gpt)
-          for await (const chunk of response) {
-            const data = chunk.choices[0].delta.content;
-            if(data==undefined){
-              this.recordData();
-              this.isStillOutput=false;
-            }
-            else this.totalMsg[this.totalMsg.length-1].content+=data;
-          }
+    async sendChatGPT(arr) {
+      if (this.input.trim() != '' && !this.isStillOutput) {
+        this.isStillOutput = true;
+        this.input = '';
+        this.gpt.messages = arr;
+
+        // 檢查 WebSocket 是否已經打開
+        if (this.socket.readyState === WebSocket.OPEN) this.socket.send(JSON.stringify(this.gpt));
+        else {
+          this.$bus.$emit('handleAlert', 'WebSocket is not open', 'error');
+          this.isStillOutput = false;
         }
-        else if (this.isStillOutput) this.$bus.$emit('handleAlert','Please Wait For Text Generating','error');
-        else this.$bus.$emit('handleAlert','Blank are Not Allowed','error');
-      }
-      catch(e){
-        this.$bus.$emit('handleAlert','Data Size Too Big or Data Type Not Allowed','error');
-      }
+      } 
+      else if (this.isStillOutput) this.$bus.$emit('handleAlert', 'Please Wait For Text Generating', 'error');
+      else this.$bus.$emit('handleAlert', 'Blank are Not Allowed', 'error');
     },
     confirmForm(msg,func) {
       this.$confirm(msg, '提示', {
