@@ -428,6 +428,7 @@ export default {
         this.$bus.$emit('handleAlert','Copy Text Successfully','success');
       }
       catch(e){
+        console.log(e)
         this.$bus.$emit('handleAlert','Failed To Copy Text','error');
       }
     },
