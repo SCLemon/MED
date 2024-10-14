@@ -23,7 +23,6 @@ import Weather from '../pages/Weather/Weather.vue'
 import AiSetting from '../pages/Ai/Setting/AiSetting.vue'
 import ImageGenerator from '../pages/ImageGenerator/ImageGenerator.vue'
 import ImageHistory from '../pages/ImageGenerator/ImageHistory/ImageHistory'
-import ImageDetail from '../pages/ImageGenerator/ImageDetail/ImageDetail'
 import News from '../pages/News/News.vue'
 import Stock from '../pages/Stock/Stock.vue'
 import StockInfo from '../pages/Stock/StockInfo/StockInfo.vue'
@@ -119,10 +118,6 @@ const router = new VueRouter({
         {
             path:'/imageHistory',
             component:ImageHistory
-        },
-        {
-            path:'/imageDetail',
-            component:ImageDetail
         },
         {
             path:'/news',

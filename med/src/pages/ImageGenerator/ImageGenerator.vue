@@ -64,13 +64,10 @@
 </template>
 
 <script>
-import OpenAI from "openai";
-import {openaiKey} from '../../apiKey'
 import axios from 'axios';
 import jsCookie from 'js-cookie'
 import {host} from '../../serverPath'
 import {format} from 'date-fns'
-const openai = new OpenAI({apiKey:openaiKey,dangerouslyAllowBrowser: true});
 export default {
     name:'ImageGenerator',
     mounted(){
@@ -83,19 +80,49 @@ export default {
             }
         }
         catch(e){}
+
+        this.socket = new WebSocket(`ws://${this.location}:3000`);
+        this.socket.onopen = () => {
+            console.log('WebSocket connection opened');
+        };
+
+        this.socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.isComplete) {
+                this.$bus.$emit('handleAlert','Success To Optimize Your Prompt Text','success');
+                setTimeout(()=>{
+                    this.generate();
+                },1500)
+                return;
+            }
+            if (data.msg) this.setting.prompt += data.msg;
+        };
+
+        this.socket.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+            this.$bus.$emit('handleAlert','Failed To Optimize Your Prompt Text','error');
+        };
+
+        this.socket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
     },
     computed:{
-      isMobile(){
-        if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i)
-            || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i)|| navigator.userAgent.match(/Windows Phone/i))
-          {
-            return true;
-          }
-        else return false;
-      }
+        isMobile(){
+            if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i)|| navigator.userAgent.match(/Windows Phone/i))
+            {
+                return true;
+            }
+            else return false;
+        },
+        location(){
+            return (window.location.href).split('//')[1].split(":")[0]
+        }
     },
     data(){
         return{
+            socket:null,
             protect:true,
             gen:{
                 isFinish:false,
@@ -127,9 +154,10 @@ export default {
                 confirmButtonText: '優化並生成',
                 cancelButtonText: '直接生成',
                 type: 'warning'
-            }).then(() => {
+            })
+            .then(() => {
                 this.$bus.$emit('handleAlert','Start To Optimize Your Prompt Text','warning');
-                openai.chat.completions.create({
+                var config = {
                     messages: [{
                         role:'system',
                         content:'Please assist in optimizing the text for generating images and reply with the optimized English text only. Ensure to exclude any unrelated content, and refrain from asking questions or engaging in additional dialogue. If the provided text is less than 200 words, please help me by adding creative and vivid elements to exceed 200 words while enhancing realism. Below is the provided text for reference.'
@@ -137,18 +165,16 @@ export default {
                         role:'user',
                         content:this.setting.prompt
                     }],
-                    model: "gpt-4o"
-                })
-                .then(res=>{
-                    this.setting.prompt = res.choices[0].message.content;
-                    this.$bus.$emit('handleAlert','Success To Optimize Your Prompt Text','success');
-                    setTimeout(()=>{
-                        this.generate();
-                    },1500)
-                })
-                .catch(e=>{
-                    this.$bus.$emit('handleAlert','Failed To Optimize Your Prompt Text','error');
-                })
+                    model: "gpt-4o",
+                    stream:true,
+                }
+                if (this.socket.readyState === WebSocket.OPEN){
+                    this.setting.prompt = '';
+                    this.socket.send(JSON.stringify(config));
+                }
+                else {
+                    this.$bus.$emit('handleAlert', 'WebSocket is not open', 'error');
+                }
             })
             .catch((action) => {
                 if(action=='cancel') this.generate();
@@ -163,13 +189,14 @@ export default {
             this.gen.isLoading=true;
             this.gen.isFinish=false;
             this.gen.status='Generating...'
-            openai.images.generate(this.setting)
+            axios.post('/imageHistory/generate',{config:this.setting})
             .then(res=>{
-                this.output=res.data;
+                this.output=res.data.data;
                 this.recordData();
-                this.$bus.$emit('handleAlert','Success To Generate Image','success')
+                this.$bus.$emit('handleAlert',res.data.message,res.data.status)
             })
             .catch(e=>{
+                console.log(e)
                 this.$bus.$emit('handleAlert','Failed To Generate Image','error')
             })
             .finally(()=>{
@@ -212,6 +239,7 @@ export default {
     },
     beforeDestroy(){
         this.autoSave();
+        this.socket.close();
     }
 }
 </script>
