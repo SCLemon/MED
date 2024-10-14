@@ -41,3 +41,4 @@ function send(data){
       console.log('Failed to send Email To Appscript')
     })
 }
+console.log('appscript is running!');

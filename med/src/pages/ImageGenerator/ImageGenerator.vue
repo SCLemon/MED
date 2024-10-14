@@ -8,8 +8,8 @@
         <div class="block">
             <div class="title">尺寸</div>
             <el-radio-group v-model="setting.size" class="group">
-                <el-radio-button class="checkbox" label="256x256"></el-radio-button>
-                <el-radio-button class="checkbox" label="512x512"></el-radio-button>
+                <el-radio-button :disabled="setting.model == 'dall-e-3'" class="checkbox" label="256x256"></el-radio-button>
+                <el-radio-button :disabled="setting.model == 'dall-e-3'" class="checkbox" label="512x512"></el-radio-button>
                 <el-radio-button class="checkbox" label="1024x1024"></el-radio-button>
             </el-radio-group>
         </div>
@@ -43,6 +43,7 @@
             type="textarea"
             :autosize="{ minRows: 5, maxRows: 11}"
             placeholder="Input Your Prompt Text"
+            maxlength="100"
             v-model="setting.prompt">
         </el-input>
         <div class="switch" v-if="!isMobile">
@@ -93,6 +94,7 @@ export default {
                 setTimeout(()=>{
                     this.generate();
                 },1500)
+                console.log(this.setting.prompt.length)
                 return;
             }
             if (data.msg) this.setting.prompt += data.msg;
@@ -118,6 +120,14 @@ export default {
         },
         location(){
             return (window.location.href).split('//')[1].split(":")[0]
+        }
+    },
+    watch:{
+        'setting.model':{
+            deep:true,
+            handler(){
+                if(this.setting.model == 'dall-e-3') this.setting.size = '1024x1024'
+            }
         }
     },
     data(){
@@ -160,7 +170,7 @@ export default {
                 var config = {
                     messages: [{
                         role:'system',
-                        content:'Please assist in optimizing the text for generating images and reply with the optimized English text only. Ensure to exclude any unrelated content, and refrain from asking questions or engaging in additional dialogue. If the provided text is less than 200 words, please help me by adding creative and vivid elements to exceed 200 words while enhancing realism. Below is the provided text for reference.'
+                        content:'Please assist in optimizing the text for generating images and reply with the optimized English text only. Ensure to exclude any unrelated content, and refrain from asking questions or engaging in additional dialogue. If the provided text is less than 30 words, please help me by adding creative and vivid elements to exceed 50 but less than 100 words (including blanks) while enhancing realism. Below is the provided text for reference.'
                     },{
                         role:'user',
                         content:this.setting.prompt
