@@ -43,7 +43,7 @@
             type="textarea"
             :autosize="{ minRows: 5, maxRows: 11}"
             placeholder="Input Your Prompt Text"
-            maxlength="100"
+            maxlength="1000"
             v-model="setting.prompt">
         </el-input>
         <div class="switch" v-if="!isMobile">

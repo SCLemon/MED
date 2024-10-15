@@ -16,7 +16,7 @@
         <i class="fa-solid fa-globe globe" @click="changelang=!changelang"></i>
     </div>
     <div class="category">
-        <div  v-for="cat in categories" :key="cat" :class="['cat-select', {'selected': category === cat}]" @click="category = cat">{{ cat }}</div>
+        <div  v-for="cat in categories" :key="cat" :class="['cat-select', {'selected': category === cat}]" @click="q.trim()==''?(category = cat):showHint('This filter only support when no input is provided.','warning')">{{ cat }}</div>
     </div>
     <div class="main">
         <div class="headline">Curated For You</div>
@@ -60,24 +60,24 @@ export default {
             page:1,
             country:'us',
             cities: [
-                {value: 'ae',label: '阿聯'}, {value: 'ar',label: '阿根廷'}, {value: 'at',label: '奧地利'},
-                {value: 'au',label: '澳洲'}, {value: 'be',label: '比利時'}, {value: 'bg',label: '保加利亞'},
-                {value: 'br',label: '巴西'}, {value: 'ca',label: '加拿大'}, {value: 'ch',label: '瑞士'},
-                {value: 'cn',label: '中國'}, {value: 'co',label: '哥倫比亞'}, {value: 'cu',label: '古巴'},
-                {value: 'cz',label: '捷克'}, {value: 'de',label: '德國'}, {value: 'eg',label: '埃及'},
-                {value: 'fr',label: '法國'}, {value: 'gb',label: '英國'}, {value: 'gr',label: '希臘'},
-                {value: 'hk',label: '香港'}, {value: 'hu',label: '匈牙利'}, {value: 'id',label: '印度尼西亞'},
-                {value: 'ie',label: '愛爾蘭'}, {value: 'il',label: '以色列'}, {value: 'in',label: '印度'},
-                {value: 'it',label: '義大利'}, {value: 'jp',label: '日本'}, {value: 'kr',label: '南韓'},
-                {value: 'lt',label: '立陶宛'}, {value: 'lv',label: '拉脫維亞'}, {value: 'ma',label: '摩洛哥'},
-                {value: 'mx',label: '墨西哥'}, {value: 'my',label: '馬來西亞'}, {value: 'ng',label: '奈及利亞'},
-                {value: 'nl',label: '荷蘭'}, {value: 'no',label: '挪威'}, {value: 'nz',label: '紐西蘭'},
-                {value: 'ph',label: '菲律賓'}, {value: 'pl',label: '波蘭'}, {value: 'pt',label: '葡萄牙'},
-                {value: 'ro',label: '羅馬尼亞'}, {value: 'rs',label: '塞爾維亞'}, {value: 'ru',label: '俄羅斯'},
-                {value: 'sa',label: '沙烏地阿拉伯'}, {value: 'se',label: '瑞典'}, {value: 'sg',label: '新加坡'},
-                {value: 'si',label: '斯洛維尼亞'}, {value: 'sk',label: '斯洛伐克'}, {value: 'th',label: '泰國'},
-                {value: 'tr',label: '土耳其'}, {value: 'tw',label: '臺灣'}, {value: 'ua',label: '烏克蘭'},
-                {value: 'us',label: '美國'}, {value: 've',label: '委內瑞拉'}, {value: 'za',label: '南非'},
+                // {value: 'ae',label: '阿聯'}, {value: 'ar',label: '阿根廷'}, {value: 'at',label: '奧地利'},
+                // {value: 'au',label: '澳洲'}, {value: 'be',label: '比利時'}, {value: 'bg',label: '保加利亞'},
+                // {value: 'br',label: '巴西'}, {value: 'ca',label: '加拿大'}, {value: 'ch',label: '瑞士'},
+                // {value: 'cn',label: '中國'}, {value: 'co',label: '哥倫比亞'}, {value: 'cu',label: '古巴'},
+                // {value: 'cz',label: '捷克'}, {value: 'de',label: '德國'}, {value: 'eg',label: '埃及'},
+                // {value: 'fr',label: '法國'}, {value: 'gb',label: '英國'}, {value: 'gr',label: '希臘'},
+                // {value: 'hk',label: '香港'}, {value: 'hu',label: '匈牙利'}, {value: 'id',label: '印度尼西亞'},
+                // {value: 'ie',label: '愛爾蘭'}, {value: 'il',label: '以色列'}, {value: 'in',label: '印度'},
+                // {value: 'it',label: '義大利'}, {value: 'jp',label: '日本'}, {value: 'kr',label: '南韓'},
+                // {value: 'lt',label: '立陶宛'}, {value: 'lv',label: '拉脫維亞'}, {value: 'ma',label: '摩洛哥'},
+                // {value: 'mx',label: '墨西哥'}, {value: 'my',label: '馬來西亞'}, {value: 'ng',label: '奈及利亞'},
+                // {value: 'nl',label: '荷蘭'}, {value: 'no',label: '挪威'}, {value: 'nz',label: '紐西蘭'},
+                // {value: 'ph',label: '菲律賓'}, {value: 'pl',label: '波蘭'}, {value: 'pt',label: '葡萄牙'},
+                // {value: 'ro',label: '羅馬尼亞'}, {value: 'rs',label: '塞爾維亞'}, {value: 'ru',label: '俄羅斯'},
+                // {value: 'sa',label: '沙烏地阿拉伯'}, {value: 'se',label: '瑞典'}, {value: 'sg',label: '新加坡'},
+                // {value: 'si',label: '斯洛維尼亞'}, {value: 'sk',label: '斯洛伐克'}, {value: 'th',label: '泰國'},
+                // {value: 'tr',label: '土耳其'}, {value: 'tw',label: '臺灣'}, {value: 'ua',label: '烏克蘭'},
+                {value: 'us',label: '美國'},// {value: 've',label: '委內瑞拉'}, {value: 'za',label: '南非'},
             ],
         }
     },
@@ -119,11 +119,11 @@ export default {
             this.page=1;
             this.isLoaded = false;
             this.final=false,
-            this.getData('q');
+            this.getData();
         },
-        getData(flag){
+        getData(){
             if(!this.final){
-                var url = (flag && this.q.trim()!='')?`/api/news/everything?q=${this.q}&page=${this.page}`:`/api/news/headline?country=${this.country}&q=${this.q}&category=${this.category}&page=${this.page}`
+                var url = this.q.trim()!=''?`/api/news/everything?q=${this.q}&page=${this.page}`:`/api/news/headline?country=${this.country}&q=${this.q}&category=${this.category}&page=${this.page}`
                 axios.get(url)
                 .then(res=>{
                     if(res.data.articles.length){
@@ -151,8 +151,11 @@ export default {
             if(el.offsetHeight+el.scrollTop>=el.scrollHeight-5 && this.isFinish){
                 this.page++;
                 this.isFinish=false;
-                this.q.trim()!=''?this.getData('q'):this.getData();
+                this.getData();
             }
+        },
+        showHint(msg,type){
+            this.$bus.$emit('handleAlert',msg,type);
         }
     }
 }
