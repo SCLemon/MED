@@ -113,7 +113,7 @@ Clone the project
   git clone https://github.com/SCLemon/MED.git
 ```
 
-Go to the project directory
+Go to the frontend project directory
 
 ```bash
   cd med
@@ -125,6 +125,13 @@ Start the Frontend Pages
   npm i
   npm run serve
 ```
+
+Go to the backend project directory
+
+```bash
+  cd ../server
+```
+
 Start the Backend Server
 
 ```bash
