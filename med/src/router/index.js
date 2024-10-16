@@ -66,6 +66,7 @@ const router = new VueRouter({
             children:[{
                 path:'',
                 component:NavMain,
+                meta: { keepAlive: true }
             },
             {
                 path:'detail',
