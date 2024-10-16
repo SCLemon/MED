@@ -8,8 +8,6 @@ This is a daily application app created by integrating AI technology, which incl
 If the website is in HTTP environment, something might break down like Navigator API, Downloader API. <br>
 But you can clone this repository and run it locally, it would proceed successfully. <br>
 
-(As Demo Website Now, maybe... the Demo Website will be converted to https in the near future)
-
 
 ## Programming languages
 - Vue CLI
