@@ -5,7 +5,7 @@ const https = require('https');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 4040;
+const PORT = process.env.PORT || 443;
 
 // 加载 SSL 憑證
 const {keyForHttps , pemForHttps} = require('./sslPath.js')
