@@ -119,15 +119,17 @@ Go to the project directory
   cd med
 ```
 
-Install dependencies (Frontend and Backend Simultaneously)
+Start the Frontend Pages
 
 ```bash
-  npm run fullInstall
+  npm i
+  npm run serve
 ```
-Start the server (Frontend and Backend Simultaneously)
+Start the Backend Server
 
 ```bash
-  npm run fullStart
+  npm i
+  npm run http_server
 ```
 
 ## Authors
