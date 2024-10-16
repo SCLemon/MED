@@ -1,17 +1,7 @@
 <template>
     <div>
-      <GmapMap ref="mapRef"
-        :center="center"
-        :zoom="zoom"
-        map-type-id="terrain"
-        style="width: 100%; height: 335px"
-      >
-        <GmapMarker
-          v-for="(place, index) in nearbyPlaces"
-          :key="index"
-          :position="place.geometry.location"
-          :clickable="true"
-        />
+      <GmapMap ref="mapRef" :key="mapKey" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 100%; height: 335px">
+        <GmapMarker v-for="(place, index) in nearbyPlaces" :key="index" :position="place.geometry.location" :clickable="true" />
       </GmapMap>
       <div class="searchInput">
         <div class="inputBox">
@@ -39,7 +29,6 @@
             </div>
           </div>
         </div>
-      
     </div>
   </template>
   
@@ -65,6 +54,8 @@
         map:{},
         loadingFinish:false,
         filterGet:false,
+        mapKey:0,
+        mapIsAvailable:true,
       }
     },
     mounted() {
@@ -191,7 +182,7 @@
                 this.filterGet=true;
                 this.$bus.$emit('handleAlert','Getting Filter Error When Connecting Server','error');
             })
-        }
+      }
     },
   }
   </script>

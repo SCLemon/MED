@@ -24,6 +24,11 @@ router.get('/api/news/everything',(req, res) => {
     })
 });
 
+// Google API Key
+const {googleMapKey} = require('../apiKey.js')
+router.get('/api/google/auth',(req, res) => {
+    res.send(googleMapKey);
+});
 module.exports = router;
 
 

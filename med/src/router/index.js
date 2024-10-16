@@ -71,10 +71,12 @@ const router = new VueRouter({
             {
                 path:'detail',
                 component:NavDetail,
+                meta: { keepAlive: true }
             },
             {
                 path:'filter',
                 component:NavFilter,
+                meta: { keepAlive: false }
             }]
         },
         {
