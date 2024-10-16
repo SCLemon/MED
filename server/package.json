@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node server.js & node appscript/send.js",
+    "http_server": "node http_server.js & node appscript/send.js",
+    "https_server": "node https_server.js & node appscript/send.js",
     "send": "node appscript/send.js"
   },
   "keywords": [],

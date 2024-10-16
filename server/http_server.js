@@ -12,7 +12,7 @@ app.use(cors({
 }))
 
 // 初始化資料庫
-const { connectToDatabase, disconnectFromDatabase } = require('./db/db');
+const { connectToDatabase, disconnectFromDatabase } = require('./db/db.js');
 connectToDatabase();
 process.on('SIGINT', function() {
     disconnectFromDatabase();
@@ -47,46 +47,46 @@ const limitRequests = (req, res, next) => {
 app.use(limitRequests);
 
 // api router
-const apiRouter = require('./routes/apiRouter');
+const apiRouter = require('./routes/apiRouter.js');
 app.use(apiRouter);
 // 驗證
-const verifyRouter = require('./routes/verifyRouter');
+const verifyRouter = require('./routes/verifyRouter.js');
 app.use(verifyRouter);
 
 // AI 聊天
-const chatRouter = require('./routes/chatRouter');
+const chatRouter = require('./routes/chatRouter.js');
 app.use(chatRouter);
 
 // AI 設置
-const aiSettingRouter = require('./routes/AiSettingRouter');
+const aiSettingRouter = require('./routes/AiSettingRouter.js');
 app.use(aiSettingRouter);
 
 // 個人資訊
-const userInfoRouter = require('./routes/userInfoRouter');
+const userInfoRouter = require('./routes/userInfoRouter.js');
 app.use(userInfoRouter);
 
 // 任務列表
-const taskRouter = require('./routes/taskRouter');
+const taskRouter = require('./routes/taskRouter.js');
 app.use(taskRouter);
 
 // 篩選器列表
-const filterRouter = require('./routes/filterRouter');
+const filterRouter = require('./routes/filterRouter.js');
 app.use(filterRouter);
 
 // 課程列表
-const scheduleRouter = require('./routes/scheduleRouter');
+const scheduleRouter = require('./routes/scheduleRouter.js');
 app.use(scheduleRouter);
 
 // 圖片生成紀錄
-const imageRouter = require('./routes/imageRouter');
+const imageRouter = require('./routes/imageRouter.js');
 app.use(imageRouter);
 
 // 證券資訊
-const stockRouter = require('./routes/stockRouter');
+const stockRouter = require('./routes/stockRouter.js');
 app.use(stockRouter);
 
 // 單字卡資訊
-const wordRouter = require('./routes/wordRouter');
+const wordRouter = require('./routes/wordRouter.js');
 app.use(wordRouter);
 
 app.listen(3007, () => {
@@ -94,7 +94,7 @@ app.listen(3007, () => {
 })
 
 // AI socket
-const { startAIWebSocketServer } = require('./routes/ws/aiSocket.js');
+const { startAIWebSocketServer } = require('./routes/ws/aiHttpSocket.js');
 startAIWebSocketServer(3000)
 
 // 避免系統中斷

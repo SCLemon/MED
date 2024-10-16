@@ -82,7 +82,7 @@ export default {
         }
         catch(e){}
 
-        this.socket = new WebSocket(`ws://${this.location}:3000`);
+        this.socket = new WebSocket(`${this.wss}://${this.location}:3000`);
         this.socket.onopen = () => {
             console.log('WebSocket connection opened');
         };
@@ -120,6 +120,9 @@ export default {
         },
         location(){
             return (window.location.href).split('//')[1].split(":")[0]
+        },
+        wss(){
+            return window.location.href.split(":")[0] == 'https'? 'wss':'ws'
         }
     },
     watch:{
