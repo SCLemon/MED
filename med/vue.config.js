@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
-  publicPath: './',
+  // publicPath: './',
   devServer:{
     https:true,
     proxy: {

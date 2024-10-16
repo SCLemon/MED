@@ -34,6 +34,7 @@ import SecondHand from '../pages/SecondHand/SecondHand.vue'
 import Calendar from '../pages/Main/Calendar/Calendar.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
+    mode: 'history',
     routes:[
         {
             path:'/main',

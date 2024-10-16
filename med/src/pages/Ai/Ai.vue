@@ -128,7 +128,6 @@ export default {
       this.placeholder='Send Your Questions';
       this.$bus.$emit('handleAlert','Sound Recognition Stop','success');
     }
-
     this.socket = new WebSocket(`${this.wss}://${window.location.hostname}:3000`);
     this.socket.onopen = () => {
       console.log('WebSocket connection opened');
