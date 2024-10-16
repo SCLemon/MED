@@ -31,6 +31,7 @@ import WordTest from '../pages/Word/WordTest/WordTest.vue'
 import WordOption from '../pages/Word/WordOption/WordOption.vue'
 import Movie from '../pages/Movie/Movie.vue'
 import SecondHand from '../pages/SecondHand/SecondHand.vue'
+import Calendar from '../pages/Main/Calendar/Calendar.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -49,6 +50,10 @@ const router = new VueRouter({
             {
                 path:'revise',
                 component:Revise
+            },
+            {
+                path:'calendar',
+                component: Calendar
             }]
         },
         {

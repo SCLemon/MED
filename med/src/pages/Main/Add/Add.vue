@@ -64,14 +64,14 @@ export default {
     },
     methods:{
         sendData(){
-            if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
+            if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
             else{
                 var upload = {
                     date:format(new Date(this.date),'yyyy/MM/dd'),
                     todo:{
                         title:this.title,
                         period:this.period,
-                        content:this.content,
+                        content:this.content.trim() != ''? this.content:'-',
                         status:this.status,
                     }
                 }

@@ -140,7 +140,10 @@ export default {
       width:100% !important;
     }
     .el-select{
-        width:100% !important;
+      width:100% !important;
+    }
+    .el-dialog{
+      width: 90% !important;
     }
     .app {
       width:100%;

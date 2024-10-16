@@ -1,7 +1,8 @@
 <template>
   <div class="box">
     <div class="add">
-      <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link> 
+      <!-- <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link>  -->
+      <router-link class="school" :to="'/main/calendar'"><div>查看行事曆</div></router-link> 
       <router-link class="title-add" :to="{path:'/main/add',query:{'mail':mail}}">
           <div class="btn"><i class="fa-solid fa-address-book add-icon"></i>Add</div>
       </router-link>
