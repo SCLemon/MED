@@ -82,7 +82,8 @@ export default {
         }
         catch(e){}
 
-        this.socket = new WebSocket(`${this.wss}://${window.location.hostname}:3000`);
+        //this.socket = new WebSocket(`${this.wss}://${window.location.hostname}:3000`);
+        this.socket = new WebSocket(`wss://medreminder.serveblog.net:3000`)
         this.socket.onopen = () => {
             console.log('WebSocket connection opened');
         };
