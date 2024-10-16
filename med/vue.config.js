@@ -6,7 +6,7 @@ module.exports = defineConfig({
   lintOnSave: false,
   publicPath: './',
   devServer:{
-    https:false,
+    https:true,
     proxy: {
       '/chat': {
         target: 'http://127.0.0.1:3007',
