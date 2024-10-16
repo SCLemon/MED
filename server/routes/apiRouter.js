@@ -24,8 +24,17 @@ router.get('/api/news/everything',(req, res) => {
     })
 });
 
+// weather API
+const weatherKey = key.weatherKey;
+router.post('/api/weather',(req,res)=>{
+    axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${req.body.latitude}%2C${req.body.longitude}?unitGroup=metric&key=${weatherKey}&contentType=json`)
+    .then(data=>{
+        res.send(data.data);
+    })
+})
+
 // Google API Key
-const {googleMapKey} = require('../apiKey.js')
+const googleMapKey = key.googleMapKey
 router.get('/api/google/auth',(req, res) => {
     res.send(googleMapKey);
 });

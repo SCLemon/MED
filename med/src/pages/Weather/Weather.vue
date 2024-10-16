@@ -20,7 +20,6 @@
 
 <script>
 import axios from 'axios'
-import { weatherKey } from '../..//apiKey'
 export default {
     name:'Weather',
     mounted(){
@@ -44,7 +43,9 @@ export default {
             })
         },
         getWeatherInfo(latitude,longitude){
-            axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude}%2C${longitude}?unitGroup=metric&key=${weatherKey}&contentType=json`)
+            axios.post(`/api/weather`,{
+                latitude:latitude,longitude:longitude
+            })
             .then(res=>{
                 this.data=res.data;
                 this.$bus.$emit('handleAlert','Getting Infomation Successfully','success');
