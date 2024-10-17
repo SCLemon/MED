@@ -6,7 +6,7 @@
         <div class="time time1">
             <div class="title">Date</div>
             <el-date-picker v-model="date" type="date" placeholder="Please Select the Date" class="picker"
-                :picker-options="pickOptions"
+                :picker-options="pickOptions" @focus="preventKeyboard" ref="datePicker"
             ></el-date-picker>
         </div>
         <div class="time">
@@ -63,6 +63,9 @@ export default {
         }
     },
     methods:{
+        preventKeyboard() {
+            this.$refs.datePicker.blur(); // 讓選擇器失去焦點
+        },
         sendData(){
             if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
             else{
