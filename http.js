@@ -14,7 +14,6 @@ app.use('/chat/', createProxyMiddleware({
   app.use('/verify/', createProxyMiddleware({
     target: 'http://localhost:3007/verify/',
     changeOrigin: true,
-    logger:console
   }));
   
   app.use('/userInfo/', createProxyMiddleware({

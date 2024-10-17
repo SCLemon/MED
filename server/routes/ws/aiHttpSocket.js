@@ -10,7 +10,6 @@ function startAIWebSocketServer(port) {
   const wss = new WebSocket.Server({ port });
 
   wss.on('connection', (ws) => {
-    console.log('Client connected to WebSocket');
 
     ws.on('message', async(message) => {
 
@@ -23,9 +22,7 @@ function startAIWebSocketServer(port) {
       }
     });
 
-    ws.on('close', () => {
-      console.log('Client disconnected');
-    });
+    ws.on('close', () => {});
   });
 
   console.log(`WebSocket server is listening on ws://localhost:${port}`);

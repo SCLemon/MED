@@ -23,7 +23,6 @@ function startAIWebSocketServer(port) {
   const wss = new WebSocket.Server({ server });
 
   wss.on('connection', (ws) => {
-    console.log('Client connected to WebSocket');
 
     ws.on('message', async (message) => {
       var config = JSON.parse(message);
@@ -35,9 +34,7 @@ function startAIWebSocketServer(port) {
       }
     });
 
-    ws.on('close', () => {
-      console.log('Client disconnected');
-    });
+    ws.on('close', () => {});
   });
 
   // 讓 HTTPS 伺服器監聽指定的端口
