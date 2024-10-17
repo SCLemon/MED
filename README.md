@@ -32,8 +32,6 @@ To run this project, you will need to add the following environment variables to
 OpenAI API `API_KEY`  
 ```
 https://platform.openai.com/
-
-(You should add this parameter named as 'openaiKey' and export it manually because Github does not allow developers to upload content about OpenAI Key)
 ```
 
 Fugle API `API_KEY`
