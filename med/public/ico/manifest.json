@@ -55,7 +55,7 @@
  "start_url": "../index.html",
  "description":"這是一個免費且簡便的MED智能小助手",
  "display": "standalone",
- "orientation": "landscape",
+ "orientation": "portrait",
  "theme_color": "#000000",
  "background_color": "white"
 }
