@@ -17,7 +17,6 @@ import Login from '../pages/Verify/login.vue'
 import Add from '../pages/Main/Add/Add.vue'
 import List from '../pages/Main/List/List.vue'
 import Revise from '../pages/Main/Revise/Revise.vue'
-import Schedule from '../pages/Schedule/Schedule.vue'
 import More from '../pages/More/More.vue'
 import Weather from '../pages/Weather/Weather.vue'
 import AiSetting from '../pages/Ai/Setting/AiSetting.vue'
@@ -55,10 +54,6 @@ const router = new VueRouter({
                 path:'calendar',
                 component: Calendar
             }]
-        },
-        {
-            path:'/schedule',
-            component:Schedule
         },
         {
             path:'/navigator',

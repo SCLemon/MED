@@ -16,13 +16,18 @@ import axios from 'axios';
 // 取得 googleMapKey
 
 async function initialize(){
-  const key  = await axios.get('/api/google/auth');
-  Vue.use(VueGoogleMaps, {
-    load: {
-      key: key.data,
-      libraries: 'places', 
-    },
-  })
+  try{
+    const key  = await axios.get('/api/google/auth');
+    Vue.use(VueGoogleMaps, {
+      load: {
+        key: key.data,
+        libraries: 'places', 
+      },
+    })
+  }
+  catch{
+    alert('Too many requests, please try again after a minute.')
+  }
 
   Vue.config.productionTip = false;
   new Vue({

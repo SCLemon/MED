@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: '*' 
 }))
+app.set('trust proxy', 'loopback, 192.168.0.1'); 
 
 // 初始化資料庫
 const { connectToDatabase, disconnectFromDatabase } = require('./db/db.js');
@@ -20,29 +21,15 @@ process.on('SIGINT', function() {
     process.exit(0);
 });
 
-// 防止惡意攻擊
-const requestCounts = new Map();
-const blacklist = [];
-const limitRequests = (req, res, next) => {
-    const clientIP = req.ip;
-    const currentTime = Date.now();
-    if (blacklist.includes(clientIP)) return res.status(403).send('Forbidden'); 
-    if (requestCounts.has(clientIP)) {
-        const { count, timestamp } = requestCounts.get(clientIP);
-        if (currentTime - timestamp > 1000) {
-            requestCounts.set(clientIP, { count: 1, timestamp: currentTime });
-        } 
-        else {
-            if (count >= 5) {
-                blacklist.push(clientIP);
-                res.cookie('token', '', { expires: new Date(0) });
-                return res.status(403).send('Forbidden');
-            }
-            else requestCounts.set(clientIP, { count: count + 1, timestamp: timestamp });
-        }
-    } else requestCounts.set(clientIP, { count: 1, timestamp: currentTime });
-    next();
-};
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 分鐘
+    max: 100, // 限制每個 IP 最多 100 次請求
+    message: 'Too many requests from this IP, please try again after a minute.',
+});
+
+app.use(limiter);
 
 app.use(limitRequests);
 
@@ -72,10 +59,6 @@ app.use(taskRouter);
 // 篩選器列表
 const filterRouter = require('./routes/filterRouter.js');
 app.use(filterRouter);
-
-// 課程列表
-const scheduleRouter = require('./routes/scheduleRouter.js');
-app.use(scheduleRouter);
 
 // 圖片生成紀錄
 const imageRouter = require('./routes/imageRouter.js');
