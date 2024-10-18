@@ -333,7 +333,7 @@ export default {
     text-decoration: none;
   }
   .author{
-    width: 240px;
+    width: 220px;
     white-space:nowrap;
     overflow-x: scroll ;
   }
