@@ -31,8 +31,6 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use(limitRequests);
-
 // api router
 const apiRouter = require('./routes/apiRouter.js');
 app.use(apiRouter);
