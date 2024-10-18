@@ -1,8 +1,7 @@
 <template>
   <div class="box">
     <div class="add">
-      <!-- <router-link class="school" :to="'/schedule'"><div>查看課表</div></router-link>  -->
-      <router-link class="school" :to="'/main/calendar'"><div>查看行事曆</div></router-link> 
+      <router-link class="school" :to="{path:'/main/calendar',query:{'mail':mail}}"><div>查看行事曆</div></router-link> 
       <router-link class="title-add" :to="{path:'/main/add',query:{'mail':mail}}">
           <div class="btn"><i class="fa-solid fa-address-book add-icon"></i>Add</div>
       </router-link>
@@ -21,7 +20,7 @@
                   path:'/main/revise',
                   query:{'todoListContent':t,'todoListDate':obj.date}}" :class="`link ${t.status?'finish':''}`">
                 <div class="task">
-                  <i :class="`fa-solid fa-circle circle ${t.period}`"></i>
+                  <i :class="`fa-solid fa-circle circle`" :style="{color:drawColor(t.period)}"></i>
                   {{ t.title }}
                 </div>
               </router-link>
@@ -50,7 +49,7 @@
 import {host} from '../../../serverPath'
 import axios from 'axios';
 import jsCookie from 'js-cookie';
-import { format, isBefore } from 'date-fns';
+import { format, isBefore , parse} from 'date-fns';
 import markdownit from 'markdown-it'
 export default {
   name: "List",
@@ -96,7 +95,7 @@ export default {
     },
     handleData(obj){
       obj.sort((a,b)=>{
-        return this.handleSort(a.todo.period)-this.handleSort(b.todo.period)
+        return parse(a.todo.period, 'HH:mm', new Date()).getTime() - parse(b.todo.period, 'HH:mm', new Date()).getTime()
       })
       this.list = obj.reduce((acc, curr) => {
         const foundIndex = acc.findIndex(item => item.date === curr.date);
@@ -110,18 +109,6 @@ export default {
         })
         return acc;
       }, []);
-    },
-    handleSort(period){
-      switch(period) {
-        case 'morning':
-          return 1;
-        case 'noon':
-          return 2;
-        case 'afternoon':
-          return 3;
-        case 'night':
-          return 4;
-      }
     },
     deleteData(id){
       this.$confirm('確認是否刪除？', '提示', {
@@ -178,7 +165,14 @@ export default {
         })
       }
       this.showNote=!this.showNote;
-    }
+    },
+    drawColor(period){
+      var hour = Number.parseInt(period.split(":")[0])
+      if (hour < 10) return 'lightgreen';
+      else if (hour < 14) return 'lightpink';
+      else if (hour < 18) return 'lightsalmon';
+      else return 'purple';
+    },
   },
   data() {
     return {

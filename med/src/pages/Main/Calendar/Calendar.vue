@@ -12,11 +12,32 @@
             </div>
         </template>
     </el-calendar>
-    <el-dialog :title="openDetailDate" :visible.sync="dialogTableVisible">
+    <el-dialog :title="openDetailDate" :visible.sync="dialogTableVisible"  ref="table">
       <el-table :data="gridData">
-        <el-table-column property="period" label="時間" width="150"></el-table-column>
-        <el-table-column property="title" label="代辦事項" width="200"></el-table-column>
+        <el-table-column property="period" label="時間" width="155.5"></el-table-column>
+        <el-table-column property="title" label="待辦事項" width="120"></el-table-column>
+        <el-table-column width="34"  align="center">
+          <template v-slot="{ row }">
+            <div class="delete" @click="deleteData(row.id)"><i class="fa-solid fa-x x"></i></div>
+          </template>
+        </el-table-column>
       </el-table>
+      <div class="addRow">
+        <div class="addBoxLeft">
+          <div class="time">
+          <el-time-select class="select"
+            v-model="period" :picker-options="{ start: '00:00',step: '00:30',end: '23:30' }" placeholder="選擇時間"
+            @focus="preventKeyboard" ref="datePicker">
+          </el-time-select>
+        </div>
+        </div>
+        <div class="addBoxRight">
+          <div class="box">
+            <el-input placeholder="Please Input Your Title" class="input" v-model="title" clearable ></el-input>
+          </div>
+          <div class="btn" @click="sendData()"><i class="fa-solid fa-plus"></i></div>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -25,7 +46,7 @@
 import axios from 'axios';
 import { host } from '@/serverPath';
 import jsCookie from 'js-cookie';
-import {format} from 'date-fns'
+import {format, parse} from 'date-fns'
 export default {
     name:'Calendar',
     data(){
@@ -34,6 +55,9 @@ export default {
         dialogTableVisible: false,
         openDetailDate:'',
         gridData: [],
+        period: '',
+        title:'',
+        mail:this.$route.query.mail,
       }
     },
     mounted(){
@@ -41,6 +65,9 @@ export default {
       this.getData();
     },
     methods:{
+      preventKeyboard() {
+        this.$refs.datePicker.blur(); // 讓選擇器失去焦點
+      },
       getData(){
         axios.get(`${host}/reminder/get/${jsCookie.get('token')}`)
         .then(res=>{
@@ -65,22 +92,19 @@ export default {
         return format(date,type);
       },
       openDetail(date,data){
-        data.sort((a,b)=>{
-          return this.handleSort(a.period)-this.handleSort(b.period)
-        })
         this.gridData = data.map((item)=>{
           return {
             period : item.period,
-            title : item.title
+            title : item.title,
+            id : item.taskId
           }
         })
         this.dialogTableVisible = true;
         this.openDetailDate = date;
-
       },
       handleData(obj){
         obj.sort((a,b)=>{
-          return this.handleSort(a.todo.period)-this.handleSort(b.todo.period)
+          return parse(a.todo.period, 'HH:mm', new Date()).getTime() - parse(b.todo.period, 'HH:mm', new Date()).getTime()
         })
         this.list = obj.reduce((acc, curr) => {
           const foundIndex = acc.findIndex(item => item.date === curr.date);
@@ -95,17 +119,71 @@ export default {
           return acc;
         }, []);
       },
-      handleSort(period){
-        switch(period) {
-          case 'morning':
-            return 1;
-          case 'noon':
-            return 2;
-          case 'afternoon':
-            return 3;
-          case 'night':
-            return 4;
+      sendData(){
+        if(this.title.trim()=='' || this.period.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error');
+        else {
+          var upload = {
+            date:this.openDetailDate,
+            todo:{
+              title:this.title,
+              period:this.period,
+              content:'-',
+              status:false,
+            }
+          }
+          axios.post('/reminder/add',upload,{
+            headers:{
+              'user-token':jsCookie.get('token'),
+              'user-mail':this.mail
+            }
+          })
+          .then(res=>{
+            if(res.data == 'success'){
+              this.dialogTableVisible = false;
+              this.$bus.$emit('handleAlert','Add Reminder Success','success');
+              this.title = '';
+              this.period = '';
+            }
+            else this.$bus.$emit('handleAlert','Failed To Add Reminder','error');
+          })
+          .catch(e=>{
+            this.$bus.$emit('handleAlert','Add Reminder Error By Server Connection','error')
+          })
+          .finally(()=>{
+            this.getData();
+          })
         }
+      },
+      showAlert(msg,type){
+        this.$bus.$emit('handleAlert',msg,type)
+      },
+      deleteData(id){
+        this.$confirm('確認是否刪除？', '提示', {
+          confirmButtonText: '確定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            axios.delete(`/reminder/delete/${id}`,{
+            headers:{
+              'user-token':jsCookie.get('token')
+            }
+            }).then(res=>{
+              if(res.data=='success'){
+                this.$bus.$emit('handleAlert','Delete TodoList Success','success');
+                this.dialogTableVisible = false;
+              }
+              else this.$bus.$emit('handleAlert','Failed To Delete TodoList','error');
+            })
+            .catch(e=>{
+              this.$bus.$emit('handleAlert','Delete TodoList Error When Connecting Server','error');
+            })
+            .finally(()=>{
+              this.getData();
+            })  
+        })
+        .catch(() => {
+          this.$bus.$emit('handleAlert','Delete TodoList Canceled','error');
+        })       
       },
     },
 }
@@ -132,18 +210,34 @@ export default {
     font-size: 10px;
     line-height: 1.75;
   }
+  .addRow{
+    margin-top: 10px;
+    width: 309.5px;
+    height: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .addBoxLeft{
+    width: 155.5px;
+    padding-right: 10px;
+  }
+  .addBoxRight{
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .input{
+    width: 110px;
+  }
+  .btn{
+    width: 34px;
+  }
+  .delete:hover{
+    cursor: pointer;
+  }
+  .x{
+    font-size: 12px;
+  }
 </style>
-<!--
- "data": [
-        {
-            "todo": {
-                "title": "工數複習",
-                "period": "noon",
-                "content": "如題",
-                "status": true,
-                "taskId": "15e83f7f-b4a0-4dff-8528-1440771c4b3d"
-            },
-            "date": "2024/04/30",
-            "_id": "6630b70dba2914f9403bb379"
-        }]
--->

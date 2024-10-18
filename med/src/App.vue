@@ -170,4 +170,7 @@ export default {
     .el-progress__text{
       margin-left: 15px !important;
     }
+    .el-date-editor{
+      width: auto !important;
+    }
 </style>

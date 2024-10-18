@@ -57,7 +57,7 @@ router.put('/reminder/update',(req, res) => {
   )
   .then((result)=>{
     if (result.modifiedCount > 0) res.status(200).send('success');
-    else res.status(200).send('Failed To updating record in taskModel');
+    else res.status(200).send('The existing data has not been changed.');
   }).catch(e=>{
     res.status(200).send('Failed To updating record in taskModel');
   })

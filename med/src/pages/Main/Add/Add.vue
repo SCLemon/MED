@@ -11,16 +11,17 @@
         </div>
         <div class="time">
             <div class="title">Period</div>
-            <el-select v-model="period" placeholder="请选择" class="select">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
+            <el-time-select class="select"
+                v-model="period" :picker-options="{ start: '00:00',step: '00:30',end: '23:30' }" placeholder="Please Select the Time"
+                @focus="preventKeyboard" ref="timePicker">
+            </el-time-select>
         </div>
     </div>
     <div class="title">Content</div>
     <el-input
         type="textarea"
         :autosize="{ minRows: 5, maxRows: 11}"
-        placeholder="请输入内容"
+        placeholder="Please Fill in the Remarks"
         v-model="content">
     </el-input>
     <div class="btn" @click="sendData()">Add</div>
@@ -42,19 +43,6 @@ export default {
             status:false,
             content:'',
             mail:this.$route.query.mail,
-            options: [{
-                value: 'morning',
-                label: '早晨'
-                }, {
-                value: 'noon',
-                label: '中午'
-                }, {
-                value: 'afternoon',
-                label: '晚間'
-                }, {
-                value: 'night',
-                label: '睡前'
-            }],
             pickOptions:{
                 disabledDate(time){
                     return time.getTime() < Date.now()-86400*1000
@@ -65,6 +53,7 @@ export default {
     methods:{
         preventKeyboard() {
             this.$refs.datePicker.blur(); // 讓選擇器失去焦點
+            this.$refs.timePicker.blur();
         },
         sendData(){
             if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')

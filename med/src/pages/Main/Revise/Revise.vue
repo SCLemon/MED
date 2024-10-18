@@ -6,19 +6,15 @@
         <div class="time time1">
             <div class="title">Date</div>
             <el-date-picker v-model="date" type="date" placeholder="Please Select the Date" class="picker"
-                :picker-options="pickOptions"
+                :picker-options="pickOptions" @focus="preventKeyboard" ref="datePicker"
             ></el-date-picker>
         </div>
         <div class="time">
             <div class="title">Period</div>
-            <el-select v-model="period" placeholder="请选择">
-                <el-option
-                v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-            </el-select>
+            <el-time-select class="select"
+                v-model="period" :picker-options="{ start: '00:00',step: '00:30',end: '23:30' }" placeholder="Please Select the Time"
+                @focus="preventKeyboard" ref="timePicker">
+            </el-time-select>
         </div>
     </div>
     <div class="title">Content</div>
@@ -60,19 +56,6 @@ export default {
             period: '',
             content:'',
             status:false,
-            options: [{
-                value: 'morning',
-                label: '早晨'
-                }, {
-                value: 'noon',
-                label: '中午'
-                }, {
-                value: 'afternoon',
-                label: '晚間'
-                }, {
-                value: 'night',
-                label: '睡前'
-            }],
             pickOptions:{
                 disabledDate(time){
                     return time.getTime() < Date.now()-86400*1000
@@ -81,6 +64,10 @@ export default {
         }
     },
     methods:{
+        preventKeyboard() {
+            this.$refs.datePicker.blur(); // 讓選擇器失去焦點
+            this.$refs.timePicker.blur();
+        },
         sendData(taskId){
             if(this.title.trim()=='' || this.date=='' || this.date == null || this.period.trim()=='' || this.content.trim()=='') this.$bus.$emit('handleAlert','Blank are not Allowed','error')
             else{
@@ -109,7 +96,7 @@ export default {
                         this.$bus.$emit('handleAlert','Update Reminder Success','success');
                         this.$router.back();
                     }
-                    else this.$bus.$emit('handleAlert','Failed To Update Reminder','error');
+                    else this.$bus.$emit('handleAlert','The existing data has not been changed.','warning');
                 })
                 .catch(e=>{
                     this.$bus.$emit('handleAlert','Add Reminder Error By Server Connection','error')
