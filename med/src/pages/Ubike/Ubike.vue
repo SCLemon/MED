@@ -81,6 +81,7 @@ export default {
       'county':{
         deep:true,
         handler(){
+          this.q = '';
           this.region = this.activeRegion[0]
         }
       }
