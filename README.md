@@ -4,9 +4,12 @@
 
 This is a daily application app created by integrating AI technology, which includes most commonly used tools to assist you in effectively managing daily life and enhancing functional convenience.
 
-## Hint
+## Announcement
 If the website is in HTTP environment, something might break down like Navigator API, Downloader API. <br>
 But you can clone this repository and run it locally, it would proceed successfully. <br>
+
+By the way, The Demo Website would sometimes break down as a result of the Bad Virtual Machine which is Free.
+so, do not Misunderstand this Web Application QQ.
 
 
 ## Programming languages
