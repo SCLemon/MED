@@ -11,7 +11,7 @@
         </div>
         <div class="time">
             <div class="title">Period</div>
-            <el-time-select class="select"
+            <el-time-select class="picker"
                 v-model="period" :picker-options="{ start: '00:00',step: '00:30',end: '23:30' }" placeholder="Please Select the Time"
                 @focus="preventKeyboard" ref="timePicker">
             </el-time-select>

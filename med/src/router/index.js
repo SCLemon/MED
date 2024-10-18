@@ -31,6 +31,7 @@ import WordOption from '../pages/Word/WordOption/WordOption.vue'
 import Movie from '../pages/Movie/Movie.vue'
 import SecondHand from '../pages/SecondHand/SecondHand.vue'
 import Calendar from '../pages/Main/Calendar/Calendar.vue'
+import Ubike from '../pages/Ubike/Ubike.vue'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes:[
@@ -73,6 +74,10 @@ const router = new VueRouter({
                 component:NavFilter,
                 meta: { keepAlive: false }
             }]
+        },
+        {
+            path:'/ubike',
+            component:Ubike
         },
         {
             path:'/more',
