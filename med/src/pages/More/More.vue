@@ -9,9 +9,9 @@
                 <img src="../../../public/images/news.png" alt="">
                 <div class="text">即時新聞</div>
             </div>
-            <div class="block c2" @click="goTo('/medNews')">
-                <img src="../../../public/images/government.png" alt="">
-                <div class="text">政府政策</div>
+            <div class="block c2" @click="goTo('/ubike')">
+                <img src="../../../public/images/bike.png" alt="">
+                <div class="text">共享單車</div>
             </div>
         </div>
         <div class="row">

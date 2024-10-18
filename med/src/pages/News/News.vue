@@ -35,9 +35,7 @@
                 </div>
             </a>
         </div>
-        <div class="loading" v-show="!isLoaded">
-
-        </div>
+        <div class="loading" v-show="!isLoaded"></div>
     </div>
   </div>
 </template>

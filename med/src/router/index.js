@@ -4,11 +4,8 @@ import jsCookie from 'js-cookie'
 
 import Main from '../pages/Main/Main.vue'
 import Navigator from '../pages/Navigator/Navigator.vue'
-import MedNews from '../pages/MedNews/MedNews.vue'
 import Personal from '../pages/Personal/Personal.vue'
 import Ai from '../pages/Ai/Ai.vue'
-import EachMedNews from '../pages/MedNews/EachMedNews/EachMedNews.vue'
-import MainMedNews from '../pages/MedNews/MainMedNews/MainMedNews.vue'
 import NavDetail from '../pages/Navigator/NavDetail/NavDetail.vue'
 import NavMain from '../pages/Navigator/NavMain/NavMain.vue'
 import NavFilter from '../pages/Navigator/NavFilter/NavFilter.vue'
@@ -86,18 +83,6 @@ const router = new VueRouter({
         {
             path:'/weather',
             component:Weather,
-        },
-        {
-            path:'/medNews',
-            component:MedNews,
-            children:[{
-                path:'',
-                component:MainMedNews,
-            },
-            {
-                path:'detail',
-                component:EachMedNews,
-            }]
         },
         {
             path:'/ai',

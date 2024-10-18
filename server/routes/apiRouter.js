@@ -38,6 +38,33 @@ const googleMapKey = key.googleMapKey
 router.get('/api/google/auth',(req, res) => {
     res.send(googleMapKey);
 });
+
+// Ubike
+router.get('/api/ubike/county',(req,res)=>{
+    axios.get('https://apis.youbike.com.tw/json/area-all.json')
+    .then(response=>{
+        var output = response.data.map((item)=>{
+            return {
+                label : item['area_name_tw'],
+                value : item['area_code']
+            }
+        })
+        res.send(output)
+    })
+    .catch(()=>{
+        res.send([])
+    })
+})
+router.get('/api/ubike/station',(req,res)=>{
+    axios.get('https://apis.youbike.com.tw/json/station-yb2.json')
+    .then(response=>{
+        res.send(response.data)
+    })
+    .catch(()=>{
+        res.send([])
+    })
+})
+
 module.exports = router;
 
 
