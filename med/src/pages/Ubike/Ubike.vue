@@ -59,6 +59,9 @@ export default {
     name:'Ubike',
     mounted(){
       this.getPosition();
+      this.timer = setInterval(() => {
+        this.getPosition();
+      }, 15000);
     },
     data(){
       return {
@@ -71,6 +74,7 @@ export default {
         region:'東區',
         lat:'',
         long:'',
+        timer:0,
       }
     },
     watch:{
@@ -131,6 +135,9 @@ export default {
       handleDate(time){
         return format(time,'HH:mm:ss')
       }
+    },
+    beforeDestroy(){
+      clearInterval(this.timer);
     }
 }
 </script>
