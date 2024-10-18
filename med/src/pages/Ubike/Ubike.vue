@@ -120,6 +120,9 @@ export default {
         .catch(e=>{
           this.$bus.$emit('handleAlert','Failed To Get Info of Ubike!','error');
         })
+        .finally(()=>{
+          this.isLoaded = true;
+        })
       },
       getCounty(){
         axios.get('/api/ubike/county')
@@ -128,9 +131,6 @@ export default {
         })
         .catch(e=>{
           this.$bus.$emit('handleAlert','Failed To Get Info of Ubike!','error');
-        })
-        .finally(()=>{
-          this.isLoaded = true;
         })
       },
       handleDate(time){
