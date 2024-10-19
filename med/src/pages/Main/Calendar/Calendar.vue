@@ -2,10 +2,10 @@
   <div class="calendarBox">
     <el-calendar>
         <template slot="dateCell" slot-scope="{date, data}">
-            <p :class="data.isSelected ? 'is-selected' : ''">{{ data.day.split('-')[2] }}</p>
-            <div class="contentBox">
+            <p :class="`date ${data.isSelected ? 'is-selected' : ''}`">{{ data.day.split('-')[2] }}</p>
+            <div class="contentBox" @click="openDetail(data.day)">
               <template v-for="(obj,id) in list">
-                <span @click="openDetail(obj.date,obj.todo)" class="content" v-if="handleTimeFormat(obj.date,'yyyy-MM-dd') == data.day" :key="id">
+                <span class="content" v-if="handleTimeFormat(obj.date,'yyyy-MM-dd') == data.day" :key="id">
                   <div v-for="(item,id) in obj.todo" :key="id"> {{ item.title }}</div>
                 </span>
               </template>
@@ -13,12 +13,12 @@
         </template>
     </el-calendar>
     <el-dialog :title="openDetailDate" :visible.sync="dialogTableVisible"  ref="table">
-      <el-table :data="gridData">
+      <el-table :data="gridData" empty-text="暫無數據">
         <el-table-column property="period" label="時間" width="155.5"></el-table-column>
         <el-table-column property="title" label="待辦事項" width="120"></el-table-column>
         <el-table-column width="34"  align="center">
           <template v-slot="{ row }">
-            <div class="delete" @click="deleteData(row.id)"><i class="fa-solid fa-x x"></i></div>
+            <div class="delete" @click="deleteData(row.taskId)"><i class="fa-solid fa-x x"></i></div>
           </template>
         </el-table-column>
       </el-table>
@@ -51,7 +51,7 @@ export default {
     name:'Calendar',
     data(){
       return {
-        list:{},
+        list:[],
         dialogTableVisible: false,
         openDetailDate:'',
         gridData: [],
@@ -91,14 +91,9 @@ export default {
       handleTimeFormat(date,type){
         return format(date,type);
       },
-      openDetail(date,data){
-        this.gridData = data.map((item)=>{
-          return {
-            period : item.period,
-            title : item.title,
-            id : item.taskId
-          }
-        })
+      openDetail(target){
+        var date = format(target,'yyyy/MM/dd');
+        this.gridData = this.list.filter((item)=>item.date == date)[0]?this.list.filter((item)=>item.date == date)[0]['todo']:[]     
         this.dialogTableVisible = true;
         this.openDetailDate = date;
       },
@@ -190,6 +185,9 @@ export default {
 </script>
 
 <style scoped>
+  .date{
+    margin-bottom: 5px;
+  }
   .is-selected {
     color: #1989FA;
   }

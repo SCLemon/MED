@@ -5,7 +5,6 @@
     
     <div class="top">TodoList Reminder</div>
       <i :class="`fa-solid fa-bell${remind?'':'-slash'} bell`" @click="changeRemind()" v-if="$route.path=='/main'"></i>
-      <i class="fa-solid fa-circle-question bell" slot="reference" @click="test()" v-if="$route.path=='/main/calendar'"></i>
     <router-view></router-view>
   </div>
 </template>
@@ -27,9 +26,6 @@ export default {
     })
   },
   methods:{
-    test(){
-      this.$bus.$emit('handleAlert','If no data exists for the selected date, add it on the previous page before returning here to view and edit.','warning')
-    },
     changeRemind(){
       this.remind=!this.remind;
       axios.put(`${host}/reminder/remind`,{
