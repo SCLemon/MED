@@ -19,7 +19,7 @@
       <div  v-for="cat in activeRegion" :key="cat" :class="['cat-select', {'selected': region === cat}]" @click="region = cat">{{ cat }}</div>
     </div>
     <div class="main">
-        <div class="headline">Search For You</div>
+        <div class="headline" v-if="isLoaded">Search For You</div>
         <div class="listBox" ref="listBox" v-show="isLoaded">
           <a :href="`https://www.google.com.tw/maps/place/${obj.lat},${obj.lng}`" target="bd" v-for="(obj,id) in filterStations" :key="id" class="link">
             <div class="list">
@@ -97,7 +97,7 @@ export default {
         return this.activeStations.filter(item =>{
           return item['district_tw'] == this.region && item['name_tw'].includes(this.q);
         }).sort((a,b)=>{
-          return Math.abs(Math.sqrt(Math.pow((a.lat-this.lat),2)+Math.pow((a.lng-this.long),2))) - Math.abs(Math.sqrt(Math.pow((b.lat-this.lat),2)+Math.pow((b.lng-this.long),2)))
+          return Math.sqrt(Math.pow((a.lat-this.lat),2)+Math.pow((a.lng-this.long),2)) - Math.sqrt(Math.pow((b.lat-this.lat),2)+Math.pow((b.lng-this.long),2))
         })
       }
     },

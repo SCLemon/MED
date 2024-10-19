@@ -8,11 +8,11 @@
       <div class="form">
         <div class="form-div">
           <div class="text">Email</div>
-          <input type="text" name="" id="" class="input" v-model="mail">
+          <input type="email" name="" id="" class="input" v-model="mail">
         </div>
         <div class="form-div">
           <div class="text">Password</div>
-          <input type="text" name="" id="" class="input" v-model="password">
+          <input type="password" name="" id="" class="input" v-model="password">
         </div>
         <div class="form-div">
           <div class="btn" @click="sendData()">Login</div>

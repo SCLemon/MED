@@ -27,11 +27,11 @@
         </div>
         <div class="form-div">
           <div class="text">Password</div>
-          <input type="text" name="" id="" class="input" v-model="update.password">
+          <input type="password" name="" id="" class="input" v-model="update.password">
         </div>
         <div class="form-div">
             <div class="text">Email</div>
-            <input type="text" name="" id="" class="input" :value="update.mail" disabled>
+            <input type="email" name="" id="" class="input" :value="update.mail" disabled>
           </div>
         <div class="form-div">
           <div class="btn" @click="updateData()">Update Profile</div>
