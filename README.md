@@ -8,9 +8,6 @@ This is a daily application app created by integrating AI technology, which incl
 If the website is in HTTP environment, something might break down like Navigator API, Downloader API. <br>
 But you can clone this repository and run it locally, it would proceed successfully. <br>
 
-By the way, The Demo Website would sometimes break down as a result of the Bad Virtual Machine which is Free.  <br>
-so, do not Misunderstand this Web Application QQ.
-
 
 ## Programming languages
 - Vue CLI
