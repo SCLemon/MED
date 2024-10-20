@@ -150,7 +150,7 @@ export default {
             const countyTemp = this.counties.filter((item)=>{return res['data']['plus_code']['compound_code'].includes(item.label)})
             this.county = countyTemp[0]?countyTemp[0].value: '09';
             const regionTemp = this.activeRegion.filter((item)=>{return res['data']['plus_code']['compound_code'].includes(item)})
-            this.region = regionTemp[0]?regionTemp[0]:'東區'
+            this.region = regionTemp[0]?regionTemp[0]:this.activeRegion[0];
           }
         }
         catch(e){}
