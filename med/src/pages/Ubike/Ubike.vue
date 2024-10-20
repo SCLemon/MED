@@ -57,14 +57,9 @@ import { format } from 'date-fns';
 
 export default {
     name:'Ubike',
-    mounted(){
-      this.getPosition();
-      this.timer = setInterval(() => {
-        this.getPosition();
-      }, 15000);
-    },
     data(){
       return {
+        init:0,
         q:'',
         stations:[],
         isLoaded:false,
@@ -77,12 +72,18 @@ export default {
         timer:0,
       }
     },
+    mounted(){
+      this.getPosition();
+      this.timer = setInterval(() => {
+        this.getPosition();
+      }, 15000);
+    },
     watch:{
       'county':{
         deep:true,
         handler(){
           this.q = '';
-          this.region = this.activeRegion[0]
+          if(this.init) this.region = this.activeRegion[0] // 第一次不觸發
         }
       }
     },
@@ -102,36 +103,62 @@ export default {
       }
     },
     methods:{
-      getPosition(){
-        navigator.geolocation.getCurrentPosition((position)=>{
-          this.lat = position.coords.latitude
+      async getPosition() { 
+        // Step 1. 獲取當前位置的經緯度
+        try {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+          
+          this.lat = position.coords.latitude;
           this.long = position.coords.longitude;
-          this.getCounty();
-          this.getStations();
-        },(error)=>{
-          this.$bus.$emit('handleAlert','Failed To Getting Location Information','error');
-        });
+          
+          await this.getStations();
+          await this.getCounty();
+          if(!this.init) await this.getCurrentLocation(); // 第一次觸發
+        } catch (error) {
+          this.$bus.$emit('handleAlert', 'Failed To Get Location Information', 'error');
+        }
       },
-      getStations(){
-        axios.get('/api/ubike/station')
-        .then(res=>{
-          this.stations = res.data
-        })
-        .catch(e=>{
-          this.$bus.$emit('handleAlert','Failed To Get Info of Ubike!','error');
-        })
-        .finally(()=>{
+      async getStations() {
+        try {
+          const res = await axios.get('/api/ubike/station');
+          this.stations = res.data;
+        } 
+        catch (e) {
+          this.$bus.$emit('handleAlert', 'Failed To Get Info of Ubike!', 'error');
+        } 
+        finally {
           this.isLoaded = true;
-        })
+        }
       },
-      getCounty(){
-        axios.get('/api/ubike/county')
-        .then(res=>{
-          this.counties = res.data
-        })
-        .catch(e=>{
-          this.$bus.$emit('handleAlert','Failed To Get Info of Ubike!','error');
-        })
+      async getCounty() {
+        try {
+          const res = await axios.get('/api/ubike/county');
+          this.counties = res.data;
+        } 
+        catch (e) {
+          this.$bus.$emit('handleAlert', 'Failed To Get Info of Ubike!', 'error');
+        }
+      },
+      async getCurrentLocation(){ // 獲取當前位置的實際縣市名稱 plus_code.compound_code <-- 只有第一次才觸發
+        try{
+          const res = await axios.post('/api/google/location',{lat:this.lat,long:this.long},{
+            lat:this.lat, long:this.long
+          })
+          if(res['data']['plus_code']['compound_code']){
+            const countyTemp = this.counties.filter((item)=>{return res['data']['plus_code']['compound_code'].includes(item.label)})
+            this.county = countyTemp[0]?countyTemp[0].value: '09';
+            const regionTemp = this.activeRegion.filter((item)=>{return res['data']['plus_code']['compound_code'].includes(item)})
+            this.region = regionTemp[0]?regionTemp[0]:'東區'
+          }
+        }
+        catch(e){}
+        finally{
+          this.$nextTick(()=>{
+            this.init++;
+          })
+        }
       },
       handleDate(time){
         return format(time,'HH:mm:ss')

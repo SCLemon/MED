@@ -93,7 +93,8 @@ export default {
       },
       openDetail(target){
         var date = format(target,'yyyy/MM/dd');
-        this.gridData = this.list.filter((item)=>item.date == date)[0]?this.list.filter((item)=>item.date == date)[0]['todo']:[]     
+        var pass = this.list.filter((item)=>item.date == date)[0];
+        this.gridData = pass?pass['todo']:[]     
         this.dialogTableVisible = true;
         this.openDetailDate = date;
       },

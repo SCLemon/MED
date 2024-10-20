@@ -39,6 +39,18 @@ router.get('/api/google/auth',(req, res) => {
     res.send(googleMapKey);
 });
 
+router.post('/api/google/location',(req,res)=>{
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${req.body.lat},${req.body.long}&language=zh-TW&key=${googleMapKey}`)
+    .then(response=>{
+        res.send(response.data)
+    })
+    .catch((e)=>{
+        res.send({})
+    })
+})
+
+
+
 // Ubike
 router.get('/api/ubike/county',(req,res)=>{
     axios.get('https://apis.youbike.com.tw/json/area-all.json')
