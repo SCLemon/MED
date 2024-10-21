@@ -3,7 +3,8 @@ const taskModel = require('../models/taskModel');
 const axios =require('axios');
 const { connectToDatabase } = require('../db/db');
 const { parse, format } = require('date-fns');
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const { mailConfig } = require('../apiKey');
 connectToDatabase();
 
 try{
@@ -60,13 +61,7 @@ function send(data){
         <div style="margin-top: 10px;">敬祝您有個愉快的一天！</div>
     `
 
-    const transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-            user: 'blc0000421@gmail.com',
-            pass: 'ujpmxjrnjhsymdar'
-        }
-    })
+    const transporter = nodemailer.createTransport(mailConfig)
 
     const mailOptions = {
         to: data.mail,
