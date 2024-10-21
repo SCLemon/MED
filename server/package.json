@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "http_server": "node http_server.js",
-    "https_server": "node https_server.js",
-    "send": "node appscript/send.js"
+    "http_server": "node http_server.js & node sendMailer/send.js",
+    "https_server": "node https_server.js & node sendMailer/send.js"
   },
   "keywords": [],
   "author": "",
