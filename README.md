@@ -53,14 +53,17 @@ Weather API `API_KEY`
 ```
 https://www.visualcrossing.com/weather-api
 ```
-## AppScript Setup
-The code has been placed in the following folder
+
+## Send Notification Setup
+
+First, you should setup your Mail Config in the files which is the same as above.
 ```
-server/appscript/appscript.js
+server/apiKey.js
 ```
-You only need to create an appscript at Google Platform, and get an url, and put it in the following file.
+
+Next, the code has been placed in the following folder, you can change it to what you want.
 ```
-server/appscript/send.js
+server/sendMailer/send.js
 ```
 
 
