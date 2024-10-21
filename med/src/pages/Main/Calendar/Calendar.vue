@@ -199,7 +199,7 @@ export default {
   }
   .contentBox{
     width: 100%;
-    height: 40px;
+    height: calc(100% - 25px);
     overflow-x: hidden;
     overflow-y: scroll;
   }
@@ -239,4 +239,5 @@ export default {
   .x{
     font-size: 12px;
   }
+
 </style>

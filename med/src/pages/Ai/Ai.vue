@@ -292,7 +292,10 @@ export default {
         }]
         this.totalMsg.push({
           role:'user',
-          content:this.input+`  ![image](${value})`
+          content:this.input
+        },{
+          role:'user',
+          content:`![image](${value})`
         },{
           role:'assistant',
           content:''

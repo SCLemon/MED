@@ -173,4 +173,7 @@ export default {
     .el-date-editor{
       width: auto !important;
     }
+    .el-calendar-day{
+      padding: 4.2px !important;
+    }
 </style>
