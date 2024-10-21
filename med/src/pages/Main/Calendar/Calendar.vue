@@ -14,29 +14,25 @@
     </el-calendar>
     <el-dialog :title="openDetailDate" :visible.sync="dialogTableVisible"  ref="table">
       <el-table :data="gridData" empty-text="暫無數據">
-        <el-table-column property="period" label="時間" width="155.5"></el-table-column>
-        <el-table-column property="title" label="待辦事項" width="120"></el-table-column>
-        <el-table-column width="34"  align="center">
+        <el-table-column property="period" label="時間"  :min-width="'40%'"></el-table-column>
+        <el-table-column property="title" label="待辦事項" :min-width="'45%'"></el-table-column>
+        <el-table-column  :min-width="'15%'" align="center">
           <template v-slot="{ row }">
             <div class="delete" @click="deleteData(row.taskId)"><i class="fa-solid fa-x x"></i></div>
           </template>
         </el-table-column>
       </el-table>
       <div class="addRow">
-        <div class="addBoxLeft">
-          <div class="time">
+        <div class="time">
           <el-time-select class="select"
             v-model="period" :picker-options="{ start: '00:00',step: '00:30',end: '23:30' }" placeholder="選擇時間"
             @focus="preventKeyboard" ref="datePicker">
           </el-time-select>
         </div>
-        </div>
-        <div class="addBoxRight">
-          <div class="box">
+        <div class="box">
             <el-input placeholder="Please Input Your Title" class="input" v-model="title" clearable ></el-input>
-          </div>
-          <div class="btn" @click="sendData()"><i class="fa-solid fa-plus"></i></div>
         </div>
+        <div class="addBtn" @click="sendData()"><i class="fa-solid fa-plus"></i></div>
       </div>
     </el-dialog>
   </div>
@@ -211,27 +207,27 @@ export default {
   }
   .addRow{
     margin-top: 10px;
-    width: 309.5px;
+    width: 100%;
     height: 50px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
   }
-  .addBoxLeft{
-    width: 155.5px;
-    padding-right: 10px;
+  .time{
+    width:40%;
   }
-  .addBoxRight{
-    width: 50%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+  .box{
+    width: 45%;
+  }
+  .select{
+    width: 95% !important;
   }
   .input{
-    width: 110px;
+    width: 100%;
   }
-  .btn{
-    width: 34px;
+  .addBtn{
+    width: 15%;
+    text-align: center;
   }
   .delete:hover{
     cursor: pointer;
