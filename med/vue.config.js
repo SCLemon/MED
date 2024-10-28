@@ -89,6 +89,20 @@ module.exports = defineConfig({
           },
         })
       );
+
+      // Tree shaking
+      config.optimization.usedExports = true;
+      
+      // 拆分代碼
+      config.optimization.splitChunks = {
+        chunks: 'all', // 可選：'async' | 'all' | 'initial'
+        minSize: 20000, // 最小尺寸
+        maxSize: 0, // 0 表示不限制
+        minChunks: 1, // 最少使用次數
+        maxAsyncRequests: 30, // 最大的異步請求數
+        maxInitialRequests: 30, // 最大的初始請求數
+        automaticNameDelimiter: '~',
+      }
     }
   }
 });
