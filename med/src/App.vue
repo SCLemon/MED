@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="app" v-cloak>
-    <router-view></router-view>
+    <transition name="slide-up" mode="out-in">
+      <router-view></router-view>
+    </transition>
     <FooterGuide class="footer" v-if="!$route.path.includes('/verify')"></FooterGuide>
   </div>
 </template>
@@ -175,5 +177,21 @@ export default {
     }
     .el-calendar-day{
       padding: 4.2px !important;
+    }
+    /* 進入和離開的過渡效果 */
+    .slide-up-enter-active, .slide-up-leave-active {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* 新組件進入效果：從下方滑入 */
+    .slide-up-enter {
+      opacity: 0;
+      transform: translateX(100%); /* 從下方進入 */
+    }
+
+    /* 舊組件離開效果：向下滑出 */
+    .slide-up-leave-to {
+      opacity: 0;
+      transform: translateX(100%); /* 向下滑出 */
     }
 </style>

@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const app = express();
+
+// 壓縮
+app.use(compression());
 
 // 轉換
 app.use(express.json());
@@ -25,7 +29,7 @@ const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
     windowMs: 60 * 1000, // 1 分鐘
-    max: 200, // 限制每個 IP 最多 100 次請求
+    max: 300, // 限制每個 IP 最多 100 次請求
     message: 'Too many requests from this IP, please try again after a minute.',
 });
 

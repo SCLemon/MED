@@ -1,5 +1,14 @@
 <template>
   <div class="main">
+    <el-dialog
+      title="安裝提示"
+      :visible.sync="dialogVisible"
+      width="90%"
+      :before-close="handleClose">
+      <div class="hintText">因本頁面採用 PWA 漸進式網頁應用程式技術開發而成。為確保良好的使用者體驗，請務必先將本頁面 <span style="font-weight: bolder;">「新增至主畫面」</span>，再從主畫面中點擊圖標進入應用程式！</div>
+      <div class="check"><el-checkbox v-model="checked" @change="handleCheck()">下次不再顯示</el-checkbox></div>
+      <div class="author">SCLemon <i class="fa-solid fa-paw"></i></div>
+    </el-dialog>
     <div class="box">
       <div class="title">Welcome To Use</div>
       <div class="userIcon">
@@ -30,11 +39,14 @@ import {host} from '../../serverPath'
 import axios from 'axios';
 export default {
   name:'Register',
-  mounted(){},
+  mounted(){
+    if(localStorage.getItem('newUser')==undefined || localStorage.getItem('newUser')=='true') this.dialogVisible = true;
+  },
   data(){
     return {
       mail:'',
       password:'',
+      dialogVisible:false,
     }
   },
   methods:{
@@ -57,8 +69,11 @@ export default {
         })
       }
       else this.$bus.$emit('handleAlert','Blanks are not allowed','warning')
+    },
+    handleCheck(){
+      localStorage.setItem('newUser',!this.checked)
     }
-  }
+  },
 }
 </script>
 
@@ -139,5 +154,17 @@ export default {
     margin-top: 40px;
     background-color: #97bf5f;
     color: white;
+  }
+  .hintText{
+    line-height: 2;
+    text-align: justify;
+  }
+  .check{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  .author{
+    text-align: right;
   }
 </style>

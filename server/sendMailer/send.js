@@ -1,6 +1,5 @@
 const schedule = require('node-schedule');
 const taskModel = require('../models/taskModel');
-const axios =require('axios');
 const { connectToDatabase } = require('../db/db');
 const { parse, format } = require('date-fns');
 const nodemailer = require("nodemailer");
